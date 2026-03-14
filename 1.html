@@ -1,0 +1,449 @@
+# EmotionalSuchou
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>相爱一生 - 宇宙高端交友平台</title>
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-pink: #ff5c8d; /* 玫粉色 */
+            --dark-pink: #c2185b;     /* 深玫红 */
+            --light-pink: #ffeef4;    /* 浅粉背景 */
+            --menu-hover: #ff80ab;
+            --white: #ffffff;
+            --text-main: #333333;
+            --text-secondary: #666666;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Noto Serif SC', serif;
+            background-color: var(--light-pink);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* --- 顶部导航与标题 --- */
+        header {
+            background: linear-gradient(135deg, var(--primary-pink), var(--dark-pink));
+            color: var(--white);
+            text-align: center;
+            padding: 40px 20px 70px; /* 底部留空间给容器重叠 */
+            position: relative;
+            /* overflow: hidden; 不要隐藏，否则菜单出不来 */
+        }
+
+        /* 飘落花瓣装饰 */
+        header::before { content: '🌸'; position: absolute; font-size: 2rem; top: 10%; left: 10%; opacity: 0.3; animation: float 6s infinite ease-in-out; pointer-events: none;}
+        header::after { content: '💖'; position: absolute; font-size: 1.5rem; bottom: 30%; right: 15%; opacity: 0.3; animation: float 8s infinite ease-in-out reverse; pointer-events: none;}
+
+        /* 核心标题 - 花体 */
+        h1.main-title {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 4rem;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .subtitle { font-size: 1.1rem; opacity: 0.9; letter-spacing: 2px; }
+
+        /* --- 右上角菜单区域 --- */
+        .top-nav {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            z-index: 100;
+        }
+
+        .menu-trigger {
+            background: rgba(255,255,255,0.2);
+            color: var(--white);
+            border: 1px solid var(--white);
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .menu-trigger:hover { background: rgba(255,255,255,0.4); }
+
+        /* 下拉菜单列表 */
+        .menu-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(194, 24, 91, 0.2);
+            width: 220px;
+            margin-top: 10px;
+            padding: 10px 0;
+            display: none; /* 默认隐藏 */
+            flex-direction: column;
+            border: 2px solid var(--primary-pink);
+        }
+        
+        /* 显示菜单的类 */
+        .menu-dropdown.show { display: flex; }
+
+        .menu-actions {
+            padding: 5px 15px;
+            border-bottom: 1px dashed var(--primary-pink);
+            margin-bottom: 5px;
+        }
+        .sort-btn {
+            background: var(--light-pink); color: var(--dark-pink); border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.9rem; width: 100%;
+        }
+        .sort-btn:hover { background: var(--menu-hover); color: white; }
+
+        .menu-item {
+            position: relative; /* 为了悬浮预览定位 */
+            list-style: none;
+        }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            text-decoration: none;
+            color: var(--dark-pink);
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        .menu-link img { width: 30px; height: 30px; border-radius: 50%; margin-right: 10px; border: 2px solid var(--primary-pink);}
+
+        .menu-link:hover { background-color: var(--light-pink); color: var(--primary-pink); }
+
+        /* --- 悬浮预览卡片 --- */
+        .preview-card {
+            position: absolute;
+            right: 105%; /* 显示在菜单左侧 */
+            top: 0;
+            background: var(--white);
+            border: 2px solid var(--primary-pink);
+            border-radius: 10px;
+            padding: 15px;
+            width: 180px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: none; /* 默认隐藏 */
+            z-index: 101;
+            text-align: center;
+        }
+        
+        /* 核心：鼠标悬停在菜单项上时，显示预览卡片 */
+        .menu-item:hover .preview-card { display: block; }
+
+        .preview-avatar { width: 60px; height: 60px; border-radius: 50%; margin-bottom: 10px; border: 3px solid var(--light-pink);}
+        .preview-name { font-size: 1.2rem; color: var(--dark-pink); font-family: 'Ma Shan Zheng', cursive;}
+        .preview-info { font-size: 0.9rem; color: var(--text-secondary); }
+
+        /* --- 主内容容器 --- */
+        .container {
+            max-width: 800px;
+            margin: -50px auto 50px;
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(194, 24, 91, 0.15);
+            padding: 40px;
+            position: relative;
+            z-index: 10;
+            min-height: 600px; /* 避免切换时页面跳动太大 */
+            transition: opacity 0.3s ease;
+        }
+
+        /* --- 动态内容样式 (复用原有) --- */
+        .profile-header { text-align: center; margin-bottom: 40px; }
+        .avatar-big { width: 180px; height: 180px; border-radius: 50%; border: 6px solid var(--white); box-shadow: 0 5px 15px rgba(0,0,0,0.1); object-fit: cover; background-color: #ddd; margin-bottom: 20px; }
+        .name-tag { font-size: 2.5rem; color: var(--dark-pink); font-weight: bold; margin-bottom: 5px; font-family: 'Ma Shan Zheng', cursive;}
+        .tags span { display: inline-block; background: var(--light-pink); color: var(--dark-pink); padding: 5px 15px; border-radius: 20px; font-size: 0.9rem; margin: 5px; font-weight: bold; }
+        .section { margin-bottom: 40px; border-left: 4px solid var(--primary-pink); padding-left: 20px; }
+        .section-title { font-family: 'Ma Shan Zheng', cursive; font-size: 2rem; color: var(--dark-pink); margin-bottom: 15px; }
+        .job-highlight { background: linear-gradient(to right, #fff0f6, #fff); padding: 20px; border-radius: 10px; border: 1px dashed var(--primary-pink); margin-top: 10px; }
+        .highlight-text { color: var(--dark-pink); font-weight: bold; }
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+        .info-item strong { display: block; color: var(--dark-pink); margin-bottom: 5px; }
+        .cta-button { display: block; width: 100%; padding: 20px; background-color: var(--dark-pink); color: var(--white); text-align: center; text-decoration: none; font-size: 1.5rem; border-radius: 50px; transition: transform 0.3s, background 0.3s; font-family: 'Ma Shan Zheng', cursive; box-shadow: 0 5px 15px rgba(194, 24, 91, 0.3); cursor: pointer; border: none;}
+        .cta-button:hover { transform: translateY(-3px); background-color: var(--primary-pink); }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 600px) {
+            h1.main-title { font-size: 3rem; }
+            header { padding-bottom: 40px; }
+            .container { padding: 25px; margin-top: -20px; }
+            .top-nav { right: 10px; top: 10px; }
+            /* 移动端预览卡片显示在下方，避免挤出屏幕 */
+            .preview-card { right: 0; top: 100%; width: 100%; z-index: 102;}
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1 class="main-title">相爱一生</h1>
+        <p class="subtitle">谢乐添宇宙低空经济有限公司 · 核心高管相亲专场</p>
+
+        <nav class="top-nav">
+            <button class="menu-trigger" onclick="toggleMenu()">
+                <span>☰ 选择心动嘉宾</span>
+            </button>
+            <ul class="menu-dropdown" id="menuList">
+                </ul>
+        </nav>
+    </header>
+
+    <main class="container" id="content-area">
+        </main>
+
+    <script>
+        // --- 数据中心 ---
+        // 存储所有嘉宾的信息。使用对象结构方便索引。
+        const profilesData = {
+            gao: {
+                id: 'gao',
+                name: '高瑞卿',
+                gender: '男',
+                birthYear:'2005-12-05', // 基于原描述22岁推算
+                avatar: 'https://photonjmaz.photo.store.qq.com/psc?/V11U6iXp0sVOfl/TmEUgtj9EK6.7V8ajmQrELk*f1SSLEj8J1IIvNzSOhUlfjPGEVxeBPt4AlrhLx8tE.KbTSFNzax4Gz1Btc*rTNvxB5ccjkHbCiaZurNRwAI!/b&bo=qgb*BKoG*wQWECA!&rf=viewer_311',
+                title: '火星分公司总经理',
+                tags: ['年少有为', '火星常驻', '隐身科技'],
+                height: '183cm',
+                weight: '70kg (火星重力浮动)',
+                location: '高邮 / 火星奥林帕斯山',
+                car: '星际穿梭机（公司配车）',
+                hobby: '研究量子力学、品尝高邮双黄鸭蛋、无重力俯卧撑',
+                highlightTitle: '高邮总公司带头人',
+                highlightDesc: '开发了里程碑式产品——<span class="highlight-text">“隐身内裤”</span>。<br><span style="font-size:0.9rem;color:#666">*注：透气性极佳，赋予用户“穿了好像没穿，没穿其实穿了”的极致体验。</span>',
+                lookingFor: '能接受异球恋（通勤6个月），对“隐身内裤”有试用热情，不介意火星时差。',
+                slogan: '“爱情就像隐身内裤，虽然别人看不见，但只有你知道它带来的安全感。”'
+            },
+            xie: {
+                id: 'xie',
+                name: '谢乐添',
+                gender: '男',
+                birthday: '2005-07-25',
+                avatar: 'https://a1.qpic.cn/psc?/V11U6iXp0sVOfl/TmEUgtj9EK6.7V8ajmQrEGP8J1FIbQtkkhrByC6Q56ZbO3QxQUyoY5XkH8cTscO*eP.XJmKPa7GOnIiLhsAiCZ.FAJw0zBqWyVW1IUvka.s!/b&ek=1&kp=1&pt=0&bo=QAZVCEAGVQgWECA!&tl=3&vuin=2732827443&tm=1763971200&dis_t=1763974125&dis_k=32f90de16356ad2a93a0e296d7668b54&sce=60-4-3&rf=viewer_311',
+                title: '宇宙低空经济有限公司董事长',
+                tags: ['05后董事长', '掌舵人', '高瞻远瞩'],
+                height: '183cm',
+                weight: '保密 (董事长包袱)',
+                location: '地球总部 / 宇宙各分部巡视中',
+                car: '董事长专属低空飞行旗舰座驾',
+                hobby: '规划宇宙经济蓝图、在平流层喝咖啡、阅读《银河系漫游指南》',
+                highlightTitle: '集团掌门人',
+                highlightDesc: '一手缔造了庞大的宇宙低空经济帝国。不仅着眼于地球的低空物流，更致力于开发月球旅游航线和火星房地产开发（虽然目前主要还在卖PPT阶段）。',
+                lookingFor: '大气端庄，能适应董事长夫人的身份压力，愿意陪我一起在平流层看日出日落（每天看16次）。',
+                slogan: '“我的征途是星辰大海，希望副驾驶的位置有你。”'
+            },
+            luan: {
+                id: 'luan',
+                name: '栾业韬',
+                gender: '男',
+                birthday: '2005-12-10',
+                avatar: 'https://a1.qpic.cn/psc?/V11U6iXp0sVOfl/TmEUgtj9EK6.7V8ajmQrEGP8J1FIbQtkkhrByC6Q56aP*7tkAH9pz.ms6jJ9xktfjLZjx7WCp22pybjfpISS1E1kkA4XeXOmKwA8DcbJe6s!/b&ek=1&kp=1&pt=0&bo=AAaqCgAGqgoWECA!&tl=1&vuin=2732827443&tm=1763971200&dis_t=1763974127&dis_k=2d78dae66946327c90845a8d6092be19&sce=50-1-1&rf=viewer_311',
+                title: '苏州经贸分公司董事长(兼虎丘区)',
+                tags: ['江南才俊', '区域霸主', '业务精英'],
+                height: '180cm',
+                weight: '75kg (常年商务应酬)',
+                location: '苏州工业园区 / 虎丘区CBD',
+                car: '苏E牌照的高级商务低空轿跑',
+                hobby: '评弹鉴赏、游览虎丘塔（思考如何把塔发射到太空）、品鉴碧螺春',
+                highlightTitle: '苏州业务一把手',
+                highlightDesc: '全面负责苏州经贸分公司及虎丘区的重要业务。成功将“宇宙低空经济”概念引入江南水乡，致力于打造“东方威尼斯空中走廊”项目。',
+                lookingFor: '温婉江南女子优先，懂经贸、会算账，能和我一起应对繁忙的商务接待，最好喜欢听评弹。',
+                slogan: '“上有天堂，下有苏杭，中间有我为你承包的低空走廊。”'
+            },
+            wang: {
+                id: 'wang',
+                name: '王苏豪',
+                gender: '男',
+                birthday: '2005-07-09',
+                avatar: 'https://a1.qpic.cn/psc?/V11U6iXp0sVOfl/TmEUgtj9EK6.7V8ajmQrEGP8J1FIbQtkkhrByC6Q56YGzQo4q33v2ww.I2eG7tcmoBuP8TVP9KSbAiX49R8UYjlvBGiZe5otTnFs4srMoI0!/b&ek=1&kp=1&pt=0&bo=*wSqBv8EqgYWECA!&tl=1&vuin=2732827443&tm=1763971200&dis_t=1763974127&dis_k=11b5e5437836159d690fc4e810550389&sce=50-1-1&rf=viewer_311',
+                title: '地球分公司网络总工程师',
+                nickname: '网速好',
+                tags: ['技术大牛', '网速好', '外号比名气大'],
+                height: '180cm',
+                weight: '68kg (经常熬夜修bug)',
+                location: '地球总部服务器机房 (温度常年20℃)',
+                car: '平衡车 (机房内代步)',
+                hobby: '优化Ping值、收集绝版网线、在离线状态下依然能上网',
+                highlightTitle: '让网速变好的男人',
+                highlightDesc: '地球分公司的技术核心，人送外号“网速好”。主要职责是确保地球与火星分公司视频会议不卡顿。据说他坐过的地方，WiFi信号都会增强两格。',
+                lookingFor: '不粘人（因为我大部分时间在和服务器相处），懂一点代码最好（能帮我看log），家里网速必须千兆以上。',
+                slogan: '“只要有我在，你和我的连接永远不会404 Not Found。”'
+            }
+        };
+
+        // --- 工具函数：计算年龄 ---
+        function calculateAge(birthdayString, birthYear) {
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            if (birthYear) return currentYear - birthYear; // 如果只有年份（如高瑞卿）
+            
+            const birthDate = new Date(birthdayString);
+            let age = currentYear - birthDate.getFullYear();
+            const m = now.getMonth() - birthDate.getMonth();
+            if (m < 0 || (m === 0 && now.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            return age;
+        }
+
+        // --- 核心逻辑：渲染菜单 ---
+        let isSortedAlphabetically = false;
+
+        function renderMenu() {
+            const menuListElement = document.getElementById('menuList');
+            menuListElement.innerHTML = ''; // 清空现有菜单
+
+            // 添加排序操作栏
+            const actionLi = document.createElement('li');
+            actionLi.className = 'menu-actions';
+            actionLi.innerHTML = `<button class="sort-btn" onclick="toggleSort()">🔄 按名字拼音排序 ${isSortedAlphabetically ? '(已启用)' : ''}</button>`;
+            menuListElement.appendChild(actionLi);
+
+            // 获取所有嘉宾ID
+            let profileKeys = Object.keys(profilesData);
+
+            // 如果需要排序
+            if (isSortedAlphabetically) {
+                profileKeys.sort((a, b) => {
+                    return profilesData[a].name.localeCompare(profilesData[b].name, 'zh-CN');
+                });
+            }
+
+            // 遍历生成菜单项
+            profileKeys.forEach(key => {
+                const profile = profilesData[key];
+                const age = calculateAge(profile.birthday, profile.birthYear);
+                
+                const li = document.createElement('li');
+                li.className = 'menu-item';
+                
+                li.innerHTML = `
+                    <a href="#" class="menu-link" onclick="loadProfile('${key}'); toggleMenu(); return false;">
+                        <img src="${profile.avatar}" alt="${profile.name}">
+                        <span>${profile.name}</span>
+                    </a>
+                    <div class="preview-card">
+                        <img src="${profile.avatar}" alt="${profile.name}" class="preview-avatar">
+                        <div class="preview-name">${profile.name}</div>
+                        <div class="preview-info">${profile.gender} | ${age}岁</div>
+                        <div class="preview-info" style="font-size:0.8rem; margin-top:5px;">${profile.title.substring(0, 10)}...</div>
+                    </div>
+                `;
+                menuListElement.appendChild(li);
+            });
+        }
+
+        // --- 核心逻辑：切换排序状态 ---
+        function toggleSort() {
+            isSortedAlphabetically = !isSortedAlphabetically;
+            renderMenu(); // 重新渲染菜单
+        }
+
+        // --- 核心逻辑：加载并显示嘉宾档案 ---
+        function loadProfile(profileId) {
+            const container = document.getElementById('content-area');
+            const data = profilesData[profileId];
+            const age = calculateAge(data.birthday, data.birthYear);
+
+            // 页面切换动画
+            container.style.opacity = 0;
+            
+            setTimeout(() => {
+                // 生成 HTML 模板
+                const htmlTemplate = `
+                    <div class="profile-header">
+                        <img src="${data.avatar}" alt="${data.name}" class="avatar-big">
+                        <div class="name-tag">${data.name} ${data.nickname ? '<span style="font-size:1.2rem">(' + data.nickname + ')</span>' : ''}</div>
+                        <div class="tags">
+                            <span>${age}岁</span>
+                            <span>${data.gender}</span>
+                            ${data.tags.map(tag => `<span>${tag}</span>`).join('')}
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <h2 class="section-title">我的事业</h2>
+                        <p>目前担任 <strong>${data.title}</strong>。</p>
+                        <div class="job-highlight">
+                            <p><strong>【${data.highlightTitle}】</strong></p>
+                            <p>${data.highlightDesc}</p>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <h2 class="section-title">关于我</h2>
+                        <div class="info-grid">
+                            <div class="info-item"><strong>📏 身高/体重</strong><p>${data.height} / ${data.weight}</p></div>
+                            <div class="info-item"><strong>📍 常驻地点</strong><p>${data.location}</p></div>
+                            <div class="info-item"><strong>🚗 交通工具</strong><p>${data.car}</p></div>
+                            <div class="info-item"><strong>🎨 兴趣爱好</strong><p>${data.hobby}</p></div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <h2 class="section-title">寻找那个她</h2>
+                        <p>希望你：</p>
+                        <p style="margin-top: 10px;">${data.lookingFor}</p>
+                        <br>
+                        <p style="background:#fff0f6; padding:15px; border-radius:10px; font-family:'Ma Shan Zheng',cursive; font-size:1.2rem; color:var(--dark-pink);">
+                            <strong>爱情宣言：</strong><br>${data.slogan}
+                        </p>
+                    </div>
+
+                    <button class="cta-button" onclick="alert('正在为您联系【${data.title} - ${data.name}】，请耐心等待宇宙信号接通...')">
+                        💗 点击联系他 💗
+                    </button>
+                `;
+                
+                container.innerHTML = htmlTemplate;
+                container.style.opacity = 1;
+                // 滚动到顶部
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 300); // 300ms 延迟配合动画
+        }
+
+        // --- 交互逻辑：切换菜单显示/隐藏 ---
+        function toggleMenu() {
+            const menu = document.getElementById('menuList');
+            menu.classList.toggle('show');
+        }
+        
+        // 点击页面其他地方关闭菜单
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('menuList');
+            const trigger = document.querySelector('.menu-trigger');
+            if (!menu.contains(event.target) && !trigger.contains(event.target) && menu.classList.contains('show')) {
+                menu.classList.remove('show');
+            }
+        });
+
+        // --- 初始化 ---
+        // 页面加载完成后执行
+        window.addEventListener('DOMContentLoaded', () => {
+            renderMenu(); // 渲染初始菜单
+            loadProfile('gao'); // 默认加载高瑞卿
+        });
+
+    </script>
+</body>
+</html>
