@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>苏州东山碧螺春 - 产品介绍</title>
+    <style>
+        /* 全局样式 */
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', serif;
+            margin: 0;
+            padding: 0;
+            background-color: #faf9f6; /* 柔和的米白色背景 */
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* 顶部主视觉区 (Hero Section) */
+        .hero {
+            background: linear-gradient(rgba(46, 125, 50, 0.8), rgba(46, 125, 50, 0.8)), 
+                        url('https://images.unsplash.com/photo-1597318181412-49af291f600f?q=80&w=1200&auto=format&fit=crop') center/cover;
+            color: white;
+            text-align: center;
+            padding: 100px 20px;
+        }
+
+        .hero h1 {
+            font-size: 3em;
+            margin: 0 0 10px 0;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero p {
+            font-size: 1.2em;
+            font-weight: 300;
+            margin-bottom: 30px;
+        }
+
+        /* 内容容器 */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* 段落标题 */
+        h2 {
+            color: #2e7d32; /* 茶绿色 */
+            text-align: center;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+
+        /* 特色亮点网格 */
+        .features-grid {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 50px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            flex: 1;
+            min-width: 250px;
+            text-align: center;
+        }
+
+        .feature-card h3 {
+            color: #558b2f;
+            margin-top: 0;
+        }
+
+        /* 冲泡指南区 */
+        .brewing-guide {
+            background-color: #e8f5e9;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 50px;
+        }
+
+        .brewing-guide ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .brewing-guide li {
+            margin-bottom: 15px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .brewing-guide li::before {
+            content: '🍵';
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        /* 底部导航 */
+        .footer-nav {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+
+        .back-btn {
+            display: inline-block;
+            background-color: #2e7d32;
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 25px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .back-btn:hover {
+            background-color: #1b5e20;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hero">
+        <h1>洞庭碧螺春</h1>
+        <p>太湖之滨，东山之巅 · 吓煞人香的江南春意</p>
+    </div>
+
+    <div class="container">
+        
+        <section>
+            <h2>关于东山碧螺春</h2>
+            <p>碧螺春是中国传统名茶，中国十大名茶之一，属于绿茶类，已有1000多年历史。产于江苏省苏州市吴县太湖的东洞庭山及西洞庭山（今苏州吴中区）一带，所以又称“洞庭碧螺春”。</p>
+            <p>我们的产品源自东山镇核心产区，茶树与果树交错种植，令茶叶天然带有特殊的花果香味。条索紧结，卷曲如螺，白毫毕露，银绿隐翠。</p>
+        </section>
+
+        <section>
+            <h2>核心品质</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>🌿 核心产区</h3>
+                    <p>正宗苏州东山镇太湖原产地，微小气候赋予茶叶不可复制的鲜爽甘甜。</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🤲 手工采摘</h3>
+                    <p>明前特级标准，只采初展的一芽一叶，七万个嫩芽方能制成一斤干茶。</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🔥 传统非遗</h3>
+                    <p>老茶农秉承“手不离茶，茶不离锅”的古法柴火铁锅杀青揉捻工艺。</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="brewing-guide">
+            <h2>冲泡指南</h2>
+            <p>碧螺春极其娇嫩，冲泡时需格外注意水温与手法，推荐使用“上投法”：</p>
+            <ul>
+                <li><strong>水温：</strong> 建议使用 80°C - 85°C 的热水，切忌用沸水直接浇烫，以免烫熟茶叶发黄发苦。</li>
+                <li><strong>器具：</strong> 首选透明玻璃杯，以便观赏茶叶如雪花般飞舞下沉的优美姿态。</li>
+                <li><strong>步骤：</strong> 先将适量温水注入杯中（约七分满），再投入 3-5 克碧螺春干茶。</li>
+                <li><strong>品饮：</strong> 静候 1-2 分钟，待茶叶吸水舒展、白毫溶解后即可品饮。茶汤碧绿清澈，花果香浓郁。</li>
+            </ul>
+        </section>
+
+        <div class="footer-nav">
+            <a href="index.html" class="back-btn">返回网站首页</a>
+        </div>
+
+    </div>
+
+</body>
+</html>
