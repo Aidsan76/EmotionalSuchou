@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全球汽车黄页 - Global Auto Directory</title>
+    <style>
+        /* --- 基础样式 --- */
+        :root {
+            --primary-color: #0056b3;
+            --accent-color: #ff9800;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-color: #333;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        /* --- 顶部导航栏 & 时钟 --- */
+        header {
+            background-color: #1a1a1a;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        #clock {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            min-width: 180px; /* 防止时间跳动导致布局抖动 */
+        }
+
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* --- 轮播图区域 --- */
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            overflow: hidden;
+            background-color: #000;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        .slide-caption {
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 15px 30px;
+            margin-bottom: 30px;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            backdrop-filter: blur(5px);
+        }
+
+        /* --- 主要内容区域 --- */
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            border-left: 5px solid var(--primary-color);
+            padding-left: 15px;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            color: #2c3e50;
+        }
+
+        h3 {
+            margin: 20px 0 15px;
+            color: #555;
+            font-size: 1.3rem;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        /* --- 网格布局 --- */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+        }
+
+        /* --- 链接卡片样式 --- */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid #eee;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .card-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #888;
+        }
+
+        .card-name {
+            font-weight: 600;
+        }
+
+        /* --- 页脚 --- */
+        footer {
+            background-color: #2c3e50;
+            color: #ccc;
+            text-align: center;
+            padding: 20px;
+            margin-top: 50px;
+        }
+
+        /* --- 响应式调整 --- */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+            .header-title {
+                font-size: 1.2rem;
+            }
+            .carousel-container {
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div id="clock">加载时间中...</div>
+        <div class="header-title">全球汽车厂商黄页</div>
+        <div style="width: 180px;"></div> </header>
+
+    <div class="carousel-container">
+        <div class="slide active" style="background-image: url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=1920&auto=format&fit=crop');">
+            <div class="slide-caption">未来已来：下一代电动超跑</div>
+        </div>
+        <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1503376763036-066120622c74?q=80&w=1920&auto=format&fit=crop');">
+            <div class="slide-caption">极致操控：赛道级性能体验</div>
+        </div>
+        <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1494976388531-d1058494cdd8?q=80&w=1920&auto=format&fit=crop');">
+            <div class="slide-caption">豪华座舱：重新定义舒适出行</div>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <section>
+            <h2>⚡ 中国主流新能源 (NEV)</h2>
+            <div class="grid">
+                <a href="https://www.byd.com" target="_blank" class="card"><span class="card-icon">🔋</span><span class="card-name">比亚迪 (BYD)</span></a>
+                <a href="https://www.nio.cn" target="_blank" class="card"><span class="card-icon">🏎️</span><span class="card-name">蔚来 (NIO)</span></a>
+                <a href="https://www.lixiang.com" target="_blank" class="card"><span class="card-icon">🏠</span><span class="card-name">理想 (Li Auto)</span></a>
+                <a href="https://www.xpeng.com" target="_blank" class="card"><span class="card-icon">🤖</span><span class="card-name">小鹏 (XPeng)</span></a>
+                <a href="https://www.zeekrlife.com" target="_blank" class="card"><span class="card-icon">⚡</span><span class="card-name">极氪 (Zeekr)</span></a>
+                <a href="https://www.xiaomiev.com" target="_blank" class="card"><span class="card-icon">📱</span><span class="card-name">小米汽车 (Xiaomi)</span></a>
+                <a href="https://aito.auto" target="_blank" class="card"><span class="card-icon">🌐</span><span class="card-name">鸿蒙智行 (AITO)</span></a>
+                <a href="https://www.deepal.cn" target="_blank" class="card"><span class="card-icon">🟦</span><span class="card-name">深蓝汽车</span></a>
+            </div>
+        </section>
+
+        <section>
+            <h2>🇨🇳 中国著名传统车企</h2>
+            <div class="grid">
+                <a href="https://www.geely.com" target="_blank" class="card"><span class="card-name">吉利汽车</span></a>
+                <a href="https://www.faw-hongqi.com.cn" target="_blank" class="card"><span class="card-name">红旗 (Hongqi)</span></a>
+                <a href="https://www.changan.com.cn" target="_blank" class="card"><span class="card-name">长安汽车</span></a>
+                <a href="https://www.gwm.com.cn" target="_blank" class="card"><span class="card-name">长城汽车</span></a>
+                <a href="https://www.saicmotor.com" target="_blank" class="card"><span class="card-name">上汽集团</span></a>
+                <a href="https://www.chery.cn" target="_blank" class="card"><span class="card-name">奇瑞汽车</span></a>
+                <a href="https://www.gac.com.cn" target="_blank" class="card"><span class="card-name">广汽集团</span></a>
+            </div>
+        </section>
+
+        <section>
+            <h2>🌍 国际知名车企</h2>
+
+            <h3>🇩🇪 德国 (Germany)</h3>
+            <div class="grid">
+                <a href="https://www.mercedes-benz.com.cn" target="_blank" class="card"><span class="card-name">梅赛德斯-奔驰</span></a>
+                <a href="https://www.bmw.com.cn" target="_blank" class="card"><span class="card-name">宝马 (BMW)</span></a>
+                <a href="https://www.audi.cn" target="_blank" class="card"><span class="card-name">奥迪 (Audi)</span></a>
+                <a href="https://www.vw.com.cn" target="_blank" class="card"><span class="card-name">大众 (Volkswagen)</span></a>
+                <a href="https://www.porsche.cn" target="_blank" class="card"><span class="card-name">保时捷 (Porsche)</span></a>
+            </div>
+
+            <h3>🇯🇵 日本 (Japan)</h3>
+            <div class="grid">
+                <a href="https://www.toyota.com.cn" target="_blank" class="card"><span class="card-name">丰田 (Toyota)</span></a>
+                <a href="https://www.honda.com.cn" target="_blank" class="card"><span class="card-name">本田 (Honda)</span></a>
+                <a href="https://www.nissan.com.cn" target="_blank" class="card"><span class="card-name">日产 (Nissan)</span></a>
+                <a href="https://www.lexus.com.cn" target="_blank" class="card"><span class="card-name">雷克萨斯</span></a>
+            </div>
+
+            <h3>🇺🇸 美国 (USA)</h3>
+            <div class="grid">
+                <a href="https://www.tesla.cn" target="_blank" class="card"><span class="card-name">特斯拉 (Tesla)</span></a>
+                <a href="https://www.ford.com.cn" target="_blank" class="card"><span class="card-name">福特 (Ford)</span></a>
+                <a href="https://www.chevrolet.com.cn" target="_blank" class="card"><span class="card-name">雪佛兰</span></a>
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2024 汽车黄页演示版. 链接仅供参考，请访问官方渠道。</p>
+    </footer>
+
+    <script>
+        // 1. 实时时钟功能
+        function updateClock() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            
+            // 格式：2024-05-20 14:30:05
+            const timeString = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+            document.getElementById('clock').textContent = timeString;
+        }
+
+        setInterval(updateClock, 1000);
+        updateClock(); // 初始化立即执行一次
+
+        // 2. 轮播图自动播放功能
+        const slides = document.querySelectorAll('.slide');
+        let currentSlide = 0;
+        const slideInterval = 4000; // 4秒切换一次
+
+        function nextSlide() {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }
+
+        setInterval(nextSlide, slideInterval);
+    </script>
+</body>
+</html>
