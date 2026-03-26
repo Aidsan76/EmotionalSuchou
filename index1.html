@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的网站首页</title>
+    <style>
+        /* 基础页面样式 */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+
+        h1 {
+            margin-bottom: 40px;
+        }
+
+        /* 按钮容器，让按钮横向排列或根据屏幕自动换行 */
+        .button-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* 按钮的美化样式 */
+        .nav-button {
+            text-decoration: none;
+            background-color: #007bff;
+            color: white;
+            padding: 15px 35px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        /* 鼠标悬停在按钮上的效果 */
+        .nav-button:hover {
+            background-color: #0056b3;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+    </style>
+</head>
+<body>
+
+    <h1>欢迎来到我的专属网站</h1>
+    
+    <div class="button-container">
+        <a href="谢乐添.html" class="nav-button">模块 1</a>
+        <a href="刘畅.html" class="nav-button">模块 2</a>
+        <a href="栾业韬.html" class="nav-button">模块 3</a>
+        <a href="王苏豪.html" class="nav-button">模块 4</a>
+        <a href="李鑫.html" class="nav-button">模块 5</a>
+    </div>
+
+</body>
+</html>
