@@ -42,7 +42,7 @@
             <img src="images/step4.jpg" alt="搓团显毫">
             <div class="overlay">
                 <h3>第四步：搓团显毫</h3>
-                <p>这是碧螺春成型的关键工序。边炒边用手搓成团，使茶叶卷曲成螺，白毫显露，这也是“碧螺春”名字的由来。</p>
+                <p>这是碧螺春成型的关键工序。边炒边用手搓成团，使茶叶卷曲成螺，白毫显露，这也是"碧螺春"名字的由来。</p>
             </div>
         </div>
 
@@ -50,43 +50,114 @@
             <img src="images/step5.jpg" alt="烘干">
             <div class="overlay">
                 <h3>第五步：烘干</h3>
-                <p>采用轻揉、轻炒的方式将茶叶水分烘干至足干，固定形状，提速香气，最终形成“铜丝条，螺旋形，浑身毛”的特质。</p>
+                <p>采用轻揉、轻炒的方式将茶叶水分烘干至足干，固定形状，提速香气，最终形成"铜丝条，螺旋形，浑身毛"的特质。</p>
             </div>
         </div>
 
     </div>
+
     <button class="contact-btn" id="contactBtn">联系我们</button>
 
-<div class="qrcode-overlay" id="qrcodeOverlay">
-    <div class="qrcode-container">
-        <h3>扫码联系我们</h3>
-        <img src="images/eq.jpg" alt="联系二维码">
+    <div class="qrcode-overlay" id="qrcodeOverlay">
+        <div class="qrcode-container">
+            <h3>扫码联系我们</h3>
+            <img src="liuchang/images/eq.jpg" alt="联系二维码">
+            <p class="close-hint">点击任意位置关闭</p>
+        </div>
     </div>
-</div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const contactBtn = document.getElementById('contactBtn');
-    const qrcodeOverlay = document.getElementById('qrcodeOverlay');
-    const body = document.body;
-    
-    contactBtn.addEventListener('mouseenter', function() {
-        body.classList.add('dimmed');
-        qrcodeOverlay.classList.add('active');
-    });
-    
-    contactBtn.addEventListener('mouseleave', function() {
-        body.classList.remove('dimmed');
-        qrcodeOverlay.classList.remove('active');
-    });
-    
-    qrcodeOverlay.addEventListener('click', function(e) {
-        if (e.target === qrcodeOverlay) {
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const contactBtn = document.getElementById('contactBtn');
+        const qrcodeOverlay = document.getElementById('qrcodeOverlay');
+        const body = document.body;
+        let isMobile = false;
+        
+        // 检测是否为移动设备
+        function checkIfMobile() {
+            isMobile = window.matchMedia("(max-width: 768px)").matches || 
+                       'ontouchstart' in window || 
+                       navigator.maxTouchPoints > 0;
+            return isMobile;
+        }
+        
+        // 初始化检测
+        checkIfMobile();
+        
+        // 窗口大小改变时重新检测
+        window.addEventListener('resize', checkIfMobile);
+        
+        // 显示二维码
+        function showQRCode() {
+            body.classList.add('dimmed');
+            qrcodeOverlay.classList.add('active');
+        }
+        
+        // 隐藏二维码
+        function hideQRCode() {
             body.classList.remove('dimmed');
             qrcodeOverlay.classList.remove('active');
         }
+        
+        // 桌面端：鼠标悬停显示
+        contactBtn.addEventListener('mouseenter', function() {
+            if (!isMobile) {
+                showQRCode();
+            }
+        });
+        
+        // 桌面端：鼠标离开隐藏
+        contactBtn.addEventListener('mouseleave', function() {
+            if (!isMobile) {
+                hideQRCode();
+            }
+        });
+        
+        // 桌面和移动端通用：点击按钮显示/隐藏二维码
+        contactBtn.addEventListener('click', function(e) {
+            e.stopPropagation(); // 防止事件冒泡
+            
+            if (isMobile) {
+                // 移动端：点击切换显示/隐藏
+                if (qrcodeOverlay.classList.contains('active')) {
+                    hideQRCode();
+                } else {
+                    showQRCode();
+                }
+            } else {
+                // 桌面端：如果鼠标没有悬停，点击也可以显示
+                if (!qrcodeOverlay.classList.contains('active')) {
+                    showQRCode();
+                }
+            }
+        });
+        
+        // 点击遮罩或二维码外部区域关闭
+        qrcodeOverlay.addEventListener('click', function(e) {
+            if (e.target === qrcodeOverlay) {
+                hideQRCode();
+            }
+        });
+        
+        // 点击二维码容器内部不关闭
+        document.querySelector('.qrcode-container').addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+        
+        // 按ESC键关闭二维码
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                hideQRCode();
+            }
+        });
+        
+        // 移动端：触摸二维码外部时关闭
+        qrcodeOverlay.addEventListener('touchstart', function(e) {
+            if (e.target === qrcodeOverlay) {
+                hideQRCode();
+            }
+        }, { passive: true });
     });
-});
-</script>
+    </script>
 </body>
 </html>
