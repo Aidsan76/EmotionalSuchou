@@ -1,0 +1,97 @@
+/* 基础页面样式 */
+body {
+    font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background-color: #f7f9f6; /* 淡淡的茶绿色背景 */
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+header h1 {
+    color: #2e592f; /* 深茶绿色 */
+}
+
+/* 滚动容器样式 */
+.gallery-container {
+    display: flex;
+    overflow-x: auto; /* 允许横向滚动 */
+    gap: 20px; /* 图片之间的间距 */
+    padding: 10px 0 20px 0;
+    scroll-snap-type: x mandatory; /* 让滚动有吸附感 */
+}
+
+/* 隐藏系统自带的滚动条，让页面更美观 (可选) */
+.gallery-container::-webkit-scrollbar {
+    height: 8px;
+}
+.gallery-container::-webkit-scrollbar-track {
+    background: #e0e0e0; 
+    border-radius: 4px;
+}
+.gallery-container::-webkit-scrollbar-thumb {
+    background: #2e592f; 
+    border-radius: 4px;
+}
+
+/* 单个图片项的样式 */
+.gallery-item {
+    position: relative; /* 为遮罩层提供绝对定位的参考 */
+    flex: 0 0 320px; /* 每张图片固定宽度 320px */
+    height: 450px;
+    border-radius: 12px;
+    overflow: hidden; /* 保证圆角内不溢出 */
+    scroll-snap-align: center; /* 滚动时图片居中吸附 */
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 保证图片不变形铺满 */
+    transition: transform 0.4s ease; /* 图片微微放大的动画过渡 */
+}
+
+/* 遮罩层 (悬停变暗并显示文字的核心) */
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* 黑色半透明，达到“变暗”效果 */
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+    opacity: 0; /* 默认完全透明隐藏 */
+    transition: opacity 0.4s ease; /* 透明度渐变动画 */
+    text-align: center;
+}
+
+.overlay h3 {
+    margin-top: 0;
+    color: #a8d5a2; /* 标题用浅绿色点缀 */
+}
+
+.overlay p {
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+/* 鼠标悬停时的动效触发 */
+.gallery-item:hover .overlay {
+    opacity: 1; /* 鼠标放上去时，遮罩层和文字显现 */
+}
+
+.gallery-item:hover img {
+    transform: scale(1.05); /* 鼠标放上去时，底层图片微微放大，增加高级感 */
+}
