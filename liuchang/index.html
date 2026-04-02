@@ -55,5 +55,41 @@
         </div>
 
     </div>
+    <button class="contact-btn" id="contactBtn">联系我们</button>
+
+<div class="qrcode-overlay" id="qrcodeOverlay">
+    <div class="qrcode-container">
+        <h3>扫码联系我们</h3>
+        <img src="liuchang/images/eq.jpg" alt="联系二维码">
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const contactBtn = document.getElementById('contactBtn');
+    const qrcodeOverlay = document.getElementById('qrcodeOverlay');
+    const body = document.body;
+    
+    contactBtn.addEventListener('mouseenter', function() {
+        body.classList.add('dimmed');
+        qrcodeOverlay.classList.add('active');
+    });
+    
+    contactBtn.addEventListener('mouseleave', function() {
+        body.classList.remove('dimmed');
+        qrcodeOverlay.classList.remove('active');
+    });
+    
+    qrcodeOverlay.addEventListener('click', function(e) {
+        if (e.target === qrcodeOverlay) {
+            body.classList.remove('dimmed');
+            qrcodeOverlay.classList.remove('active');
+        }
+    });
+});
+</script>
 </body>
+</html>
+</body>
+    
 </html>
