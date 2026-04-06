@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>汽车爱好者之家</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background-color: #f7f8fa;
+            padding: 30px 20px;
+        }
+
+        /* 全屏遮罩 */
+        #overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.45);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            z-index: 9998;
+        }
+        #overlay.show {
+            opacity: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 9997;
+        }
+        header h1 {
+            color: #2c3e50;
+            font-size: 26px;
+        }
+
+        .car-list {
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 9999; /* 整个列表在遮罩上方 */
+        }
+
+        .car-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 22px 0;
+            border-bottom: 1px solid #eee;
+            position: relative;
+            transition: all 0.3s ease;
+            width: 100%;
+            min-height: 80px;
+            z-index: 1;
+        }
+
+        /* 关键：只有当前选中项 不灰 */
+        .car-list:hover .car-item {
+            filter: grayscale(100%) opacity(0.6);
+            transition: filter 0.3s ease;
+        }
+        .car-list .car-item.hovered {
+            filter: grayscale(0%) opacity(1) !important;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+            z-index: 10;
+        }
+
+        .car-icon-container {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            cursor: pointer;
+            transition: transform 0.4s ease;
+            width: 200px;
+            justify-content: center;
+            flex-direction: row;
+        }
+
+        .car-item.hovered .car-icon-container {
+            transform: translateX(-260px);
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .car-icon {
+            width: 58px;
+            height: 58px;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+        .car-item.hovered .car-icon {
+            transform: scale(1.08);
+        }
+
+        .car-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2c3e50;
+            white-space: nowrap;
+        }
+
+        .car-info {
+            position: absolute;
+            left: 220px;
+            top: 50%;
+            transform: translateY(-50%) translateX(-30px);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.4s ease 0.05s;
+            min-width: 320px;
+        }
+        .car-item.hovered .car-info {
+            opacity: 1;
+            transform: translateY(-50%) translateX(0);
+            pointer-events: auto;
+        }
+
+        .car-country {
+            display: inline-block;
+            font-size: 14px;
+            color: #e74c3c;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+        .car-description {
+            font-size: 15px;
+            color: #2c3e50;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="overlay"></div>
+
+    <header>
+        <h1>汽车爱好者之家</h1>
+    </header>
+
+    <main class="car-list" id="car-container"></main>
+
+    <script>
+        const carData = [
+            { name: "小米", img: "https://g.autoimg.cn/@img/car2/cardfs/series/g31/M06/F6/30/300x_autohomecar__ChxoHWWovsiALvUfAAA_yvHOuLo703.png?format=webp", url: "https://www.xiaomiev.com/", country: "中国", desc: "中国科技巨头跨界打造的智能化新能源汽车品牌。" },
+            { name: "小鹏", img: "https://g.autoimg.cn/@img/car2/cardfs/series/g27/M05/82/77/200x_autohomecar__ChxkmWTIoSiAZ3opAABdaZ_O9N8413.png?format=webp", url: "https://www.xiaopeng.com/", country: "中国", desc: "主打前沿智能驾驶技术的领先新能源汽车制造商。" },
+            { name: "现代", img: "https://g.autoimg.cn/@img/car2/cardfs/series/g26/M09/FA/6F/200x_autohomecar__ChxkjmS-NemAJ1l5AADS2hdXDb4846.png?format=webp", url: "https://www.hyundai.com.cn/", country: "韩国", desc: "韩国最大的汽车制造企业，全球知名老牌车企。" },
+            { name: "雪铁龙", img: "https://g.autoimg.cn/@img/car2/cardfs/series/g28/M07/08/43/200x_autohomecar__ChxkmmS-HwyAepvnAAGOTMwZJGk190.png?format=webp", url: "https://www.dongfeng-citroen.com.cn/", country: "法国", desc: "底盘调校极佳、设计独具浪漫气息的百年法国品牌。" },
+            { name: "雪佛兰", img: "https://g.autoimg.cn/@img/car3/cardfs/series/g28/M00/00/6D/200x_autohomecar__CjIFVGTLPP6AWCbsAAGNwCRoNI4170.png?format=webp", url: "https://www.chevrolet.com.cn/", country: "美国", desc: "通用汽车旗下历史悠久且销量庞大的大众化品牌。" },
+            { name: "奔驰", img: "https://g.autoimg.cn/@img/car3/cardfs/series/g34/M04/03/95/200x_autohomecar__ChtpWGleMjGAf8pvAAB5t1cGb6U095.png?format=webp", url: "https://www.mercedes-benz.com.cn/", country: "德国", desc: "汽车的发明者，全球顶尖的豪华汽车品牌代表。" },
+            { name: "大众", img: "https://g.autoimg.cn/@img/car2/cardfs/series/g25/M04/8A/B7/200x_autohomecar__ChxkqWTIopKATYsBAADh7WLPOs8850.png?format=webp", url: "https://www.vw.com.cn/", country: "德国", desc: "欧洲最大的汽车制造集团，以皮实耐用著称。" },
+            { name: "本田", img: "https://g.autoimg.cn/@img/car3/cardfs/series/g25/M02/EA/7D/200x_autohomecar__CjIFV2TLOVeAMnSOAAG1Wd7Mgow764.png?format=webp", url: "https://www.honda.com.cn/", country: "日本", desc: "以卓越的发动机技术和可靠性闻名全球的品牌。" },
+            { name: "丰田", img: "https://g.autoimg.cn/@img/car3/cardfs/series/g25/M06/CA/43/200x_autohomecar__CjIFV2TCOiiAQiQ0AAE0By3ZgZM165.png?format=webp", url: "https://www.toyota.com.cn/", country: "日本", desc: "全球规模最大的汽车制造商之一，主打经济耐用。" },
+            { name: "宝马", img: "https://g.autoimg.cn/@img/car2/cardfs/series/g28/M08/10/45/200x_autohomecar__CjIFVGUNeJWAOukrAADdG-QkWXI004.png?format=webp", url: "https://www.bmw.com.cn/", country: "德国", desc: "享誉世界的豪华汽车品牌，以极致的操控性能为核心。" },
+            { name: "奥迪", img: "https://g.autoimg.cn/@img/car2/cardfs/series/g28/M01/F6/71/200x_autohomecar__CjIFVGTIoWqAdlH5AABfFDX2Peo393.png?format=webp", url: "https://www.audi.cn/", country: "德国", desc: "以'突破科技，启迪未来'为理念的豪华汽车品牌。" },
+            { name: "别克", img: "https://g.autoimg.cn/@img/car2/cardfs/series/g28/M0A/B9/6F/200x_autohomecar__ChxkmmSn2EGAYQsbAAL_cEgVf_0744.png?format=webp", url: "https://www.buick.com.cn/", country: "美国", desc: "通用汽车旗下，在中国市场深受欢迎的商务及家用品牌。" },
+            { name: "比亚迪", img: "https://g.autoimg.cn/@img/car3/cardfs/series/g27/M0B/39/7F/200x_autohomecar__CjIFVWTLOcOAIopLAABKh3_XoY8154.png?format=webp", url: "https://www.byd.com/", country: "中国", desc: "掌握核心三电技术的全球新能源汽车销量领导者。" },
+            { name: "吉利汽车", img: "https://g.autoimg.cn/@img/car3/cardfs/series/g28/M01/14/02/200x_autohomecar__ChxkmmTCDuGAHSjSAABF02FAqfo394.png?format=webp", url: "https://www.geely.com/", country: "中国", desc: "中国领先的自主乘用车品牌，拥有庞大的品牌矩阵。" },
+            { name: "日产", img: "https://g.autoimg.cn/@img/car3/cardfs/series/g28/M03/0B/A6/200x_autohomecar__ChxkmmS_YSyABzW1AACF5KOWKG4298.png?format=webp", url: "https://www.dongfeng-nissan.com.cn/", country: "日本", desc: "技术实力雄厚的日系三强之一，有着'移动大沙发'的美誉。" },
+            { name: "理想", img: "https://g.autoimg.cn/@img/car3/cardfs/series/g25/M08/8A/B2/200x_autohomecar__ChxkqWTIomiAFUvNAAA-eoZCHcM173.png?format=webp", url: "https://www.lixiang.com/", country: "中国", desc: "精准定位家庭用户的中国豪华智能电动车品牌。" },
+            { name: "零跑", img: "https://g.autoimg.cn/@img/car3/cardfs/series/g28/M01/DF/3B/200x_autohomecar__CjIFVGTCBWqAPSYzAABJ8HYHW6o681.png?format=webp", url: "https://www.leapmotor.com/", country: "中国", desc: "坚持全域自研的科技型智能电动汽车企业。" }
+        ];
+
+        carData.sort((a, b) => a.name.localeCompare(b.name, 'zh-CN'));
+
+        const container = document.getElementById('car-container');
+        const overlay = document.getElementById('overlay');
+
+        carData.forEach(car => {
+            const item = document.createElement('div');
+            item.className = 'car-item';
+
+            item.innerHTML = `
+                <div class="car-icon-container">
+                    <img src="${car.img}" class="car-icon">
+                    <div class="car-name">${car.name}</div>
+                </div>
+                <div class="car-info">
+                    <span class="car-country">${car.country}</span>
+                    <div class="car-description">${car.desc}</div>
+                </div>
+            `;
+
+            const iconBox = item.querySelector('.car-icon-container');
+
+            iconBox.addEventListener('mouseenter', () => {
+                document.querySelectorAll('.car-item.hovered').forEach(i => i.classList.remove('hovered'));
+                item.classList.add('hovered');
+                overlay.classList.add('show');
+            });
+
+            item.addEventListener('mouseleave', () => {
+                item.classList.remove('hovered');
+                overlay.classList.remove('show');
+            });
+
+            container.appendChild(item);
+        });
+    </script>
+</body>
+</html>
