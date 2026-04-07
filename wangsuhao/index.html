@@ -47,7 +47,7 @@
             max-width: 700px;
             margin: 0 auto;
             position: relative;
-            z-index: 9999; /* 整个列表在遮罩上方 */
+            z-index: 9999;
         }
 
         .car-item {
@@ -63,7 +63,7 @@
             z-index: 1;
         }
 
-        /* 关键：只有当前选中项 不灰 */
+        /*  hover 高亮效果 */
         .car-list:hover .car-item {
             filter: grayscale(100%) opacity(0.6);
             transition: filter 0.3s ease;
@@ -195,15 +195,22 @@
 
             const iconBox = item.querySelector('.car-icon-container');
 
+            // 进入 hover
             iconBox.addEventListener('mouseenter', () => {
                 document.querySelectorAll('.car-item.hovered').forEach(i => i.classList.remove('hovered'));
                 item.classList.add('hovered');
                 overlay.classList.add('show');
             });
 
+            // 离开整个 item 关闭效果
             item.addEventListener('mouseleave', () => {
                 item.classList.remove('hovered');
                 overlay.classList.remove('show');
+            });
+
+            // 点击跳转到品牌官网
+            iconBox.addEventListener('click', () => {
+                window.open(car.url, '_blank');
             });
 
             container.appendChild(item);
