@@ -8,7 +8,7 @@ body {
   font-family: 'Roboto', sans-serif;
   background: #000;
   overflow: hidden;
-  cursor: url('img/turtledove.png') 0 0, default;
+  cursor: none; /* 隐藏默认鼠标 */
 }
 
 .carousel {
@@ -46,7 +46,7 @@ body {
   max-width: 65vh;
   max-height: 65vh;
   object-fit: contain;
-  filter: none; /* 彩色原图 */
+  filter: none;
   opacity: 0.9;
 }
 
@@ -58,16 +58,6 @@ body {
   font-size: 18px;
   letter-spacing: 2px;
   white-space: nowrap;
-  font-weight: 300;
-}
-
-.num {
-  position: absolute;
-  bottom: -50px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 16px;
-  letter-spacing: 1px;
   font-weight: 300;
 }
 
@@ -96,12 +86,11 @@ body {
   position: fixed;
   left: 30px;
   bottom: 25px;
-  z-index: 99;
+  z-index: 999;
   color: #fff;
   font-size: 11px;
   line-height: 1.6;
   opacity: 0.6;
-  z-index: 999;
 }
 
 .social {
@@ -120,43 +109,15 @@ body {
   opacity: 0.7;
   transition: opacity 0.3s;
 }
-
 .social img:hover {
   opacity: 1;
 }
 
-.cursor,
-.cursor2 {
-  position: fixed;
-  border-radius: 50%;
-  pointer-events: none;
-  transform: translate(-50%, -50%);
-  transition: transform 0.15s ease;
-  z-index: 9999;
-}
-
-.cursor {
-  width: 22px;
-  height: 22px;
-  border: 1px solid #fff;
-  opacity: 0.6;
-}
-
-.cursor2 {
-  width: 6px;
-  height: 6px;
-  background: #fff;
-  opacity: 0.9;
-}
-
+/* 自定义斑鸠鼠标样式 */
 #customCursor {
   position: fixed;
   width: 35px;
   height: 35px;
   pointer-events: none;
   z-index: 99999;
-  display: none;
-}
-body {
-  cursor: none;
 }
