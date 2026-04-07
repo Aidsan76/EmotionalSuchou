@@ -1,1 +1,1233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>毕业设计 | 个人作品集</title>
+    <style>
+        /* ---------- 全局样式 ---------- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+            background: #f8fafc;;
+            color: #0f172a;
+            line-height: 1.5;
+            scroll-behavior: smooth;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* 导航栏 */
+        nav {
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            backdrop-filter: blur(8px);
+            background: rgba(255,255,255,0.9);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 28px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            font-weight: 500;
+            color: #334155;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: #2563eb;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #2563eb;
+            color: #2563eb;
+        }
+
+        .btn-outline:hover {
+            background: #eff6ff;
+        }
+
+        section {
+            padding: 80px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 80px 0 60px;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #0f172a, #2563eb);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 16px;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: #475569;
+            max-width: 600px;
+            margin: 0 auto 32px;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 32px;
+            margin-top: 16px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid #eef2ff;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -12px rgba(0,0,0,0.1);
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+        }
+
+        .card p {
+            color: #475569;
+            margin-bottom: 20px;
+        }
+
+        .tech-tag {
+            display: inline-block;
+            background: #eef2ff;
+            color: #1e40af;
+            font-size: 0.75rem;
+            padding: 4px 12px;
+            border-radius: 30px;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        /* 联系表单 */
+        .contact-form {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            padding: 32px;
+            border-radius: 32px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #cbd5e1;
+            border-radius: 20px;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.2);
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .form-message {
+            margin-top: 16px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 32px 0;
+            color: #64748b;
+            background: #f1f5f9;
+        }
+
+        @media (max-width: 700px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 12px;
+            }
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            section {
+                padding: 50px 0;
+            }
+        }
+
+        /* 欢迎卡片样式 */
+        #welcome {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #f8fafc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(2px);
+            transition: opacity 0.3s ease;
+        }
+        .simple-card {
+            max-width: 500px;
+            width: 90%;
+            background: white;
+            border-radius: 2rem;
+            padding: 2rem;
+            box-shadow: 0 20px 35px -10px rgba(0,0,0,0.15);
+            text-align: center;
+        }
+        .avatar {
+            width: 120px;
+            height: 120px;
+            background: #3b82f6;
+            border-radius: 50%;
+            margin: 0 auto 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+           box-shadow: 0 8px 14px rgba(59,130,246,0.3);
+
+        }
+        .simple-card h1 {
+            font-size: 1.9rem;
+            margin-bottom: 0.5rem;
+        }
+        .badge {
+            background: #dbeafe;
+            color: #1e40af;
+            display: inline-block;
+            padding: 0.2rem 1rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+        }
+         .simple-card p {
+            color: #334155;
+            line-height: 1.5;
+            margin-bottom: 1.8rem;
+        }
+        .simple-card .btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.7rem 1.8rem;
+            border-radius: 40px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .simple-card .btn:hover {
+            background: #2563eb;
+        }
+        .simple-card footer {
+            margin-top: 2rem;
+            font-size: 0.75rem;
+            color: #94a3b8;
+            background: none;
+            padding: 0;
+        }
+
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .modal-content {
+            background: white;
+            max-width: 500px;
+            width: 90%;
+            border-radius: 2rem;
+            padding: 2rem;
+            position: relative;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #94a3b8;
+        }
+        .modal-close:hover {
+            color: #1e293b;
+        }
+        .modal h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+        .modal p {
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 欢迎卡片 -->
+    <div id="welcome">
+        <div class="simple-card">
+            <div class="avatar">👩‍💻</div>
+            <h1>栾业韬</h1>
+            <div class="badge">物联网应用技术 · 2026届</div>
+            <p>
+                热爱前端开发与创意编程。<br>
+                点击下方按钮，进入我的完整作品集。
+            </p>
+            <button class="btn" id="greetBtn">打个招呼 </button>
+            <footer>毕业设计</footer>
+        </div>
+    </div>
+
+
+    <!-- 作品集主内容 -->
+    <div id="portfolio" style="display: none;">
+        <nav>
+            <div class="nav-container">
+                <div class="logo">LUAN YETAO</div>
+                <ul class="nav-links">
+                    <li><a href="#home">首页</a></li>
+                    <li><a href="#projects">项目</a></li>
+                    <li><a href="#contact">联系</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main>
+            <section id="home">
+                <div class="container hero">
+                    <h1>你好，我是栾业韬 👋</h1>
+                    <p>物联网应用技术专业 · 2026届毕业生<br>热爱前端开发与用户体验，这个网页是我的毕业设计前端展示。</p>
+                    <a href="#projects" class="btn">查看我的作品</a>
+                    <a href="#contact" class="btn btn-outline" style="margin-left: 16px;">联系我</a>
+                </div>
+            </section>
+
+            <section id="projects">
+                <div class="container">
+                    <h2 class="section-title">✨ 主要项目</h2>
+                    <div class="projects-grid">
+                        <div class="card" data-project="campus">
+                            <h3>校园助手小程序</h3>
+                            <p>基于微信小程序开发，提供课表查询、图书馆占座提醒等功能，累计用户300+。</p>
+                            <div>
+                                <span class="tech-tag">微信小程序</span>
+                                <span class="tech-tag">JavaScript</span>
+                                <span class="tech-tag">云开发</span>
+                            </div>
+                        </div>
+                        <div class="card" data-project="parking">
+                            <h3>智慧停车场管理系统</h3>
+                            <p>Spring Boot + Vue 前后端分离项目，实现车位实时监控、计费管理。本毕设核心系统。</p>
+                            <div>
+                                <span class="tech-tag">Spring Boot</span>
+                                <span class="tech-tag">Vue.js</span>
+                                <span class="tech-tag">MySQL</span>
+                            </div>
+                        </div>
+                        <div class="card" data-project="blog">
+                            <h3>个人博客与作品集</h3>
+                            <p>纯 HTML/CSS/JS 静态网站，响应式设计，采用 Flex/Grid 布局，兼容移动端。</p>
+                            <div>
+                                <span class="tech-tag">HTML5</span>
+                                <span class="tech-tag">CSS3</span>
+                                <span class="tech-tag">JavaScript</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="contact">
+                <div class="container">
+                    <h2 class="section-title">📬 联系我</h2>
+                    <div class="contact-form">
+                        <form id="demoForm">
+                            <div class="form-group">
+                                <label for="name">姓名</label>
+                                <input type="text" id="name" placeholder="例如：栾业韬" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">电子邮箱</label>
+                                <input type="email" id="email" placeholder="your@email.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="message">留言内容</label>
+                                <textarea rows="4" id="message" placeholder="想对我说什么？"></textarea>
+                            </div>
+                            <button type="submit">发送消息</button>
+                            <div class="form-message" id="formFeedback"></div>
+                        </form>
+                        <p style="text-align: center; margin-top: 24px; font-size: 0.85rem; color: #5b6e8c;">
+                            </p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <div class="container">
+                <p>© 2026 栾业韬 · 毕业设计作品 · 基于 HTML/CSS/JS 构建</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- 模态框 -->
+    <div id="projectModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <div id="modal-body">
+                <!-- 动态填充内容 -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 欢迎卡片 -> 作品集
+        const welcomeDiv = document.getElementById('welcome');
+        const portfolioDiv = document.getElementById('portfolio');
+        const greetBtn = document.getElementById('greetBtn');
+
+        greetBtn.addEventListener('click', () => {
+            alert('你好！感谢访问我的毕业设计页面 🎓\n即将为你展示完整作品集。');
+            welcomeDiv.style.opacity = '0';
+            setTimeout(() => {
+                welcomeDiv.style.display = 'none';
+                portfolioDiv.style.display = 'block';
+                window.scrollTo(0, 0);
+            }, 200);
+        });
+
+        // 项目详情数据
+        const projectDetails = {
+            campus: {
+                title: "校园助手小程序",
+                desc: "一款服务于本校师生的微信小程序，主要功能包括：课表查询、空教室查找、图书馆座位预约提醒、校园通知聚合。",
+                tech: "微信小程序 + 云开发 + 云函数",
+                role: "独立开发，负责前端界面设计和云数据库搭建。",
+                link: "#"
+            },
+            parking: {
+                title: "智慧停车场管理系统",
+                desc: "基于Spring Boot和Vue.js的停车场管理系统，实现车位占用实时监控、入场离场计时计费、会员管理等功能。",
+                tech: "Spring Boot, Vue.js, MySQL, MyBatis-Plus",
+                role: "全栈开发，设计数据库表结构，编写RESTful API，并实现前端可视化大屏。",
+                link: "#"
+            },
+            blog: {
+                title: "个人博客与作品集",
+                desc: "完全使用HTML/CSS/JS构建的响应式静态网站，用于展示个人简历、项目经验和博客文章。支持暗色模式切换（待实现）。",
+                tech: "HTML5, CSS3, JavaScript, LocalStorage",
+                role: "独立设计并开发，采用Flex/Grid布局，适配移动端。",
+                link: "#"
+            }
+        };
+
+        // 获取模态框元素
+        const modal = document.getElementById('projectModal');
+        const modalBody = document.getElementById('modal-body');
+        const closeSpan = document.querySelector('.modal-close');
+
+        // 为所有项目卡片添加点击事件
+        const cards = document.querySelectorAll('.card');
+        cards.forEach(card => {
+            card.addEventListener('click', (e) => {
+                // 防止点击内部标签冒泡（无大碍）
+                const projectKey = card.getAttribute('data-project');
+                const proj = projectDetails[projectKey];
+                if (proj) {
+                    modalBody.innerHTML = `
+                        <h3>${proj.title}</h3>
+                        <p><strong>项目描述：</strong>${proj.desc}</p>
+                        <p><strong>技术栈：</strong>${proj.tech}</p>
+                        <p><strong>我的贡献：</strong>${proj.role}</p>
+                        <p style="font-size:0.8rem; margin-top:1rem; color:#64748b;"></p>
+                    `;
+                    modal.style.display = 'flex';
+                }
+            });
+        });
+
+        // 关闭模态框
+        closeSpan.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        // 表单模拟提交
+        const form = document.getElementById('demoForm');
+        if (form) {
+            const feedbackDiv = document.getElementById('formFeedback');
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const name = document.getElementById('name').value.trim();
+                const email = document.getElementById('email').value.trim();
+                if (!name || !email) {
+                    feedbackDiv.innerHTML = '<span style="color:#dc2626;">请填写姓名和邮箱</span>';
+                    return;
+                }
+                const emailPattern = /^[^\s@]+@([^\s@]+\.)+[^\s@]+$/;
+                if (!emailPattern.test(email)) {
+                    feedbackDiv.innerHTML = '<span style="color:#dc2626;">请输入有效的邮箱地址</span>';
+                    return;
+                }
+                feedbackDiv.innerHTML = '<span style="color:#16a34a;">✓ 消息已发送（演示模式），感谢联系！</span>';
+                form.reset();
+                setTimeout(() => {
+                    if (feedbackDiv.innerHTML.includes('演示模式')) {
+                        feedbackDiv.innerHTML = '';
+                    }
+                }, 4000);
+            });
+        }
+
+        // 平滑滚动
+        document.querySelectorAll('.nav-links a, .btn[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const targetId = this.getAttribute('href');
+                if (targetId && targetId.startsWith('#')) {
+                    e.preventDefault();
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>毕业设计 | 个人作品集</title>
+    <style>
+        /* ---------- 全局样式 ---------- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+            background: #f8fafc;;
+            color: #0f172a;
+            line-height: 1.5;
+            scroll-behavior: smooth;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* 导航栏 */
+        nav {
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            backdrop-filter: blur(8px);
+            background: rgba(255,255,255,0.9);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 28px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            font-weight: 500;
+            color: #334155;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: #2563eb;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #2563eb;
+            color: #2563eb;
+        }
+
+        .btn-outline:hover {
+            background: #eff6ff;
+        }
+
+        section {
+            padding: 80px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 80px 0 60px;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #0f172a, #2563eb);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 16px;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: #475569;
+            max-width: 600px;
+            margin: 0 auto 32px;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 32px;
+            margin-top: 16px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid #eef2ff;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -12px rgba(0,0,0,0.1);
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+        }
+
+        .card p {
+            color: #475569;
+            margin-bottom: 20px;
+        }
+
+        .tech-tag {
+            display: inline-block;
+            background: #eef2ff;
+            color: #1e40af;
+            font-size: 0.75rem;
+            padding: 4px 12px;
+            border-radius: 30px;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        /* 联系表单 */
+        .contact-form {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            padding: 32px;
+            border-radius: 32px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #cbd5e1;
+            border-radius: 20px;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.2);
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .form-message {
+            margin-top: 16px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 32px 0;
+            color: #64748b;
+            background: #f1f5f9;
+        }
+
+        @media (max-width: 700px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 12px;
+            }
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            section {
+                padding: 50px 0;
+            }
+        }
+
+        /* 欢迎卡片样式 */
+        #welcome {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #f8fafc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(2px);
+            transition: opacity 0.3s ease;
+        }
+        .simple-card {
+            max-width: 500px;
+            width: 90%;
+            background: white;
+            border-radius: 2rem;
+            padding: 2rem;
+            box-shadow: 0 20px 35px -10px rgba(0,0,0,0.15);
+            text-align: center;
+        }
+        .avatar {
+            width: 120px;
+            height: 120px;
+            background: #3b82f6;
+            border-radius: 50%;
+            margin: 0 auto 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+           box-shadow: 0 8px 14px rgba(59,130,246,0.3);
+
+        }
+        .simple-card h1 {
+            font-size: 1.9rem;
+            margin-bottom: 0.5rem;
+        }
+        .badge {
+            background: #dbeafe;
+            color: #1e40af;
+            display: inline-block;
+            padding: 0.2rem 1rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+        }
+         .simple-card p {
+            color: #334155;
+            line-height: 1.5;
+            margin-bottom: 1.8rem;
+        }
+        .simple-card .btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.7rem 1.8rem;
+            border-radius: 40px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .simple-card .btn:hover {
+            background: #2563eb;
+        }
+        .simple-card footer {
+            margin-top: 2rem;
+            font-size: 0.75rem;
+            color: #94a3b8;
+            background: none;
+            padding: 0;
+        }
+
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .modal-content {
+            background: white;
+            max-width: 500px;
+            width: 90%;
+            border-radius: 2rem;
+            padding: 2rem;
+            position: relative;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #94a3b8;
+        }
+        .modal-close:hover {
+            color: #1e293b;
+        }
+        .modal h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+        .modal p {
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 欢迎卡片 -->
+    <div id="welcome">
+        <div class="simple-card">
+            <div class="avatar">👩‍💻</div>
+            <h1>栾业韬</h1>
+            <div class="badge">物联网应用技术 · 2026届</div>
+            <p>
+                热爱前端开发与创意编程。<br>
+                点击下方按钮，进入我的完整作品集。
+            </p>
+            <button class="btn" id="greetBtn">打个招呼 </button>
+            <footer>毕业设计</footer>
+        </div>
+    </div>
+
+
+    <!-- 作品集主内容 -->
+    <div id="portfolio" style="display: none;">
+        <nav>
+            <div class="nav-container">
+                <div class="logo">LUAN YETAO</div>
+                <ul class="nav-links">
+                    <li><a href="#home">首页</a></li>
+                    <li><a href="#projects">项目</a></li>
+                    <li><a href="#contact">联系</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main>
+            <section id="home">
+                <div class="container hero">
+                    <h1>你好，我是栾业韬 👋</h1>
+                    <p>物联网应用技术专业 · 2026届毕业生<br>热爱前端开发与用户体验，这个网页是我的毕业设计前端展示。</p>
+                    <a href="#projects" class="btn">查看我的作品</a>
+                    <a href="#contact" class="btn btn-outline" style="margin-left: 16px;">联系我</a>
+                </div>
+            </section>
+
+            <section id="projects">
+                <div class="container">
+                    <h2 class="section-title">✨ 主要项目</h2>
+                    <div class="projects-grid">
+                        <div class="card" data-project="campus">
+                            <h3>校园助手小程序</h3>
+                            <p>基于微信小程序开发，提供课表查询、图书馆占座提醒等功能，累计用户300+。</p>
+                            <div>
+                                <span class="tech-tag">微信小程序</span>
+                                <span class="tech-tag">JavaScript</span>
+                                <span class="tech-tag">云开发</span>
+                            </div>
+                        </div>
+                        <div class="card" data-project="parking">
+                            <h3>智慧停车场管理系统</h3>
+                            <p>Spring Boot + Vue 前后端分离项目，实现车位实时监控、计费管理。本毕设核心系统。</p>
+                            <div>
+                                <span class="tech-tag">Spring Boot</span>
+                                <span class="tech-tag">Vue.js</span>
+                                <span class="tech-tag">MySQL</span>
+                            </div>
+                        </div>
+                        <div class="card" data-project="blog">
+                            <h3>个人博客与作品集</h3>
+                            <p>纯 HTML/CSS/JS 静态网站，响应式设计，采用 Flex/Grid 布局，兼容移动端。</p>
+                            <div>
+                                <span class="tech-tag">HTML5</span>
+                                <span class="tech-tag">CSS3</span>
+                                <span class="tech-tag">JavaScript</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="contact">
+                <div class="container">
+                    <h2 class="section-title">📬 联系我</h2>
+                    <div class="contact-form">
+                        <form id="demoForm">
+                            <div class="form-group">
+                                <label for="name">姓名</label>
+                                <input type="text" id="name" placeholder="例如：栾业韬" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">电子邮箱</label>
+                                <input type="email" id="email" placeholder="your@email.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="message">留言内容</label>
+                                <textarea rows="4" id="message" placeholder="想对我说什么？"></textarea>
+                            </div>
+                            <button type="submit">发送消息</button>
+                            <div class="form-message" id="formFeedback"></div>
+                        </form>
+                        <p style="text-align: center; margin-top: 24px; font-size: 0.85rem; color: #5b6e8c;">
+                            </p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <div class="container">
+                <p>© 2026 栾业韬 · 毕业设计作品 · 基于 HTML/CSS/JS 构建</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- 模态框 -->
+    <div id="projectModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <div id="modal-body">
+                <!-- 动态填充内容 -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 欢迎卡片 -> 作品集
+        const welcomeDiv = document.getElementById('welcome');
+        const portfolioDiv = document.getElementById('portfolio');
+        const greetBtn = document.getElementById('greetBtn');
+
+        greetBtn.addEventListener('click', () => {
+            alert('你好！感谢访问我的毕业设计页面 🎓\n即将为你展示完整作品集。');
+            welcomeDiv.style.opacity = '0';
+            setTimeout(() => {
+                welcomeDiv.style.display = 'none';
+                portfolioDiv.style.display = 'block';
+                window.scrollTo(0, 0);
+            }, 200);
+        });
+
+        // 项目详情数据
+        const projectDetails = {
+            campus: {
+                title: "校园助手小程序",
+                desc: "一款服务于本校师生的微信小程序，主要功能包括：课表查询、空教室查找、图书馆座位预约提醒、校园通知聚合。",
+                tech: "微信小程序 + 云开发 + 云函数",
+                role: "独立开发，负责前端界面设计和云数据库搭建。",
+                link: "#"
+            },
+            parking: {
+                title: "智慧停车场管理系统",
+                desc: "基于Spring Boot和Vue.js的停车场管理系统，实现车位占用实时监控、入场离场计时计费、会员管理等功能。",
+                tech: "Spring Boot, Vue.js, MySQL, MyBatis-Plus",
+                role: "全栈开发，设计数据库表结构，编写RESTful API，并实现前端可视化大屏。",
+                link: "#"
+            },
+            blog: {
+                title: "个人博客与作品集",
+                desc: "完全使用HTML/CSS/JS构建的响应式静态网站，用于展示个人简历、项目经验和博客文章。支持暗色模式切换（待实现）。",
+                tech: "HTML5, CSS3, JavaScript, LocalStorage",
+                role: "独立设计并开发，采用Flex/Grid布局，适配移动端。",
+                link: "#"
+            }
+        };
+
+        // 获取模态框元素
+        const modal = document.getElementById('projectModal');
+        const modalBody = document.getElementById('modal-body');
+        const closeSpan = document.querySelector('.modal-close');
+
+        // 为所有项目卡片添加点击事件
+        const cards = document.querySelectorAll('.card');
+        cards.forEach(card => {
+            card.addEventListener('click', (e) => {
+                // 防止点击内部标签冒泡（无大碍）
+                const projectKey = card.getAttribute('data-project');
+                const proj = projectDetails[projectKey];
+                if (proj) {
+                    modalBody.innerHTML = `
+                        <h3>${proj.title}</h3>
+                        <p><strong>项目描述：</strong>${proj.desc}</p>
+                        <p><strong>技术栈：</strong>${proj.tech}</p>
+                        <p><strong>我的贡献：</strong>${proj.role}</p>
+                        <p style="font-size:0.8rem; margin-top:1rem; color:#64748b;"></p>
+                    `;
+                    modal.style.display = 'flex';
+                }
+            });
+        });
+
+        // 关闭模态框
+        closeSpan.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        // 表单模拟提交
+        const form = document.getElementById('demoForm');
+        if (form) {
+            const feedbackDiv = document.getElementById('formFeedback');
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const name = document.getElementById('name').value.trim();
+                const email = document.getElementById('email').value.trim();
+                if (!name || !email) {
+                    feedbackDiv.innerHTML = '<span style="color:#dc2626;">请填写姓名和邮箱</span>';
+                    return;
+                }
+                const emailPattern = /^[^\s@]+@([^\s@]+\.)+[^\s@]+$/;
+                if (!emailPattern.test(email)) {
+                    feedbackDiv.innerHTML = '<span style="color:#dc2626;">请输入有效的邮箱地址</span>';
+                    return;
+                }
+                feedbackDiv.innerHTML = '<span style="color:#16a34a;">✓ 消息已发送（演示模式），感谢联系！</span>';
+                form.reset();
+                setTimeout(() => {
+                    if (feedbackDiv.innerHTML.includes('演示模式')) {
+                        feedbackDiv.innerHTML = '';
+                    }
+                }, 4000);
+            });
+        }
+
+        // 平滑滚动
+        document.querySelectorAll('.nav-links a, .btn[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const targetId = this.getAttribute('href');
+                if (targetId && targetId.startsWith('#')) {
+                    e.preventDefault();
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
