@@ -1,6 +1,5 @@
 const items = document.querySelectorAll('.carousel-item');
 const dotsContainer = document.querySelector('.dots');
-
 let index = 0;
 
 // 生成小圆点
