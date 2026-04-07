@@ -50,38 +50,43 @@ body {
   opacity: 0.9;
 }
 
-/* 标题统一高度 */
+/* ========================== */
+/* ✅ 所有标题强制统一高度 */
+/* ========================== */
 .title {
   position: absolute;
-  top: -70px;
+  top: -80px; /* 所有标题统一高度 */
   left: 50%;
   transform: translateX(-50%);
   font-size: 18px;
   letter-spacing: 2px;
   white-space: nowrap;
   font-weight: 300;
-  width: 90vw;
+  width: 100%;
+  text-align: center;
 }
 
-/* 标题左右按钮 */
-.title-btn {
+/* ========================== */
+/* ✅ 按钮固定在标题左右 */
+/* ========================== */
+.nav-btn {
   position: fixed;
-  top: calc(50% - 37vh);
-  transform: translateY(-50%);
-  font-size: 22px;
+  top: 50%;
+  transform: translateY(-50vh); /* 与标题完全同一高度 */
+  font-size: 16px;
   color: #fff;
   cursor: pointer;
-  z-index: 999;
-  padding: 10px 20px;
+  z-index: 9999;
   user-select: none;
+  padding: 0 20px;
 }
 .prev-btn {
   left: 50%;
-  transform: translate(-180px, -50%);
+  margin-left: -220px; /* 标题左边 */
 }
 .next-btn {
   left: 50%;
-  transform: translate(180px, -50%);
+  margin-left: 220px; /* 标题右边 */
 }
 
 .dots {
