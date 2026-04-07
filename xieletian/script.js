@@ -1,28 +1,70 @@
-// 点击切换图片（手动翻页）
 const items = document.querySelectorAll('.carousel-item');
+const dotsContainer = document.querySelector('.dots');
+const arrowLeft = document.querySelector('.arrow-left');
+const arrowRight = document.querySelector('.arrow-right');
 let index = 0;
 
-// 显示当前第一张
-function showSlide() {
-  items.forEach(item => item.classList.remove('active'));
-  items[index].classList.add('active');
+// 生成小圆点
+function createDots() {
+  items.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.classList.add('dot');
+    if (i === 0) dot.classList.add('active');
+    dotsContainer.appendChild(dot);
+  });
+}
+
+// 更新显示
+function update() {
+  items.forEach((item, i) => {
+    item.classList.toggle('active', i === index);
+  });
+  document.querySelectorAll('.dot').forEach((dot, i) => {
+    dot.classList.toggle('active', i === index);
+  });
+}
+
+// 上一张 / 下一张
+function next() {
+  index = (index + 1) % items.length;
+  update();
+}
+function prev() {
+  index = (index - 1 + items.length) % items.length;
+  update();
 }
 
 // 初始化
-showSlide();
+createDots();
+update();
 
-// 点击页面 → 下一张
-document.addEventListener('click', () => {
-  index = (index + 1) % items.length;
-  showSlide();
+// 箭头点击
+arrowLeft.addEventListener('click', prev);
+arrowRight.addEventListener('click', next);
+
+// 小圆点点击
+document.querySelectorAll('.dot').forEach((dot, i) => {
+  dot.addEventListener('click', () => {
+    index = i;
+    update();
+  });
 });
 
-// ====================
-// 鼠标跟随效果（保留）
-// ====================
+// 手机滑动切换
+let touchStartX = 0;
+let touchEndX = 0;
+document.addEventListener('touchstart', (e) => {
+  touchStartX = e.changedTouches[0].screenX;
+});
+document.addEventListener('touchend', (e) => {
+  touchEndX = e.changedTouches[0].screenX;
+  if (touchEndX < touchStartX - 50) next();
+  if (touchEndX > touchStartX + 50) prev();
+});
+
+// 鼠标跟随
 const cursor = document.querySelector('.cursor');
 const cursor2 = document.querySelector('.cursor2');
-
 document.addEventListener('mousemove', (e) => {
   cursor.style.left = e.clientX + 'px';
   cursor.style.top = e.clientY + 'px';
