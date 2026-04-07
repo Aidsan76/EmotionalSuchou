@@ -8,7 +8,7 @@ body {
   font-family: 'Roboto', sans-serif;
   background: #000;
   overflow: hidden;
-  
+  cursor: url("img/cursor.png"), auto;
 }
 
 .carousel {
