@@ -56,9 +56,9 @@ document.addEventListener('touchend', (e) => {
   if (touchEndX > touchStartX + 50) prev();
 });
 
+// 自定义斑鸠鼠标跟随（100% 显示）
 const customCursor = document.getElementById('customCursor');
-document.addEventListener('mousemove', e => {
-  customCursor.style.display = 'block';
+document.addEventListener('mousemove', (e) => {
   customCursor.style.left = e.clientX + 'px';
   customCursor.style.top = e.clientY + 'px';
 });
