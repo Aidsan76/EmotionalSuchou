@@ -56,3 +56,9 @@ document.addEventListener('touchend', (e) => {
   if (touchEndX > touchStartX + 50) prev();
 });
 
+const customCursor = document.getElementById('customCursor');
+document.addEventListener('mousemove', e => {
+  customCursor.style.display = 'block';
+  customCursor.style.left = e.clientX + 'px';
+  customCursor.style.top = e.clientY + 'px';
+});
