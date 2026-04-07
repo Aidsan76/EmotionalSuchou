@@ -8,7 +8,7 @@ body {
   font-family: 'Roboto', sans-serif;
   background: #000;
   overflow: hidden;
-  cursor: none; /* 隐藏默认鼠标 */
+  cursor: none;
 }
 
 .carousel {
@@ -50,15 +50,38 @@ body {
   opacity: 0.9;
 }
 
+/* 标题统一高度 */
 .title {
   position: absolute;
-  top: -60px;
+  top: -70px;
   left: 50%;
   transform: translateX(-50%);
   font-size: 18px;
   letter-spacing: 2px;
   white-space: nowrap;
   font-weight: 300;
+  width: 90vw;
+}
+
+/* 标题左右按钮 */
+.title-btn {
+  position: fixed;
+  top: calc(50% - 37vh);
+  transform: translateY(-50%);
+  font-size: 22px;
+  color: #fff;
+  cursor: pointer;
+  z-index: 999;
+  padding: 10px 20px;
+  user-select: none;
+}
+.prev-btn {
+  left: 50%;
+  transform: translate(-180px, -50%);
+}
+.next-btn {
+  left: 50%;
+  transform: translate(180px, -50%);
 }
 
 .dots {
@@ -113,7 +136,7 @@ body {
   opacity: 1;
 }
 
-/* 自定义斑鸠鼠标样式 */
+/* 自定义斑鸠鼠标 */
 #customCursor {
   position: fixed;
   width: 35px;
