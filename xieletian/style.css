@@ -46,7 +46,7 @@ body {
   max-width: 65vh;
   max-height: 65vh;
   object-fit: contain;
-  /*filter: grayscale(100%);*/
+  filter: none;
   opacity: 0.9;
 }
 
