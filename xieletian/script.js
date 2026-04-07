@@ -1,7 +1,6 @@
 const items = document.querySelectorAll('.carousel-item');
 const dotsContainer = document.querySelector('.dots');
-const arrowLeft = document.querySelector('.arrow-left');
-const arrowRight = document.querySelector('.arrow-right');
+
 let index = 0;
 
 // 生成小圆点
@@ -37,10 +36,6 @@ function prev() {
 // 初始化
 createDots();
 update();
-
-// 箭头点击
-arrowLeft.addEventListener('click', prev);
-arrowRight.addEventListener('click', next);
 
 // 小圆点点击
 document.querySelectorAll('.dot').forEach((dot, i) => {
