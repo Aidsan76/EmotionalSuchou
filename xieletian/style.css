@@ -71,36 +71,6 @@ body {
   font-weight: 300;
 }
 
-/* === 左右箭头 === */
-.arrow {
-  position: fixed;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 50px;
-  height: 50px;
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.3);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-size: 20px;
-  cursor: pointer;
-  z-index: 999;
-  user-select: none;
-}
-.arrow:hover {
-  background: rgba(255,255,255,0.2);
-}
-.arrow-left {
-  left: 30px;
-}
-.arrow-right {
-  right: 30px;
-}
-
-/* === 小圆点导航 === */
 .dots {
   position: fixed;
   bottom: 80px;
