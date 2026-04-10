@@ -2,38 +2,95 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
   <link rel="icon" href="img/touxiang.png">
   <title>USED TO BE SAD - FROM NANJING</title>
 
   <style>
-    /* 关键CSS内联 + 字体异步加载 */
-    @font-face {
-      font-family: '一点明体';
-      src: url('./fonts/一点明体.ttf');
-      font-display: swap;
-    }
+    /* 全局基础样式 */
     * {
-      font-family: '一点明体', 'Roboto', sans-serif !important;
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      font-family: '一点明体', 'Roboto', sans-serif !important;
     }
+
     body {
       background: url('img/background.png') center/cover fixed no-repeat;
       min-height: 100vh;
       overflow: hidden;
       cursor: none;
     }
+
+    /* 加载遮罩层 */
+    #loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999999;
+      flex-direction: column;
+      gap: 20px;
+      color: #fff;
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.8s ease, visibility 0.8s ease;
+    }
+
+    #loader.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    /* 加载动画 */
+    .loader-spin {
+      width: 40px;
+      height: 40px;
+      border: 2px solid rgba(255,255,255,0.2);
+      border-top: 2px solid #fff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loader-text {
+      font-size: 14px;
+      letter-spacing: 2px;
+      opacity: 0.8;
+    }
+
+    /* 字体异步 */
+    @font-face {
+      font-family: '一点明体';
+      src: url('./fonts/一点明体.woff2') format('woff2');
+      font-display: swap;
+    }
   </style>
 
-  <!-- 延迟加载外部字体 -->
+  <!-- 字体延迟加载 -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap" media="print" onload="this.media='all'">
   <link rel="stylesheet" href="style.css">
 
 </head>
 <body>
 
+<!-- ================== 加载页 ================== -->
+<div id="loader">
+  <div class="loader-spin"></div>
+  <div class="loader-text">LOADING</div>
+</div>
+
+<!-- ================== 轮播 ================== -->
 <div class="carousel">
   <div class="carousel-item active">
     <div class="carousel-box">
@@ -58,7 +115,7 @@
 
   <div class="carousel-item">
     <div class="carousel-box">
-      <div class="title">25/10/10-叶子落下的时候</div>
+      <div class="title">25/10/10-叶子落下的时候我们相约在蛋吧😿</div>
       <img loading="lazy" data-src="img/叶子落下的时候我们相约在蛋吧😿_1_USED TO BE SAD_来自小红书网页版.jpg">
     </div>
   </div>
