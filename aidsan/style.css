@@ -150,13 +150,17 @@ body {
   z-index: 99999;
 }
 
-@media (max-width: 768px) {
-  .carousel-box img {
+/* 移动端强制图片缩小 20% —— 超强优先级 */
+@media screen and (max-width: 768px) {
+  .carousel .carousel-item .carousel-box img {
     max-width: 52vh !important;
     max-height: 52vh !important;
+    width: 52vh !important;
+    height: auto !important;
   }
-  .title {
-    top: -50px; 
-    font-size: 16px;
+  /* 标题同步优化 */
+  .carousel .carousel-item .carousel-box .title {
+    top: -45px !important;
+    font-size: 15px !important;
   }
 }
