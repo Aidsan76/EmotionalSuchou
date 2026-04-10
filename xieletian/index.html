@@ -1,119 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <style>
-        @font-face {
-            font-family: '一点明体'; 
-            src: url('./fonts/一点明体.ttf'); 
-        }
-
-        * {
-            font-family: '一点明体' !important;
-        }
-
-        body {
-            background-image: url('img/background.png');
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            background-position: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 0;
-        }
-    </style>
-  
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
   <link rel="icon" href="img/touxiang.png">
   <title>USED TO BE SAD - FROM NANJING</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+
+  <style>
+    /* 关键CSS内联 + 字体异步加载 */
+    @font-face {
+      font-family: '一点明体';
+      src: url('./fonts/一点明体.ttf');
+      font-display: swap;
+    }
+    * {
+      font-family: '一点明体', 'Roboto', sans-serif !important;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background: url('img/background.png') center/cover fixed no-repeat;
+      min-height: 100vh;
+      overflow: hidden;
+      cursor: none;
+    }
+  </style>
+
+  <!-- 延迟加载外部字体 -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap" media="print" onload="this.media='all'">
   <link rel="stylesheet" href="style.css">
+
 </head>
 <body>
 
 <div class="carousel">
-  <div class="carousel-item">
+  <div class="carousel-item active">
     <div class="carousel-box">
       <div class="title">UTBS EP1</div>
-      <img src="img/尝试25.png">
+      <img loading="lazy" data-src="img/尝试25.png">
     </div>
   </div>
-  
-<div class="carousel">
+
   <div class="carousel-item">
     <div class="carousel-box">
       <div class="title">2025/04/18-春天在我们的眼睛里</div>
-      <img src="img/794a154be6bfa4bf8d87d566f408567e.jpg">
+      <img loading="lazy" data-src="img/794a154be6bfa4bf8d87d566f408567e.jpg">
     </div>
   </div>
-  
+
   <div class="carousel-item">
     <div class="carousel-box">
       <div class="title">25/08/24-昨日世界meet new friend南京站</div>
-      <img src="img/明信片改.png">
+      <img loading="lazy" data-src="img/明信片改.png">
     </div>
   </div>
 
   <div class="carousel-item">
     <div class="carousel-box">
       <div class="title">25/10/10-叶子落下的时候</div>
-      <img src="img/叶子落下的时候我们相约在蛋吧😿_1_USED TO BE SAD_来自小红书网页版.jpg">
+      <img loading="lazy" data-src="img/叶子落下的时候我们相约在蛋吧😿_1_USED TO BE SAD_来自小红书网页版.jpg">
     </div>
   </div>
 
-<div class="carousel">
   <div class="carousel-item">
     <div class="carousel-box">
       <div class="title">2025/10/25-「风来了」NoStage ！</div>
-      <img src="img/1040g00831no0epgb4q005p68g91ap03kir357i8!nd_dft_wlteh_webp_3.webp">
+      <img loading="lazy" data-src="img/1040g00831no0epgb4q005p68g91ap03kir357i8!nd_dft_wlteh_webp_3.webp">
     </div>
   </div>
 
-<div class="carousel">
   <div class="carousel-item">
     <div class="carousel-box">
       <div class="title">2025/11/19-进入这一分钟</div>
-      <img src="img/b92234bf-a218-4d46-87d8-44513d901af5.png">
+      <img loading="lazy" data-src="img/b92234bf-a218-4d46-87d8-44513d901af5.png">
     </div>
   </div>
-    
+
   <div class="carousel-item">
     <div class="carousel-box">
       <div class="title">25/11/23-Japanese Football中国巡演上海站</div>
-      <img src="img/微信图片_20250905011014.jpg">
+      <img loading="lazy" data-src="img/微信图片_20250905011014.jpg">
     </div>
   </div>
-</div>
-    
+
   <div class="carousel-item">
     <div class="carousel-box">
       <div class="title">2026/03/28-中西部情绪麻将2026春巡</div>
-      <img src="img/1040g00831t26566k561g5p68g91ap03k8nh3pfg!nd_dft_wlteh_webp_3.webp">
+      <img loading="lazy" data-src="img/1040g00831t26566k561g5p68g91ap03k8nh3pfg!nd_dft_wlteh_webp_3.webp">
     </div>
   </div>
-</div>
 
   <div class="carousel-item">
     <div class="carousel-box">
       <div class="title">2026/04/05-SonicRevolution音速革命3.0</div>
-      <img src="img/1040g2sg31u8dro73huc05p68g91ap03ks1878mg!nd_dft_wlteh_webp_3.webp">
+      <img loading="lazy" data-src="img/1040g2sg31u8dro73huc05p68g91ap03ks1878mg!nd_dft_wlteh_webp_3.webp">
     </div>
   </div>
-</div>
-    
+
   <div class="carousel-item">
     <div class="carousel-box">
       <div class="title">26/04/18-春天在我们的眼睛里2.0</div>
-      <img src="img/be2833d4fa594b3d81fe040fa8ebfb66_1440_2036_6630717.0x0.png">
+      <img loading="lazy" data-src="img/be2833d4fa594b3d81fe040fa8ebfb66_1440_2036_6630717.0x0.png">
     </div>
   </div>
 </div>
 
-<div class="title-btn prev-btn"> </div>
-<div class="title-btn next-btn"> </div>
-  
+<div class="title-btn prev-btn"></div>
+<div class="title-btn next-btn"></div>
 <div class="dots"></div>
 
 <div class="layout">
@@ -121,11 +115,11 @@
 </div>
 
 <div class="social">
-  <a href="https://www.xiaohongshu.com/user/profile/64c88242000000002b008074?xsec_token=AB-UeJ-mwP8OqYAuXiLgl6YiRUQs-suUzd83kuAALswgA%3D&xsec_source=pc_search" target="_blank"><img src="img/XiaohongshuLOGO.png"></a>
-  <a href="https://space.bilibili.com/518061282?spm_id_from=333.337.search-card.all.click" target="_blank"><img src="img/Bilibili_logo.svg"></a>
+  <a href="https://www.xiaohongshu.com/user/profile/64c88242000000002b008074" target="_blank"><img loading="lazy" src="img/XiaohongshuLOGO.png"></a>
+  <a href="https://space.bilibili.com/518061282" target="_blank"><img loading="lazy" src="img/Bilibili_logo.svg"></a>
 </div>
 
-<img id="customCursor" src="img/turtledove.png">
+<img id="customCursor" src="img/turtledove.png" style="position:fixed;width:35px;height:35px;pointer-events:none;z-index:99999">
 
 <script src="script.js"></script>
 </body>
