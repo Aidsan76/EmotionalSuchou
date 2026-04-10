@@ -1,0 +1,151 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+
+  background-image: url('img/background.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  min-height: 100vh;
+  
+  overflow: hidden;
+  cursor: none;
+}
+
+.carousel {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+
+.carousel-item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 1.2s ease-in-out;
+  z-index: 0;
+}
+
+.carousel-item.active {
+  opacity: 1;
+  z-index: 1;
+}
+
+.carousel-box {
+  position: relative;
+  text-align: center;
+  color: #fff;
+}
+
+.carousel-box img {
+  max-width: 65vh;
+  max-height: 65vh;
+  object-fit: contain;
+  filter: none;
+  opacity: 0.9;
+}
+
+.title {
+  position: absolute;
+  top: -70px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 18px;
+  letter-spacing: 2px;
+  white-space: nowrap;
+  font-weight: 300;
+  width: 90vw;
+}
+
+.title-btn {
+  position: fixed;
+  top: calc(50% - 37vh);
+  transform: translateY(-50%);
+  font-size: 22px;
+  color: #fff;
+  cursor: pointer;
+  z-index: 999;
+  padding: 10px 20px;
+  user-select: none;
+}
+.prev-btn {
+  left: 50%;
+  transform: translate(-180px, -50%);
+}
+.next-btn {
+  left: 50%;
+  transform: translate(180px, -50%);
+}
+
+.dots {
+  position: fixed;
+  bottom: 80px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  z-index: 999;
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  cursor: pointer;
+}
+.dot.active {
+  background: #fff;
+}
+
+.layout {
+  position: fixed;
+  left: 30px;
+  bottom: 25px;
+  z-index: 999;
+  color: #fff;
+  font-size: 11px;
+  line-height: 1.6;
+  opacity: 0.6;
+}
+
+.social {
+  position: fixed;
+  right: 28px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  z-index: 999;
+}
+
+.social img {
+  width: 32px;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}
+.social img:hover {
+  opacity: 1;
+}
+
+/* 自定义斑鸠鼠标 */
+#customCursor {
+  position: fixed;
+  width: 35px;
+  height: 35px;
+  pointer-events: none;
+  z-index: 99999;
+}
