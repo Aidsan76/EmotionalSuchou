@@ -6,7 +6,14 @@
 
 body {
   font-family: 'Roboto', sans-serif;
-  background: #000;
+
+  background-image: url('img/background.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  min-height: 100vh;
+  
   overflow: hidden;
   cursor: none;
 }
@@ -50,7 +57,6 @@ body {
   opacity: 0.9;
 }
 
-/* 标题统一高度 */
 .title {
   position: absolute;
   top: -70px;
@@ -63,7 +69,6 @@ body {
   width: 90vw;
 }
 
-/* 标题左右按钮 */
 .title-btn {
   position: fixed;
   top: calc(50% - 37vh);
