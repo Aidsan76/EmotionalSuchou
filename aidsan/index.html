@@ -17,7 +17,7 @@
       background: url('img/background.png') center/cover fixed no-repeat;
       min-height: 100vh;
       overflow: hidden;
-      cursor: auto;
+      cursor: none !important; /* 隐藏系统鼠标 */
     }
     #loader {
       position: fixed;
@@ -50,7 +50,7 @@
     }
     @font-face {
       font-family: '一点明体';
-      src: url('./fonts/一点明体.ttf') format('ttf');
+      src: url('./fonts/一点明体.ttf') format('truetype');
       font-display: swap;
     }
   </style>
