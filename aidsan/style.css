@@ -8,7 +8,7 @@ body {
   background: url('img/background.png') center/cover fixed no-repeat;
   min-height: 100vh;
   overflow: hidden;
-  cursor: auto;
+  cursor: none !important; /* 彻底隐藏系统鼠标 */
 }
 .carousel {
   position: relative;
@@ -68,7 +68,7 @@ body {
   height: 8px;
   border-radius: 50%;
   background: rgba(255,255,255,0.3);
-  cursor: pointer !important;
+  cursor: none !important;
   pointer-events: auto !important;
   position: relative;
   z-index: 9999;
@@ -112,9 +112,9 @@ body {
   height: 35px;
   pointer-events: none;
   z-index: 99999;
-  display: none;
 }
 
+/* 手机端图片缩小20% */
 @media (max-width: 768px) {
   .carousel-box img {
     max-width: 52vh !important;
