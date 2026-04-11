@@ -2,17 +2,19 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: '一点明体', 'Roboto', sans-serif !important;
 }
 
 body {
-  font-family: 'Roboto', sans-serif;
-
   background-image: url('img/background.png');
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-position: center;
+  
+  /* 添加 dvh 修复手机浏览器地址栏导致的滚动 */
   min-height: 100vh;
+  min-height: 100dvh;
   
   overflow: hidden;
   cursor: none;
@@ -22,6 +24,7 @@ body {
   position: relative;
   width: 100vw;
   height: 100vh;
+  height: 100dvh;
 }
 
 .carousel-item {
@@ -141,28 +144,10 @@ body {
   opacity: 1;
 }
 
-/* 自定义斑鸠鼠标 */
-#customCursor {
-  position: fixed;
-  width: 35px;
-  height: 35px;
-  pointer-events: none;
-  z-index: 99999;
-}
 
-/* 修复移动端地址栏造成的滚动问题 */
-body {
-  min-height: 100vh;
-  min-height: 100dvh; 
-}
-.carousel {
-  height: 100vh;
-  height: 100dvh;
-}
-
-/* ================== 移动端专门优化 ================== */
+/* ================== 移动端优化 (超强优先级) ================== */
 @media screen and (max-width: 768px) {
-  /* 1. 恢复正常触摸，隐藏自定义光标 */
+  /* 恢复系统默认触摸，隐藏自定光标 */
   body {
     cursor: auto !important; 
   }
@@ -170,29 +155,29 @@ body {
     display: none !important; 
   }
 
-  /* 2. 图片尺寸限制：移动端必须用 vw 来限制宽度！ */
+  /* 修复图片撑爆屏幕：必须用 vw 限制最大宽度 */
   .carousel .carousel-item .carousel-box img {
-    max-width: 85vw !important; /* 不允许超过屏幕宽度的85% */
-    max-height: 55vh !important; /* 高度也做适当限制 */
+    max-width: 85vw !important; 
+    max-height: 55vh !important; 
     width: auto !important;
     height: auto !important;
   }
   
-  /* 3. 标题优化：允许换行，防止超长标题超出屏幕 */
+  /* 修复长标题超出屏幕 */
   .carousel .carousel-item .carousel-box .title {
     top: -45px !important;
     font-size: 14px !important;
     width: 90vw;
-    white-space: normal; /* 允许换行 */
+    white-space: normal !important; /* 允许换行 */
     line-height: 1.4;
   }
 
-  /* 4. 隐藏左右占位按钮，移动端纯靠滑动体验更好 */
+  /* 隐藏左右错位的按钮，纯靠滑动体验更好 */
   .title-btn {
     display: none !important;
   }
 
-  /* 5. 社交图标改为横向排列，放在右下角上方 */
+  /* 社交图标改为右下角横排 */
   .social {
     top: auto;
     bottom: 25px;
@@ -202,18 +187,18 @@ body {
     gap: 15px;
   }
   .social img {
-    width: 24px; /* 移动端图标稍微缩小 */
+    width: 24px;
   }
 
-  /* 6. 版权信息稍微上移或缩小，避免挡住视线 */
+  /* 版权信息调整，避免被挡住 */
   .layout {
     left: 20px;
     bottom: 25px;
     font-size: 10px;
-    max-width: 60vw; /* 防止和社交图标撞车 */
+    max-width: 60vw;
   }
 
-  /* 7. 轮播点微调 */
+  /* 调整轮播点位置 */
   .dots {
     bottom: 80px; 
   }
