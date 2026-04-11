@@ -1,95 +1,137 @@
-const items = document.querySelectorAll('.carousel-item');
-const dotsContainer = document.querySelector('.dots');
-const customCursor = document.getElementById('customCursor');
-const loader = document.getElementById('loader');
-let index = 0;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-function loadImg(img) {
-  if (img.dataset.src && !img.src) {
-    img.src = img.dataset.src;
+body {
+  font-family: '一点明体', sans-serif;
+  background: url('img/background.png') center/cover fixed no-repeat;
+  min-height: 100vh;
+  overflow: hidden;
+  cursor: none;
+}
+
+.carousel {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+
+.carousel-item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 1.2s ease-in-out;
+  z-index: 0;
+}
+
+.carousel-item.active {
+  opacity: 1;
+  z-index: 1;
+}
+
+.carousel-box {
+  position: relative;
+  text-align: center;
+  color: #fff;
+}
+
+.carousel-box img {
+  max-width: 65vh;
+  max-height: 65vh;
+  object-fit: contain;
+  opacity: 0.9;
+}
+
+.title {
+  position: absolute;
+  top: -70px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 18px;
+  letter-spacing: 2px;
+  white-space: nowrap;
+  width: 90vw;
+}
+
+.dots {
+  position: fixed;
+  bottom: 80px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  z-index: 999;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  cursor: none;
+}
+
+.dot.active {
+  background: #fff;
+}
+
+.layout {
+  position: fixed;
+  left: 30px;
+  bottom: 25px;
+  z-index: 999;
+  color: #fff;
+  font-size: 11px;
+  line-height: 1.6;
+  opacity: 0.6;
+}
+
+.social {
+  position: fixed;
+  right: 28px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  z-index: 999;
+}
+
+.social img {
+  width: 32px;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}
+
+.social img:hover {
+  opacity: 1;
+}
+
+#customCursor {
+  position: fixed;
+  width: 35px;
+  height: 35px;
+  pointer-events: none;
+  z-index: 99999;
+}
+
+/* 手机端图片缩小 20% */
+@media (max-width: 768px) {
+  .carousel-box img {
+    max-width: 52vh !important;
+    max-height: 52vh !important;
+  }
+  .title {
+    top: -50px !important;
+    font-size: 15px !important;
   }
 }
-
-function createDots() {
-  items.forEach((_, i) => {
-    const dot = document.createElement('div');
-    dot.classList.add('dot');
-    if (i === 0) dot.classList.add('active');
-    dotsContainer.appendChild(dot);
-  });
-}
-
-function update() {
-  items.forEach((item, i) => {
-    const isActive = i === index;
-    item.classList.toggle('active', isActive);
-    if (isActive) loadImg(item.querySelector('img'));
-  });
-  document.querySelectorAll('.dot').forEach((dot, i) => {
-    dot.classList.toggle('active', i === index);
-  });
-}
-
-function next() {
-  index = (index + 1) % items.length;
-  update();
-}
-
-function prev() {
-  index = (index - 1 + items.length) % items.length;
-  update();
-}
-
-function preloadInitImgs() {
-  loadImg(items[0].querySelector('img'));
-  if (items.length > 1) {
-    loadImg(items[1].querySelector('img'));
-  }
-}
-
-createDots();
-update();
-preloadInitImgs();
-setInterval(next, 15000);
-
-document.querySelectorAll('.dot').forEach((dot, i) => {
-  dot.addEventListener('click', () => {
-    index = i;
-    update();
-  });
-});
-
-let touchStartX = 0;
-let touchStartTime = 0;
-document.addEventListener('touchstart', e => {
-  touchStartX = e.changedTouches[0].screenX;
-  touchStartTime = Date.now();
-}, { passive: true });
-
-document.addEventListener('touchend', e => {
-  const diffTime = Date.now() - touchStartTime;
-  const diffX = e.changedTouches[0].screenX - touchStartX;
-  if (diffTime < 300) {
-    if (diffX < -50) next();
-    if (diffX > 50) prev();
-  }
-}, { passive: true });
-
-document.addEventListener('mousemove', e => {
-  const cursorX = e.clientX - customCursor.offsetWidth / 2;
-  const cursorY = e.clientY - customCursor.offsetHeight / 2;
-  customCursor.style.left = cursorX + 'px';
-  customCursor.style.top = cursorY + 'px';
-});
-
-function hideLoader() {
-  if (!loader.classList.contains('hidden')) {
-    loader.classList.add('hidden');
-  }
-}
-
-window.addEventListener('load', () => {
-  setTimeout(hideLoader, 600);
-});
-
-setTimeout(hideLoader, 5000);
