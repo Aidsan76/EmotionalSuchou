@@ -206,16 +206,15 @@
         opacity: 1;
     }
 
-    /* 自定义鼠标 - 只在桌面显示 */
-    #customCursor {
-        position: fixed;
-        width: 35px;
-        height: 35px;
-        pointer-events: none;
-        z-index: 99999;
-        display: none;            /* 默认隐藏 */
-    }
-
+/* 自定义鼠标 - 只在桌面显示 */
+#customCursor {
+    position: fixed;
+    width: 35px;
+    height: 35px;
+    pointer-events: none;
+    z-index: 99999;
+    display: none;            /* 默认隐藏 */
+}
     /* ================== 移动端优化 ================== */
     @media screen and (max-width: 768px) {
         .carousel-box img {
