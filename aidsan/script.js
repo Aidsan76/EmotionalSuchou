@@ -55,7 +55,6 @@ document.querySelectorAll('.dot').forEach((dot, i) => {
   };
 });
 
-// 触屏滑动
 let touchStartX = 0;
 document.addEventListener('touchstart', e => {
   touchStartX = e.changedTouches[0].screenX;
@@ -66,12 +65,9 @@ document.addEventListener('touchend', e => {
   if (diffX > 50) prev();
 }, { passive: true });
 
-// 自定义鼠标
 document.addEventListener('mousemove', e => {
-  const x = e.clientX - customCursor.offsetWidth / 2;
-  const y = e.clientY - customCursor.offsetHeight / 2;
-  customCursor.style.left = x + 'px';
-  customCursor.style.top = y + 'px';
+  customCursor.style.left = e.clientX + 'px';
+  customCursor.style.top = e.clientY + 'px';
 });
 
 // 加载页
