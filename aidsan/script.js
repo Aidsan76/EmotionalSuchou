@@ -6,6 +6,19 @@ const customCursor = document.getElementById('customCursor');
 const loader = document.getElementById('loader');
 let index = 0;
 
+// 修改自定义鼠标这部分，避免移动端报错或浪费性能
+const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+if (!isTouchDevice) {
+  document.addEventListener('mousemove', e => {
+    customCursor.style.left = e.clientX + 'px';
+    customCursor.style.top = e.clientY + 'px';
+  });
+} else {
+  // 如果是触屏设备，直接在JS层面隐藏
+  customCursor.style.display = 'none';
+}
+
 // 图片懒加载
 function loadImg(img) {
   if (img.dataset.src && !img.src) {
