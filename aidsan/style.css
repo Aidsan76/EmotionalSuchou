@@ -66,7 +66,7 @@
 
     @font-face {
         font-family: '一点明体';
-        src: url('./fonts/一点明体.woff2') format('woff2');
+        src: url('./fonts/一点明体.ttf') format('ttf');
         font-display: swap;
     }
 
