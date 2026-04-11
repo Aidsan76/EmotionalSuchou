@@ -4,12 +4,14 @@ const customCursor = document.getElementById('customCursor');
 const loader = document.getElementById('loader');
 let index = 0;
 
+// 懒加载
 function loadImg(img) {
   if (img && img.dataset.src && !img.src) {
     img.src = img.dataset.src;
   }
 }
 
+// 生成圆点
 function createDots() {
   items.forEach((_, i) => {
     const dot = document.createElement('div');
@@ -19,6 +21,7 @@ function createDots() {
   });
 }
 
+// 更新轮播
 function update() {
   items.forEach((item, i) => {
     const isActive = i === index;
@@ -39,11 +42,12 @@ function prev() {
   update();
 }
 
+// 初始化
 createDots();
 update();
 setInterval(next, 15000);
 
-// 圆点点击（强制生效）
+// 圆点点击
 document.querySelectorAll('.dot').forEach((dot, i) => {
   dot.onclick = () => {
     index = i;
@@ -51,6 +55,7 @@ document.querySelectorAll('.dot').forEach((dot, i) => {
   };
 });
 
+// 触屏滑动
 let touchStartX = 0;
 document.addEventListener('touchstart', e => {
   touchStartX = e.changedTouches[0].screenX;
@@ -61,17 +66,15 @@ document.addEventListener('touchend', e => {
   if (diffX > 50) prev();
 }, { passive: true });
 
+// 自定义鼠标
+document.addEventListener('mousemove', e => {
+  const x = e.clientX - customCursor.offsetWidth / 2;
+  const y = e.clientY - customCursor.offsetHeight / 2;
+  customCursor.style.left = x + 'px';
+  customCursor.style.top = y + 'px';
+});
 
-if (customCursor) {
-  customCursor.style.display = 'block';
-  document.addEventListener('mousemove', e => {
-    const x = e.clientX - customCursor.offsetWidth / 2;
-    const y = e.clientY - customCursor.offsetHeight / 2;
-    customCursor.style.left = x + 'px';
-    customCursor.style.top = y + 'px';
-  });
-}
-
+// 加载页
 function hideLoader() {
   if (loader) loader.classList.add('hidden');
 }
