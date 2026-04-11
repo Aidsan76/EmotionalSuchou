@@ -45,9 +45,18 @@ function prev() {
   update();
 }
 
+// 预加载初始图片
+function preloadInitImgs() {
+  loadImg(items[0].querySelector('img'));
+  if (items.length > 1) {
+    loadImg(items[1].querySelector('img'));
+  }
+}
+
 // 初始化
 createDots();
 update();
+preloadInitImgs();
 setInterval(next, 15000);
 
 // 交互
@@ -63,25 +72,40 @@ document.querySelectorAll('.dot').forEach((dot, i) => {
 
 // 触屏滑动优化
 let touchStartX = 0;
+let touchStartTime = 0;
 document.addEventListener('touchstart', e => {
   touchStartX = e.changedTouches[0].screenX;
+  touchStartTime = Date.now();
 }, { passive: true });
 
 document.addEventListener('touchend', e => {
-  const diff = e.changedTouches[0].screenX - touchStartX;
-  if (diff < -40) next();
-  if (diff > 40) prev();
+  const diffTime = Date.now() - touchStartTime;
+  const diffX = e.changedTouches[0].screenX - touchStartX;
+  if (diffTime < 300) {
+    if (diffX < -50) next();
+    if (diffX > 50) prev();
+  }
 }, { passive: true });
 
-// 自定义鼠标
+// 自定义鼠标 - 修复位置偏移
 document.addEventListener('mousemove', e => {
-  customCursor.style.left = e.clientX + 'px';
-  customCursor.style.top = e.clientY + 'px';
+  const cursorX = e.clientX - customCursor.offsetWidth / 2;
+  const cursorY = e.clientY - customCursor.offsetHeight / 2;
+  customCursor.style.left = cursorX + 'px';
+  customCursor.style.top = cursorY + 'px';
 });
 
-// 页面加载完成 → 关闭加载页
-window.addEventListener('load', () => {
-  setTimeout(() => {
+// 关闭加载页（增加兜底超时）
+function hideLoader() {
+  if (!loader.classList.contains('hidden')) {
     loader.classList.add('hidden');
-  }, 600);
+  }
+}
+
+// 方案1：等待页面加载完成
+window.addEventListener('load', () => {
+  setTimeout(hideLoader, 600);
 });
+
+// 方案2：兜底超时（防止load事件不触发）
+setTimeout(hideLoader, 5000); // 5秒后强制关闭
