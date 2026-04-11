@@ -13,73 +13,53 @@
       box-sizing: border-box;
       font-family: '一点明体', sans-serif !important;
     }
-
     body {
       background: url('img/background.png') center/cover fixed no-repeat;
       min-height: 100vh;
       overflow: hidden;
-      cursor: none;
+      cursor: auto;
     }
-
     #loader {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
       background: #000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       z-index: 999999;
-      flex-direction: column;
-      gap: 20px;
+      flex-direction: column; gap: 20px;
       color: #fff;
-      opacity: 1;
-      visibility: visible;
+      opacity: 1; visibility: visible;
       transition: opacity 0.8s ease, visibility 0.8s ease;
     }
-
     #loader.hidden {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
+      opacity: 0; visibility: hidden; pointer-events: none;
     }
-
     .loader-spin {
-      width: 40px;
-      height: 40px;
+      width: 40px; height: 40px;
       border: 2px solid rgba(255,255,255,0.2);
       border-top: 2px solid #fff;
       border-radius: 50%;
       animation: spin 1s linear infinite;
     }
-
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-
     .loader-text {
-      font-size: 14px;
-      letter-spacing: 2px;
-      opacity: 0.8;
+      font-size: 14px; letter-spacing: 2px; opacity: 0.8;
     }
-
     @font-face {
       font-family: '一点明体';
       src: url('./fonts/一点明体.ttf') format('ttf');
       font-display: swap;
     }
   </style>
-
   <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
 <div id="loader">
-  <div classloader-spin"></div>
+  <div class="loader-spin"></div>
   <div class="loader-text">LOADING</div>
 </div>
 
@@ -90,67 +70,58 @@
       <img loading="lazy" data-src="img/尝试25.png">
     </div>
   </div>
-
   <div class="carousel-item">
     <div class="carousel-box">
       <div class="title">2025/04/18-春天在我们的眼睛里</div>
       <img loading="lazy" data-src="img/794a154be6bfa4bf8d87d566f408567e.jpg">
     </div>
   </div>
-
   <div class="carousel-item">
     <div class="carousel-box">
       <div class="title">25/08/24-昨日世界meet new friend南京站</div>
       <img loading="lazy" data-src="img/明信片改.png">
     </div>
   </div>
-
   <div class="carousel-item">
     <div class="carousel-box">
       <div class="title">25/10/10-叶子落下的时候</div>
       <img loading="lazy" data-src="img/叶子落下的时候我们相约在蛋吧😿_1_USED TO BE SAD_来自小红书网页版.jpg">
     </div>
   </div>
-
   <div class="carousel-item">
     <div class="carousel-box">
-      <div class="title">2025/10/25-「风来了」NoStage ！</div>
+      <div class="title">2025/10/25-「风来了」NoStage！</div>
       <img loading="lazy" data-src="img/1040g00831no0epgb4q005p68g91ap03kir357i8!nd_dft_wlteh_webp_3.webp">
     </div>
   </div>
-
   <div class="carousel-item">
     <div class="carousel-box">
       <div class="title">2025/11/19-进入这一分钟</div>
       <img loading="lazy" data-src="img/b92234bf-a218-4d46-87d8-44513d901af5.png">
     </div>
   </div>
-
   <div class="carousel-item">
     <div class="carousel-box">
       <div class="title">25/11/23-Japanese Football中国巡演上海站</div>
       <img loading="lazy" data-src="img/微信图片_20250905011014.jpg">
     </div>
   </div>
-
   <div class="carousel-item">
     <div class="carousel-box">
       <div class="title">2026/03/28-中西部情绪麻将2026春巡</div>
       <img loading="lazy" data-src="img/1040g00831t26566k561g5p68g91ap03k8nh3pfg!nd_dft_wlteh_webp_3.webp">
     </div>
   </div>
-
   <div class="carousel-item">
     <div class="carousel-box">
       <div class="title">2026/04/05-SonicRevolution音速革命3.0</div>
       <img loading="lazy" data-src="img/1040g2sg31u8dro73huc05p68g91ap03ks1878mg!nd_dft_wlteh_webp_3.webp">
     </div>
   </div>
-
   <div class="carousel-item">
     <div class="carousel-box">
       <div class="title">26/04/18-春天在我们的眼睛里2.0</div>
-      <img loading="lazy" data-src="img/be2833d4fa594b3d81fe040fa8ebfb66_1440_2036_6630717.0x0.jpg">
+      <img loading="lazy" data-src="img/be2833d4fa594b3d81fe040fa8ebfb66_1440_2036_6630717.0x0.png">
     </div>
   </div>
 </div>
@@ -158,7 +129,7 @@
 <div class="dots"></div>
 
 <div class="layout">
-  <div class="box">© 2025-2026 USED TO BE SAD <br>All Rights Reserved<br>Powered by Aidsan®</div>
+  <div class="box">© 2025-2026 USED TO BE SAD<br>All Rights Reserved<br>Powered by Aidsan®</div>
 </div>
 
 <div class="social">
@@ -166,7 +137,7 @@
   <a href="https://space.bilibili.com/518061282" target="_blank"><img loading="lazy" src="img/Bilibili_logo.svg"></a>
 </div>
 
-<img id="customCursor" src="img/turtledove.png" style="position:fixed;width:35px;height:35px;pointer-events:none;z-index:99999">
+<img id="customCursor" src="img/turtledove.png" alt="">
 
 <script src="script.js"></script>
 </body>
