@@ -80,13 +80,14 @@ document.addEventListener('touchend', e => {
   if (diff > 40) prev();
 }, { passive: true });
 
-// 自定义鼠标 - 只在非触屏设备显示
+// 自定义鼠标 - 只在非触屏设备（桌面）显示
 if (!('ontouchstart' in window) && navigator.maxTouchPoints < 2) {
-  customCursor.style.display = 'block';
-  document.addEventListener('mousemove', e => {
-    customCursor.style.left = `${e.clientX}px`;
-    customCursor.style.top = `${e.clientY}px`;
-  });
+    customCursor.style.display = 'block';
+    
+    document.addEventListener('mousemove', e => {
+        customCursor.style.left = e.clientX + 'px';
+        customCursor.style.top = e.clientY + 'px';
+    });
 }
 
 // 加载完成关闭 loader
