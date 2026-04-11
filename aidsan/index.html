@@ -7,12 +7,11 @@
   <title>USED TO BE SAD - FROM NANJING</title>
 
   <style>
-    /* 全局基础样式 */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: '一点明体', 'Roboto', sans-serif !important;
+      font-family: '一点明体', sans-serif !important;
     }
 
     body {
@@ -22,7 +21,6 @@
       cursor: none;
     }
 
-    /* 加载遮罩层 */
     #loader {
       position: fixed;
       top: 0;
@@ -46,11 +44,8 @@
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
-      /* 新增：彻底移除布局占用 */
-      position: absolute;
     }
 
-    /* 加载动画 */
     .loader-spin {
       width: 40px;
       height: 40px;
@@ -71,28 +66,23 @@
       opacity: 0.8;
     }
 
-    /* 字体异步 */
     @font-face {
       font-family: '一点明体';
-      src: url('./fonts/一点明体.ttf') format('ttf');
+      src: url('./fonts/一点明体.woff2') format('woff2');
       font-display: swap;
     }
   </style>
 
-  <!-- 字体延迟加载 -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap" media="print" onload="this.media='all'">
   <link rel="stylesheet" href="style.css">
-
 </head>
+
 <body>
 
-<!-- ================== 加载页 ================== -->
 <div id="loader">
-  <div class="loader-spin"></div>
+  <div classloader-spin"></div>
   <div class="loader-text">LOADING</div>
 </div>
 
-<!-- ================== 轮播 ================== -->
 <div class="carousel">
   <div class="carousel-item active">
     <div class="carousel-box">
@@ -117,7 +107,7 @@
 
   <div class="carousel-item">
     <div class="carousel-box">
-      <div class="title">25/10/10-叶子落下的时候</div>
+      <div class="title">25/10/10-叶子落下的时候我们相约在蛋吧😿</div>
       <img loading="lazy" data-src="img/叶子落下的时候我们相约在蛋吧😿_1_USED TO BE SAD_来自小红书网页版.jpg">
     </div>
   </div>
@@ -160,11 +150,10 @@
   <div class="carousel-item">
     <div class="carousel-box">
       <div class="title">26/04/18-春天在我们的眼睛里2.0</div>
-      <img loading="lazy" data-src="img/be2833d4fa594b3d81fe040fa8ebfb66_1440_2036_6630717.0x0.jpg">
+      <img loading="lazy" data-src="img/be2833d4fa594b3d81fe040fa8ebfb66_1440_2036_6630717.0x0.png">
     </div>
   </div>
 </div>
-
 
 <div class="dots"></div>
 
