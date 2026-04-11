@@ -6,15 +6,27 @@ const customCursor = document.getElementById('customCursor');
 const loader = document.getElementById('loader');
 let index = 0;
 
+// === 动态视口高度修复（关键！）===
+function setVH() {
+  const vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty('--vh', `${vh}px`);
+}
+window.addEventListener('resize', setVH);
+window.addEventListener('orientationchange', () => {
+  setTimeout(setVH, 100);   // 横竖屏切换后延迟一下
+});
+setVH();   // 初始化
+
 // 图片懒加载
 function loadImg(img) {
-  if (img.dataset.src && !img.src) {
+  if (img && img.dataset.src && !img.src) {
     img.src = img.dataset.src;
   }
 }
 
 // 生成小点
 function createDots() {
+  dotsContainer.innerHTML = ''; // 防止重复
   items.forEach((_, i) => {
     const dot = document.createElement('div');
     dot.classList.add('dot');
@@ -28,40 +40,34 @@ function update() {
   items.forEach((item, i) => {
     const isActive = i === index;
     item.classList.toggle('active', isActive);
-    if (isActive) loadImg(item.querySelector('img'));
+    if (isActive) {
+      const img = item.querySelector('img');
+      loadImg(img);
+    }
   });
+
   document.querySelectorAll('.dot').forEach((dot, i) => {
     dot.classList.toggle('active', i === index);
   });
 }
 
-function next() {
-  index = (index + 1) % items.length;
-  update();
-}
-
-function prev() {
-  index = (index - 1 + items.length) % items.length;
-  update();
-}
+function next() { index = (index + 1) % items.length; update(); }
+function prev() { index = (index - 1 + items.length) % items.length; update(); }
 
 // 初始化
 createDots();
 update();
 setInterval(next, 15000);
 
-// 交互
+// 按钮交互
 prevBtn.addEventListener('click', prev);
 nextBtn.addEventListener('click', next);
 
 document.querySelectorAll('.dot').forEach((dot, i) => {
-  dot.addEventListener('click', () => {
-    index = i;
-    update();
-  });
+  dot.addEventListener('click', () => { index = i; update(); });
 });
 
-// 触屏滑动优化
+// 触摸滑动（优化阈值 + 防止误触）
 let touchStartX = 0;
 document.addEventListener('touchstart', e => {
   touchStartX = e.changedTouches[0].screenX;
@@ -69,27 +75,21 @@ document.addEventListener('touchstart', e => {
 
 document.addEventListener('touchend', e => {
   const diff = e.changedTouches[0].screenX - touchStartX;
+  if (Math.abs(diff) < 40) return;   // 阈值稍大，避免轻微滑动触发
   if (diff < -40) next();
   if (diff > 40) prev();
 }, { passive: true });
 
-// 检测是否为触屏设备
-const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-
-// 仅在非触屏设备上启用自定义鼠标
-if (!isTouchDevice) {
+// 自定义鼠标 - 只在非触屏设备显示
+if (!('ontouchstart' in window) && navigator.maxTouchPoints < 2) {
+  customCursor.style.display = 'block';
   document.addEventListener('mousemove', e => {
-    customCursor.style.left = e.clientX + 'px';
-    customCursor.style.top = e.clientY + 'px';
+    customCursor.style.left = `${e.clientX}px`;
+    customCursor.style.top = `${e.clientY}px`;
   });
-} else {
-  // 移动端强制隐藏光标元素
-  if(customCursor) customCursor.style.display = 'none';
 }
 
-// 页面加载完成 → 关闭加载页
+// 加载完成关闭 loader
 window.addEventListener('load', () => {
-  setTimeout(() => {
-    loader.classList.add('hidden');
-  }, 600);
+  setTimeout(() => loader.classList.add('hidden'), 600);
 });
