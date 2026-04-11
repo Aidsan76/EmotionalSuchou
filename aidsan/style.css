@@ -71,22 +71,21 @@ body {
 
 .title-btn {
   position: fixed;
-  top: calc(50% - 37vh);
+  top: 50%;
   transform: translateY(-50%);
   font-size: 22px;
   color: #fff;
-  cursor: pointer;
+  cursor: none;
   z-index: 999;
-  padding: 10px 20px;
+  padding: 20px;
   user-select: none;
 }
 .prev-btn {
-  left: 50%;
-  transform: translate(-180px, -50%);
+  left: calc(50% - 200px);
 }
 .next-btn {
-  left: 50%;
-  transform: translate(180px, -50%);
+  right: calc(50% - 200px);
+  left: auto;
 }
 
 .dots {
@@ -104,7 +103,7 @@ body {
   height: 8px;
   border-radius: 50%;
   background: rgba(255,255,255,0.3);
-  cursor: pointer;
+  cursor: none;
 }
 .dot.active {
   background: #fff;
