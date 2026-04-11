@@ -4,14 +4,12 @@ const customCursor = document.getElementById('customCursor');
 const loader = document.getElementById('loader');
 let index = 0;
 
-// 懒加载
 function loadImg(img) {
   if (img && img.dataset.src && !img.src) {
     img.src = img.dataset.src;
   }
 }
 
-// 生成圆点
 function createDots() {
   items.forEach((_, i) => {
     const dot = document.createElement('div');
@@ -21,7 +19,6 @@ function createDots() {
   });
 }
 
-// 更新轮播
 function update() {
   items.forEach((item, i) => {
     const isActive = i === index;
@@ -42,17 +39,15 @@ function prev() {
   update();
 }
 
-// 初始化
 createDots();
 update();
 setInterval(next, 15000);
 
-// 圆点点击
 document.querySelectorAll('.dot').forEach((dot, i) => {
-  dot.onclick = () => {
+  dot.addEventListener('click', () => {
     index = i;
     update();
-  };
+  });
 });
 
 let touchStartX = 0;
@@ -65,12 +60,12 @@ document.addEventListener('touchend', e => {
   if (diffX > 50) prev();
 }, { passive: true });
 
+// 光标在左上角 + 不阻挡点击
 document.addEventListener('mousemove', e => {
   customCursor.style.left = e.clientX + 'px';
   customCursor.style.top = e.clientY + 'px';
 });
 
-// 加载页
 function hideLoader() {
   if (loader) loader.classList.add('hidden');
 }
