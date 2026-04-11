@@ -8,7 +8,7 @@ body {
   background: url('img/background.png') center/cover fixed no-repeat;
   min-height: 100vh;
   overflow: hidden;
-  cursor: none !important; /* 彻底隐藏系统鼠标 */
+  cursor: none !important;
 }
 .carousel {
   position: relative;
@@ -64,14 +64,14 @@ body {
   pointer-events: auto !important;
 }
 .dot {
-  width: 8px;
-  height: 8px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   background: rgba(255,255,255,0.3);
   cursor: none !important;
   pointer-events: auto !important;
   position: relative;
-  z-index: 9999;
+  z-index: 99999;
 }
 .dot.active {
   background: #fff;
@@ -110,11 +110,10 @@ body {
   position: fixed;
   width: 35px;
   height: 35px;
-  pointer-events: none;
-  z-index: 99999;
+  pointer-events: none !important;
+  z-index: 999999;
 }
 
-/* 手机端图片缩小20% */
 @media (max-width: 768px) {
   .carousel-box img {
     max-width: 52vh !important;
