@@ -150,17 +150,71 @@ body {
   z-index: 99999;
 }
 
-/* 移动端强制图片缩小 20% —— 超强优先级 */
+/* 修复移动端地址栏造成的滚动问题 */
+body {
+  min-height: 100vh;
+  min-height: 100dvh; 
+}
+.carousel {
+  height: 100vh;
+  height: 100dvh;
+}
+
+/* ================== 移动端专门优化 ================== */
 @media screen and (max-width: 768px) {
+  /* 1. 恢复正常触摸，隐藏自定义光标 */
+  body {
+    cursor: auto !important; 
+  }
+  #customCursor {
+    display: none !important; 
+  }
+
+  /* 2. 图片尺寸限制：移动端必须用 vw 来限制宽度！ */
   .carousel .carousel-item .carousel-box img {
-    max-width: 52vh !important;
-    max-height: 52vh !important;
-    width: 52vh !important;
+    max-width: 85vw !important; /* 不允许超过屏幕宽度的85% */
+    max-height: 55vh !important; /* 高度也做适当限制 */
+    width: auto !important;
     height: auto !important;
   }
-  /* 标题同步优化 */
+  
+  /* 3. 标题优化：允许换行，防止超长标题超出屏幕 */
   .carousel .carousel-item .carousel-box .title {
     top: -45px !important;
-    font-size: 15px !important;
+    font-size: 14px !important;
+    width: 90vw;
+    white-space: normal; /* 允许换行 */
+    line-height: 1.4;
+  }
+
+  /* 4. 隐藏左右占位按钮，移动端纯靠滑动体验更好 */
+  .title-btn {
+    display: none !important;
+  }
+
+  /* 5. 社交图标改为横向排列，放在右下角上方 */
+  .social {
+    top: auto;
+    bottom: 25px;
+    right: 20px;
+    flex-direction: row;
+    transform: none;
+    gap: 15px;
+  }
+  .social img {
+    width: 24px; /* 移动端图标稍微缩小 */
+  }
+
+  /* 6. 版权信息稍微上移或缩小，避免挡住视线 */
+  .layout {
+    left: 20px;
+    bottom: 25px;
+    font-size: 10px;
+    max-width: 60vw; /* 防止和社交图标撞车 */
+  }
+
+  /* 7. 轮播点微调 */
+  .dots {
+    bottom: 80px; 
   }
 }
