@@ -80,16 +80,53 @@ document.addEventListener('touchend', e => {
   if (diff > 40) prev();
 }, { passive: true });
 
-// 自定义鼠标 - 只在非触屏设备（桌面）显示
-if (!('ontouchstart' in window) && navigator.maxTouchPoints < 2) {
+// ================== 自定义鼠标 - 改进版 ==================
+const customCursor = document.getElementById('customCursor');
+
+// 默认隐藏
+customCursor.style.display = 'none';
+
+// 更宽松的桌面检测：只要有鼠标移动事件，就显示自定义光标
+let isDesktop = true;
+
+function showCustomCursor() {
+  if (customCursor.style.display !== 'block') {
     customCursor.style.display = 'block';
-    
-    document.addEventListener('mousemove', e => {
-        customCursor.style.left = e.clientX + 'px';
-        customCursor.style.top = e.clientY + 'px';
-    });
+    console.log('自定义鼠标已显示'); // 方便你在控制台查看是否触发
+  }
 }
 
+function hideCustomCursor() {
+  customCursor.style.display = 'none';
+}
+
+// 监听鼠标移动 → 显示自定义光标（这是最可靠的方式）
+document.addEventListener('mousemove', (e) => {
+  showCustomCursor();
+  customCursor.style.left = e.clientX + 'px';
+  customCursor.style.top = e.clientY + 'px';
+}, { passive: true });
+
+// 如果检测到触摸操作，就隐藏自定义光标（防止手机上残留）
+document.addEventListener('touchstart', () => {
+  hideCustomCursor();
+}, { passive: true });
+
+// 额外保险：页面加载后，如果有鼠标，就强制尝试显示一次
+window.addEventListener('load', () => {
+  // 延迟一点，确保 DOM 完全就绪
+  setTimeout(() => {
+    // 如果之前有 mousemove，就已经显示了
+    if (customCursor.style.display !== 'block') {
+      // 模拟一次 mousemove 来触发
+      const event = new MouseEvent('mousemove', {
+        clientX: window.innerWidth / 2,
+        clientY: window.innerHeight / 2
+      });
+      document.dispatchEvent(event);
+    }
+  }, 800);
+});
 // 加载完成关闭 loader
 window.addEventListener('load', () => {
   setTimeout(() => loader.classList.add('hidden'), 600);
