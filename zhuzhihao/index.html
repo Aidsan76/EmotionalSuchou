@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>宿舍跑腿小站 - 校园速递</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 百度地图 API (已替换 Leaflet) -->
+    <script type="text/javascript" src="https://api.map.baidu.com/api?v=3.0&ak=hYSRzaAqyf9QLJmm6oKM27cdDPmZSxeg"></script>
+    
+    <!-- Font Awesome 图标（仅保留必要，非表情） -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600&amp;display=swap');
+        
+        :root {
+            --primary: #22c55e;
+        }
+        
+        * {
+            font-family: 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+        }
+        
+        .nav-link {
+            transition: all 0.3s;
+        }
+        
+        .nav-link:hover {
+            color: #22c55e;
+            transform: translateY(-1px);
+        }
+        
+        .section {
+            scroll-margin-top: 80px;
+        }
+        
+        .map-container {
+            height: 420px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        }
+        
+        .task-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .task-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+        
+        .hero-bg {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+        }
+        
+        .conditional {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+    <!-- 顶部导航栏 -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-green-500 rounded-2xl flex items-center justify-center text-white text-2xl">
+                    跑
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold tracking-tight">宿舍跑腿小站</h1>
+                    <p class="text-xs text-green-600 -mt-1">校园速递 · 5分钟响应</p>
+                </div>
+            </div>
+
+            <div class="hidden md:flex items-center gap-8 text-sm font-medium">
+                <a onclick="navigateToSection('home')" class="nav-link cursor-pointer">首页</a>
+                <a onclick="navigateToSection('publish')" class="nav-link cursor-pointer">发布任务</a>
+                <a onclick="navigateToSection('hall')" class="nav-link cursor-pointer">任务大厅</a>
+                <a onclick="navigateToSection('orders')" class="nav-link cursor-pointer">我的订单</a>
+                <a onclick="navigateToSection('rider')" class="nav-link cursor-pointer text-green-600 font-semibold">骑手中心</a>
+                <a onclick="navigateToSection('about')" class="nav-link cursor-pointer">关于我们</a>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <div onclick="toggleMode()" id="mode-switch"
+                     class="flex items-center bg-gray-100 rounded-3xl p-1 cursor-pointer text-sm font-medium">
+                    <div id="student-tab" class="px-5 py-1.5 rounded-3xl transition-all">学生模式</div>
+                    <div id="rider-tab" class="px-5 py-1.5 rounded-3xl transition-all">骑手模式</div>
+                </div>
+                
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center text-xl">👤</div>
+                    <div>
+                        <p id="current-user" class="text-sm font-medium">小明</p>
+                        <p class="text-xs text-gray-500">当前模式：<span id="mode-text" class="text-green-600">学生</span></p>
+                    </div>
+                </div>
+                
+                <button onclick="logoutDemo()" 
+                        class="text-gray-400 hover:text-gray-600 transition-colors">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 首页 Hero -->
+    <section id="home" class="section hero-bg text-white py-20">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <div class="max-w-2xl mx-auto">
+                <h2 class="text-5xl font-bold leading-none mb-6">宿舍跑腿小站<br>让校园生活更轻松</h2>
+                <p class="text-xl mb-10 opacity-90">代取快递 · 代买奶茶 · 代打印 · 代取饭 · 万能跑腿<br>全校覆盖 · 安全可靠</p>
+                
+                <div class="flex justify-center gap-6">
+                    <button onclick="navigateToSection('publish')" 
+                            class="bg-white text-green-600 px-10 py-4 rounded-3xl text-lg font-semibold flex items-center gap-3 hover:scale-105 transition-transform">
+                        立即发布任务
+                    </button>
+                    <button onclick="navigateToSection('hall')" 
+                            class="border-2 border-white px-10 py-4 rounded-3xl text-lg font-semibold flex items-center gap-3 hover:bg-white/10 transition-colors">
+                        浏览任务大厅
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 发布任务页 -->
+    <section id="publish" class="section py-16 bg-gray-50">
+        <div class="max-w-4xl mx-auto px-6">
+            <h2 class="text-4xl font-bold mb-3">发布新任务</h2>
+            <p class="text-gray-600 mb-8">填写需求，骑手们会立刻响应</p>
+            
+            <div class="bg-white rounded-3xl shadow-xl p-8">
+                <form id="publish-form" onsubmit="handlePublish(event)">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <!-- 左侧表单 -->
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-medium mb-2">任务类型</label>
+                                <select id="task-type" onchange="updateConditionalFields()" 
+                                        class="w-full border border-gray-300 rounded-2xl px-5 py-4 focus:outline-none focus:border-green-500">
+                                    <option value="代取快递">代取快递</option>
+                                    <option value="代买饮料">代买饮料</option>
+                                    <option value="代买小吃">代买小吃</option>
+                                    <option value="代打印">代打印</option>
+                                    <option value="代取饭">代取饭</option>
+                                    <option value="其他跑腿">其他跑腿</option>
+                                </select>
+                            </div>
+                            
+                            <!-- 推荐报价 -->
+                            <div id="price-suggestion" class="bg-green-50 border border-green-200 rounded-2xl p-4 text-sm">
+                                <span class="font-medium text-green-700">推荐跑腿报价：</span>
+                                <span id="suggestion-text" class="text-green-600">餐饮类 2元，快递小件 2元，大件建议面议</span>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium mb-2">物品描述</label>
+                                <textarea id="task-desc" rows="3" 
+                                    class="w-full border border-gray-300 rounded-2xl px-5 py-4 focus:outline-none focus:border-green-500"
+                                    placeholder="例如：两个包裹，比较重"></textarea>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">预计报酬 (元)</label>
+                                    <input id="reward" type="number" value="2" 
+                                           class="w-full border border-gray-300 rounded-2xl px-5 py-4 focus:outline-none focus:border-green-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">截止时间</label>
+                                    <select id="deadline" class="w-full border border-gray-300 rounded-2xl px-5 py-4 focus:outline-none focus:border-green-500">
+                                        <option value="30分钟">30分钟</option>
+                                        <option value="1小时" selected>1小时</option>
+                                        <option value="1.5小时">1.5小时</option>
+                                        <option value="2小时">2小时</option>
+                                        <option value="3小时">3小时</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <!-- 快递单号（仅快递显示） -->
+                            <div id="express-field" class="conditional space-y-2">
+                                <label class="block text-sm font-medium">快递单号</label>
+                                <input id="express-no" type="text" 
+                                       class="w-full border border-gray-300 rounded-2xl px-5 py-4 focus:outline-none focus:border-green-500"
+                                       placeholder="请输入快递单号">
+                            </div>
+                            
+                            <!-- 取餐号（饮料/小吃/饭类显示） -->
+                            <div id="meal-field" class="conditional space-y-2">
+                                <label class="block text-sm font-medium">取餐号</label>
+                                <input id="meal-no" type="text" required
+                                       class="w-full border border-gray-300 rounded-2xl px-5 py-4 focus:outline-none focus:border-green-500"
+                                       placeholder="请输入取餐号（必填）">
+                            </div>
+                            
+                            <!-- 快速取件位置 -->
+                            <div>
+                                <label class="block text-sm font-medium mb-3">快速选择取件位置</label>
+                                <div class="flex flex-wrap gap-2">
+                                    <button type="button" onclick="quickPickup('公交车首末站')" 
+                                            class="text-xs px-4 py-2 bg-gray-100 hover:bg-green-100 rounded-2xl">公交车首末站</button>
+                                    <button type="button" onclick="quickPickup('顺丰')" 
+                                            class="text-xs px-4 py-2 bg-gray-100 hover:bg-green-100 rounded-2xl">顺丰</button>
+                                    <button type="button" onclick="quickPickup('苏州经贸快递服务点')" 
+                                            class="text-xs px-4 py-2 bg-gray-100 hover:bg-green-100 rounded-2xl">苏州经贸快递服务点</button>
+                                    <button type="button" onclick="quickPickup('瑞幸')" 
+                                            class="text-xs px-4 py-2 bg-gray-100 hover:bg-green-100 rounded-2xl">瑞幸</button>
+                                    <button type="button" onclick="quickPickup('蜜雪冰城')" 
+                                            class="text-xs px-4 py-2 bg-gray-100 hover:bg-green-100 rounded-2xl">蜜雪冰城</button>
+                                    <button type="button" onclick="quickPickup('衢州鸭脖')" 
+                                            class="text-xs px-4 py-2 bg-gray-100 hover:bg-green-100 rounded-2xl">衢州鸭脖</button>
+                                    <button type="button" onclick="quickPickup('正新鸡排')" 
+                                            class="text-xs px-4 py-2 bg-gray-100 hover:bg-green-100 rounded-2xl">正新鸡排</button>
+                                    <button type="button" onclick="quickPickup('0090汉堡工厂')" 
+                                            class="text-xs px-4 py-2 bg-gray-100 hover:bg-green-100 rounded-2xl">0090汉堡工厂</button>
+                                    <button type="button" onclick="quickPickup('南区超市')" 
+                                            class="text-xs px-4 py-2 bg-gray-100 hover:bg-green-100 rounded-2xl">南区超市</button>
+                                    <button type="button" onclick="quickPickup('北区超市')" 
+                                            class="text-xs px-4 py-2 bg-gray-100 hover:bg-green-100 rounded-2xl">北区超市</button>
+                                    <button type="button" onclick="quickPickup('经贸一食堂')" 
+                                            class="text-xs px-4 py-2 bg-gray-100 hover:bg-green-100 rounded-2xl">经贸一食堂</button>
+                                    <button type="button" onclick="quickPickup('经贸二食堂')" 
+                                            class="text-xs px-4 py-2 bg-gray-100 hover:bg-green-100 rounded-2xl">经贸二食堂</button>
+                                    <button type="button" onclick="quickPickup('经贸三食堂')" 
+                                            class="text-xs px-4 py-2 bg-gray-100 hover:bg-green-100 rounded-2xl">经贸三食堂</button>
+                                    <button type="button" onclick="quickPickup('经贸四食堂')" 
+                                            class="text-xs px-4 py-2 bg-gray-100 hover:bg-green-100 rounded-2xl">经贸四食堂</button>
+                                    <button type="button" onclick="quickPickup('经贸小食堂')" 
+                                            class="text-xs px-4 py-2 bg-gray-100 hover:bg-green-100 rounded-2xl">经贸小食堂</button>
+                                </div>
+                            </div>
+                            
+                            <!-- 送达至单独输入框 -->
+                            <div>
+                                <label class="block text-sm font-medium mb-2">送达至</label>
+                                <input id="delivery-to" type="text" 
+                                       class="w-full border border-gray-300 rounded-2xl px-5 py-4 focus:outline-none focus:border-green-500"
+                                       placeholder="例如：宿舍A-312 或 教学楼C-401" required>
+                            </div>
+                        </div>
+                        
+                        <!-- 右侧百度地图（仅用于取件定位） -->
+                        <div>
+                            <label class="block text-sm font-medium mb-2">地图选点取件位置（苏州经贸职业技术学院）</label>
+                            <div id="map" class="map-container"></div>
+                            <div class="mt-3 text-xs text-gray-500 flex items-center gap-2">
+                                <i class="fa-solid fa-info-circle"></i>
+                                点击地图可自定义取件位置
+                            </div>
+                            
+                            <div class="mt-4 bg-gray-50 p-4 rounded-2xl">
+                                <span class="text-green-600 font-medium">当前取件位置：</span>
+                                <span id="pickup-display" class="block text-gray-600 mt-1">点击地图或快速按钮选择...</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit"
+                            class="mt-10 w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-5 rounded-3xl text-xl transition-colors flex items-center justify-center gap-3">
+                        发布任务（立即可见于任务大厅）
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- 任务大厅 -->
+    <section id="hall" class="section py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-between items-end mb-8">
+                <h2 class="text-4xl font-bold">任务大厅</h2>
+                <input id="search-input" 
+                       onkeyup="if(event.key==='Enter') filterTasks()"
+                       placeholder="搜索任务关键词..." 
+                       class="border border-gray-300 rounded-3xl px-6 py-3 w-72 focus:outline-none focus:border-green-500">
+            </div>
+            
+            <div id="task-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- JS 动态渲染 -->
+            </div>
+        </div>
+    </section>
+
+    <!-- 我的订单 -->
+    <section id="orders" class="section py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-4xl font-bold mb-6">我的订单</h2>
+            
+            <div class="flex gap-2 mb-8 border-b">
+                <button onclick="switchOrderTab(0)" id="tab-0"
+                        class="order-tab px-8 py-3 font-medium border-b-2 border-transparent hover:text-green-600 transition-colors">我发布的订单</button>
+                <button onclick="switchOrderTab(1)" id="tab-1"
+                        class="order-tab px-8 py-3 font-medium border-b-2 border-transparent hover:text-green-600 transition-colors">我接的订单</button>
+            </div>
+            
+            <div id="my-orders-list" class="space-y-4">
+                <!-- JS 动态渲染 -->
+            </div>
+        </div>
+    </section>
+
+    <!-- 骑手中心（与任务大厅完全联动） -->
+    <section id="rider" class="section py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex items-center gap-4 mb-8">
+                <h2 class="text-4xl font-bold">骑手中心</h2>
+                <span class="bg-green-100 text-green-700 text-sm px-4 py-1 rounded-3xl font-medium">可立即接单</span>
+            </div>
+            <p class="text-gray-600 mb-8">这里显示所有待接任务，与任务大厅完全联动。点击接单后，任务会立即进入「我接的订单」。</p>
+            
+            <div id="rider-task-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- JS 动态渲染 -->
+            </div>
+        </div>
+    </section>
+
+    <!-- 关于我们 / 校园须知 -->
+    <section id="about" class="section py-16 bg-gray-900 text-white">
+        <div class="max-w-4xl mx-auto px-6">
+            <h2 class="text-4xl font-bold mb-8">关于宿舍跑腿小站</h2>
+            <div class="grid md:grid-cols-2 gap-12">
+                <div>
+                    <p class="text-lg leading-relaxed mb-6">
+                        我们是专为苏州经贸职业技术学院学生打造的校园跑腿平台。<br>
+                        解决取快递、买饮料小吃、打印、取饭等日常需求。
+                    </p>
+                    <ul class="space-y-4 text-sm">
+                        <li class="flex gap-3"><i class="fa-solid fa-check text-green-400 mt-1"></i> 全校覆盖，平均响应时间 5 分钟</li>
+                        <li class="flex gap-3"><i class="fa-solid fa-check text-green-400 mt-1"></i> 实名认证骑手 + 接单保险</li>
+                        <li class="flex gap-3"><i class="fa-solid fa-check text-green-400 mt-1"></i> 支持即时到账</li>
+                        <li class="flex gap-3"><i class="fa-solid fa-check text-green-400 mt-1"></i> 评价系统 + 纠纷快速处理</li>
+                    </ul>
+                </div>
+                <div class="bg-white/10 rounded-3xl p-8 text-sm leading-relaxed">
+                    <h4 class="font-semibold mb-4">校园须知</h4>
+                    <p>1. 禁止代取违禁物品</p>
+                    <p>2. 骑手必须在约定时间内到达取件点</p>
+                    <p>3. 平台收取 8% 服务费（已包含在报酬中）</p>
+                    <p>4. 如有争议可联系管理员</p>
+                    <p class="text-xs mt-8 text-gray-400">本项目为纯前端演示作品，仅用于学习交流<br>实际使用需接入后端</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 底部 -->
+    <footer class="bg-gray-900 text-white py-12 text-center text-sm">
+        <p>宿舍跑腿小站 © 2026 纯前端演示项目</p>
+        <p class="text-gray-500 mt-2">Made with Tailwind + 百度地图 + Vanilla JS</p>
+    </footer>
+
+    <script>
+        // ==================== 全局变量 ====================
+        let currentMode = 'student'
+        let mapInstance = null
+        let currentPickupPoint = null
+        let selectedPickupName = ''
+        let tasks = []
+        const currentUser = '小明'
+        const CAMPUS_CENTER = new BMap.Point(120.572745, 31.258600)
+        
+        // ==================== Tailwind 初始化 ====================
+        function initTailwind() {
+            tailwind.config = { content: [], theme: { extend: {} } }
+        }
+        
+        // ==================== 百度地图初始化 ====================
+        function initMap() {
+            if (mapInstance) return
+            
+            mapInstance = new BMap.Map('map')
+            mapInstance.centerAndZoom(CAMPUS_CENTER, 17)
+            mapInstance.enableScrollWheelZoom()
+            
+            // 预置学校标记
+            const markers = [
+                {point: new BMap.Point(120.5735, 31.2590), title: '公交车首末站'},
+                {point: new BMap.Point(120.5720, 31.2575), title: '顺丰快递'},
+                {point: new BMap.Point(120.5718, 31.2582), title: '苏州经贸快递服务点'},
+                {point: new BMap.Point(120.5740, 31.2595), title: '瑞幸'},
+                {point: new BMap.Point(120.5732, 31.2588), title: '蜜雪冰城'},
+                {point: new BMap.Point(120.5705, 31.2570), title: '经贸一食堂'},
+                {point: new BMap.Point(120.5712, 31.2600), title: '南区超市'}
+            ]
+            markers.forEach(m => {
+                const marker = new BMap.Marker(m.point)
+                marker.setTitle(m.title)
+                mapInstance.addOverlay(marker)
+            })
+            
+            // 点击地图选择取件位置
+            mapInstance.addEventListener('click', function(e) {
+                currentPickupPoint = e.point
+                selectedPickupName = `自定义位置 (${e.point.lng.toFixed(4)}, ${e.point.lat.toFixed(4)})`
+                document.getElementById('pickup-display').innerHTML = 
+                    `<span class="text-green-600">已选择：${selectedPickupName}</span>`
+                
+                const marker = new BMap.Marker(e.point)
+                mapInstance.clearOverlays()
+                mapInstance.addOverlay(marker)
+                marker.setTitle('取件位置')
+            })
+        }
+        
+        // ==================== 快速取件位置 ====================
+        window.quickPickup = function(name) {
+            selectedPickupName = name
+            document.getElementById('pickup-display').innerHTML = 
+                `<span class="text-green-600">已选择：${name}</span>`
+            
+            if (mapInstance) {
+                mapInstance.centerAndZoom(CAMPUS_CENTER, 17)
+                const marker = new BMap.Marker(CAMPUS_CENTER)
+                mapInstance.clearOverlays()
+                mapInstance.addOverlay(marker)
+                marker.setTitle(name)
+            }
+        }
+        
+        // ==================== 动态显示/隐藏额外字段 ====================
+        window.updateConditionalFields = function() {
+            const type = document.getElementById('task-type').value
+            const expressField = document.getElementById('express-field')
+            const mealField = document.getElementById('meal-field')
+            
+            // 推荐报价
+            const sugText = document.getElementById('suggestion-text')
+            if (type === '代取快递') {
+                sugText.textContent = '小件 2元，大件建议面议'
+                expressField.style.display = 'block'
+                mealField.style.display = 'none'
+            } else if (type === '代买饮料' || type === '代买小吃' || type === '代取饭') {
+                sugText.textContent = '餐饮类统一 2元'
+                expressField.style.display = 'none'
+                mealField.style.display = 'block'
+            } else if (type === '代打印') {
+                sugText.textContent = '打印类建议 2元，建议面议'
+                expressField.style.display = 'none'
+                mealField.style.display = 'none'
+            } else {
+                sugText.textContent = '餐饮类 2元，快递小件 2元，大件建议面议'
+                expressField.style.display = 'none'
+                mealField.style.display = 'none'
+            }
+            
+            // 默认报酬
+            const rewardInput = document.getElementById('reward')
+            if (type === '代取快递' || type === '代买饮料' || type === '代买小吃' || type === '代取饭') {
+                rewardInput.value = 2
+            }
+        }
+        
+        // ==================== 发布任务 ====================
+        window.handlePublish = function(e) {
+            e.preventDefault()
+            
+            const type = document.getElementById('task-type').value
+            const desc = document.getElementById('task-desc').value || '无描述'
+            const reward = parseInt(document.getElementById('reward').value) || 2
+            const deadline = document.getElementById('deadline').value
+            const deliveryTo = document.getElementById('delivery-to').value
+            const expressNo = document.getElementById('express-no') ? document.getElementById('express-no').value : ''
+            const mealNo = document.getElementById('meal-no') ? document.getElementById('meal-no').value : ''
+            
+            if (!selectedPickupName) {
+                alert('请选择取件位置！')
+                return
+            }
+            if (!deliveryTo) {
+                alert('请填写送达至位置！')
+                return
+            }
+            
+            const newTask = {
+                id: Date.now(),
+                type: type,
+                pickup: selectedPickupName,
+                delivery: deliveryTo,
+                reward: reward,
+                desc: desc,
+                deadline: deadline,
+                status: 'available',
+                publisher: currentUser,
+                runner: null,
+                time: '刚刚',
+                expressNo: expressNo,
+                mealNo: mealNo
+            }
+            
+            tasks.unshift(newTask)
+            saveToLocalStorage()
+            
+            // 清空表单
+            e.target.reset()
+            selectedPickupName = ''
+            currentPickupPoint = null
+            document.getElementById('pickup-display').textContent = '点击地图或快速按钮选择...'
+            
+            alert('任务发布成功！已同步到任务大厅和骑手中心')
+            renderTaskHall()
+            renderRiderCenter()
+            navigateToSection('hall')
+        }
+        
+        // ==================== localStorage ====================
+        function saveToLocalStorage() {
+            localStorage.setItem('campusRunTasks2026', JSON.stringify(tasks))
+        }
+        
+        function loadFromLocalStorage() {
+            const saved = localStorage.getItem('campusRunTasks2026')
+            if (saved) {
+                tasks = JSON.parse(saved)
+            } else {
+                // 真实学校假订单（基于苏州经贸职业技术学院场景）
+                tasks = [
+                    {
+                        id: 1740000000001,
+                        type: '代取快递',
+                        pickup: '顺丰',
+                        delivery: '宿舍A-312',
+                        reward: 2,
+                        desc: '一个中型包裹',
+                        deadline: '1小时',
+                        status: 'available',
+                        publisher: '李华',
+                        runner: null,
+                        time: '刚刚',
+                        expressNo: 'SF123456789',
+                        mealNo: ''
+                    },
+                    {
+                        id: 1740000000002,
+                        type: '代买饮料',
+                        pickup: '瑞幸',
+                        delivery: '教学楼C-401',
+                        reward: 2,
+                        desc: '拿铁中杯',
+                        deadline: '30分钟',
+                        status: 'available',
+                        publisher: '张薇',
+                        runner: null,
+                        time: '3分钟前',
+                        expressNo: '',
+                        mealNo: 'A-045'
+                    },
+                    {
+                        id: 1740000000003,
+                        type: '代买小吃',
+                        pickup: '衢州鸭脖',
+                        delivery: '宿舍B-205',
+                        reward: 2,
+                        desc: '鸭脖一份',
+                        deadline: '1.5小时',
+                        status: 'available',
+                        publisher: '王磊',
+                        runner: null,
+                        time: '10分钟前',
+                        expressNo: '',
+                        mealNo: 'B-112'
+                    },
+                    {
+                        id: 1740000000004,
+                        type: '代打印',
+                        pickup: '南区超市',
+                        delivery: '经贸二食堂',
+                        reward: 3,
+                        desc: '打印 20 页 PPT',
+                        deadline: '2小时',
+                        status: 'available',
+                        publisher: '陈静',
+                        runner: null,
+                        time: '20分钟前',
+                        expressNo: '',
+                        mealNo: ''
+                    },
+                    {
+                        id: 1740000000005,
+                        type: '代取饭',
+                        pickup: '经贸三食堂',
+                        delivery: '北区宿舍',
+                        reward: 2,
+                        desc: '盖浇饭一份',
+                        deadline: '1小时',
+                        status: 'available',
+                        publisher: '刘明',
+                        runner: null,
+                        time: '刚刚',
+                        expressNo: '',
+                        mealNo: 'C-089'
+                    }
+                ]
+                saveToLocalStorage()
+            }
+        }
+        
+        // ==================== 渲染任务大厅 ====================
+        function renderTaskHall(filteredTasks = null) {
+            const container = document.getElementById('task-list')
+            const list = filteredTasks || tasks.filter(t => t.status === 'available')
+            
+            if (list.length === 0) {
+                container.innerHTML = `<div class="col-span-full text-center py-12 text-gray-400">暂无待接任务</div>`
+                return
+            }
+            
+            let html = ''
+            list.forEach(task => {
+                let extra = ''
+                if (task.expressNo) extra += `<div class="text-xs text-gray-400">快递单号：${task.expressNo}</div>`
+                if (task.mealNo) extra += `<div class="text-xs text-gray-400">取餐号：${task.mealNo}</div>`
+                
+                html += `
+                <div class="task-card bg-white border border-gray-100 rounded-3xl p-6">
+                    <div class="flex justify-between">
+                        <div class="text-xl">${task.type}</div>
+                        <div class="text-green-600 font-bold">¥${task.reward}</div>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-1">${task.time}</p>
+                    <div class="mt-4 space-y-1 text-sm">
+                        <div>取件：${task.pickup}</div>
+                        <div>送达至：${task.delivery}</div>
+                        <div>${task.desc}</div>
+                        ${extra}
+                    </div>
+                    <div class="mt-6 flex items-center justify-between">
+                        <div class="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-2xl">${task.deadline}</div>
+                        ${currentMode === 'rider' 
+                            ? `<button onclick="acceptTask(${task.id});" class="bg-green-600 hover:bg-green-700 text-white px-8 py-2 rounded-3xl text-sm font-medium">立即接单</button>`
+                            : `<button onclick="alert('请切换到骑手模式后接单')" class="text-gray-400 text-sm">仅限骑手模式</button>`}
+                    </div>
+                </div>`
+            })
+            container.innerHTML = html
+        }
+        
+        // ==================== 渲染骑手中心 ====================
+        function renderRiderCenter() {
+            const container = document.getElementById('rider-task-list')
+            const available = tasks.filter(t => t.status === 'available')
+            
+            if (available.length === 0) {
+                container.innerHTML = `<div class="col-span-full text-center py-12 text-gray-400">暂无待接任务</div>`
+                return
+            }
+            
+            let html = ''
+            available.forEach(task => {
+                let extra = ''
+                if (task.expressNo) extra += `<div class="text-xs">快递单号：${task.expressNo}</div>`
+                if (task.mealNo) extra += `<div class="text-xs">取餐号：${task.mealNo}</div>`
+                
+                html += `
+                <div class="task-card bg-white border border-gray-100 rounded-3xl p-6">
+                    <div class="flex justify-between">
+                        <div class="text-xl">${task.type}</div>
+                        <div class="text-green-600 font-bold">¥${task.reward}</div>
+                    </div>
+                    <p class="text-xs text-gray-400">${task.time}</p>
+                    <div class="mt-4 space-y-1">
+                        <div>取件：${task.pickup}</div>
+                        <div>送达至：${task.delivery}</div>
+                        ${extra}
+                    </div>
+                    <button onclick="acceptTask(${task.id});" 
+                            class="mt-6 w-full bg-green-600 text-white py-4 rounded-3xl font-semibold">我来接单</button>
+                </div>`
+            })
+            container.innerHTML = html
+        }
+        
+        // ==================== 接单 ====================
+        window.acceptTask = function(id) {
+            if (currentMode !== 'rider') {
+                alert('请先切换到骑手模式')
+                return
+            }
+            const task = tasks.find(t => t.id === id)
+            if (!task) return
+            task.status = 'taken'
+            task.runner = currentUser
+            saveToLocalStorage()
+            alert('接单成功！')
+            renderTaskHall()
+            renderRiderCenter()
+            renderMyOrders(0)
+        }
+        
+        // ==================== 我的订单 ====================
+        function renderMyOrders(tab = 0) {
+            const container = document.getElementById('my-orders-list')
+            let filtered = tab === 0 
+                ? tasks.filter(t => t.publisher === currentUser)
+                : tasks.filter(t => t.runner === currentUser)
+            
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="bg-white rounded-3xl p-12 text-center text-gray-400">暂无订单</div>`
+                return
+            }
+            
+            let html = ''
+            filtered.forEach(task => {
+                const statusText = task.status === 'taken' ? '已接单' : '待接单'
+                let extra = ''
+                if (task.expressNo) extra += `快递单号：${task.expressNo} `
+                if (task.mealNo) extra += `取餐号：${task.mealNo}`
+                
+                html += `
+                <div class="bg-white rounded-3xl p-6 flex gap-6 items-center">
+                    <div class="flex-1">
+                        <div class="flex justify-between">
+                            <div class="font-medium">${task.type} · ${task.pickup} → ${task.delivery}</div>
+                            <div class="font-semibold text-green-600">¥${task.reward}</div>
+                        </div>
+                        <p class="text-sm text-gray-500">${task.desc}</p>
+                        ${extra ? `<p class="text-xs text-gray-400">${extra}</p>` : ''}
+                        <div class="text-xs mt-2 flex gap-3">
+                            <span class="bg-green-100 text-green-700 px-3 py-px rounded-2xl">${statusText}</span>
+                            <span>截止：${task.deadline}</span>
+                        </div>
+                    </div>
+                </div>`
+            })
+            container.innerHTML = html
+        }
+        
+        window.switchOrderTab = function(tab) {
+            document.querySelectorAll('.order-tab').forEach((el, i) => {
+                el.classList.toggle('border-green-600', i === tab)
+                el.classList.toggle('text-green-600', i === tab)
+            })
+            renderMyOrders(tab)
+        }
+        
+        // ==================== 模式切换 ====================
+        window.toggleMode = function() {
+            currentMode = currentMode === 'student' ? 'rider' : 'student'
+            const studentTab = document.getElementById('student-tab')
+            const riderTab = document.getElementById('rider-tab')
+            if (currentMode === 'student') {
+                studentTab.classList.add('bg-white', 'shadow-sm')
+                riderTab.classList.remove('bg-white', 'shadow-sm')
+                document.getElementById('mode-text').textContent = '学生'
+            } else {
+                riderTab.classList.add('bg-white', 'shadow-sm')
+                studentTab.classList.remove('bg-white', 'shadow-sm')
+                document.getElementById('mode-text').textContent = '骑手'
+            }
+            renderTaskHall()
+            renderRiderCenter()
+            renderMyOrders(0)
+        }
+        
+        // ==================== 导航 ====================
+        window.navigateToSection = function(sectionId) {
+            const section = document.getElementById(sectionId)
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth' })
+                if (sectionId === 'publish') {
+                    setTimeout(initMap, 600)
+                }
+            }
+        }
+        
+        // ==================== 搜索 ====================
+        window.filterTasks = function() {
+            const keyword = document.getElementById('search-input').value.toLowerCase().trim()
+            if (!keyword) return renderTaskHall()
+            const filtered = tasks.filter(t => 
+                t.type.toLowerCase().includes(keyword) ||
+                t.desc.toLowerCase().includes(keyword) ||
+                t.pickup.toLowerCase().includes(keyword)
+            )
+            renderTaskHall(filtered)
+        }
+        
+        window.logoutDemo = function() {
+            if (confirm('确定重置所有演示数据吗？')) {
+                localStorage.removeItem('campusRunTasks2026')
+                location.reload()
+            }
+        }
+        
+        // ==================== 启动 ====================
+        function main() {
+            initTailwind()
+            loadFromLocalStorage()
+            renderTaskHall()
+            renderRiderCenter()
+            renderMyOrders(0)
+            console.log('%c宿舍跑腿小站（苏州经贸职业技术学院版）已启动！百度地图 + 推荐报价 + 条件字段全部完成', 'color:#22c55e;font-size:13px')
+        }
+        
+        window.onload = main
+    </script>
+</body>
+</html>
