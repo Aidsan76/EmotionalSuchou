@@ -22,25 +22,32 @@
         .task-card:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); }
         .hero-bg { background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); }
         .conditional { display: none; }
+        /* 选中状态：深绿文字，浅绿背景，确保可读性 */
+        .pickup-btn-active { 
+            background-color: #dcfce7 !important; 
+            color: #166534 !important; 
+            border-color: #22c55e !important;
+            font-weight: 700;
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-900">
 
-    <!-- 顶部导航栏 -->
+    <!-- 导航栏 -->
     <nav class="bg-white shadow-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-green-500 rounded-2xl flex items-center justify-center text-white text-2xl font-bold">跑</div>
+                <div class="w-10 h-10 bg-green-500 rounded-2xl flex items-center justify-center text-white text-xl font-bold">RUN</div>
                 <div>
                     <h1 class="text-2xl font-bold tracking-tight">宿舍跑腿小站</h1>
-                    <p class="text-xs text-green-600 -mt-1">苏州经贸职业技术学院 · 智慧校园</p>
+                    <p class="text-xs text-green-600 -mt-1">苏州经贸职业技术学院</p>
                 </div>
             </div>
             <div id="nav-menu" class="hidden md:flex items-center gap-8 text-sm font-medium"></div>
             <div class="flex items-center gap-4">
                 <button id="auth-btn" onclick="showAuthModal()" class="bg-green-100 text-green-700 px-5 py-2 rounded-3xl text-sm font-medium">登录 / 注册</button>
                 <div id="user-info" onclick="showRoleDropdown()" class="hidden flex items-center gap-3 cursor-pointer">
-                    <div class="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center">👤</div>
+                    <div class="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center"><i class="fa-solid fa-user text-xs"></i></div>
                     <div class="text-left">
                         <p id="current-user-name" class="text-sm font-bold leading-none"></p>
                         <span id="current-role-badge" class="text-[10px] bg-green-100 text-green-700 px-2 rounded-full"></span>
@@ -54,8 +61,8 @@
     <!-- 角色切换 -->
     <div id="role-dropdown" onclick="if(event.target.id==='role-dropdown')hideRoleDropdown()" class="hidden fixed inset-0 bg-black/20 flex items-start justify-end pt-16 pr-6 z-[9999]">
         <div class="bg-white rounded-2xl shadow-2xl w-56 py-2 border border-gray-100">
-            <div onclick="switchToRole('student')" class="px-6 py-4 hover:bg-green-50 flex items-center gap-3 cursor-pointer border-b border-gray-50 text-sm">👤 学生模式</div>
-            <div onclick="switchToRole('rider')" class="px-6 py-4 hover:bg-green-50 flex items-center gap-3 cursor-pointer text-sm">🏍️ 骑手模式</div>
+            <div onclick="switchToRole('student')" class="px-6 py-4 hover:bg-green-50 flex items-center gap-3 cursor-pointer border-b border-gray-50 text-sm">学生模式</div>
+            <div onclick="switchToRole('rider')" class="px-6 py-4 hover:bg-green-50 flex items-center gap-3 cursor-pointer text-sm">骑手模式</div>
         </div>
     </div>
 
@@ -72,7 +79,7 @@
             <div id="register-form" class="hidden">
                 <input id="reg-username" type="text" placeholder="设置用户名" class="w-full border border-gray-200 rounded-2xl px-5 py-4 mb-4 outline-none focus:ring-2 ring-green-500">
                 <input id="reg-password" type="password" placeholder="密码 (至少6位)" class="w-full border border-gray-200 rounded-2xl px-5 py-4 mb-6 outline-none focus:ring-2 ring-green-500">
-                <button onclick="handleRegister()" class="w-full bg-green-500 text-white py-4 rounded-2xl font-bold">立即注册并开通全权限</button>
+                <button onclick="handleRegister()" class="w-full bg-green-500 text-white py-4 rounded-2xl font-bold">立即注册</button>
                 <button onclick="switchToLogin()" class="w-full text-gray-500 mt-4 text-sm text-center">已有账号？去登录</button>
             </div>
         </div>
@@ -82,9 +89,10 @@
     <section id="home" class="section hero-bg text-white py-24">
         <div class="max-w-7xl mx-auto px-6 text-center">
             <h2 class="text-6xl font-extrabold mb-6 tracking-tight">经贸跑腿，准时必达</h2>
+            <p class="text-lg mb-10 opacity-80">快递代取 / 餐饮代买 / 资料打印</p>
             <div class="flex justify-center gap-4">
                 <button onclick="navigateToSection('publish')" class="bg-white text-green-600 px-10 py-4 rounded-full text-lg font-bold shadow-xl">发布任务</button>
-                <button onclick="navigateToSection('hall')" class="bg-green-700/30 border border-white/30 px-10 py-4 rounded-full text-lg font-bold">进入大厅</button>
+                <button onclick="navigateToSection('hall')" class="bg-green-700/30 border border-white/30 px-10 py-4 rounded-full text-lg font-bold">任务大厅</button>
             </div>
         </div>
     </section>
@@ -98,83 +106,81 @@
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
                         <div class="space-y-6">
                             <div>
-                                <label class="block text-sm font-bold text-gray-700 mb-3">📦 任务类型</label>
-                                <select id="task-type" onchange="updateConditionalFields()" class="w-full border-2 border-gray-100 rounded-2xl px-5 py-4 focus:border-green-500 outline-none appearance-none bg-gray-50">
-                                    <option value="代买餐饮">🍔 代买饭 / 代买饮料</option>
-                                    <option value="代取快递">📦 代取快递</option>
-                                    <option value="代打印">🖨️ 代打印资料</option>
-                                    <option value="其他跑腿">✨ 其他跑腿</option>
+                                <label class="block text-sm font-bold text-gray-700 mb-3">任务类型</label>
+                                <select id="task-type" onchange="updateConditionalFields()" class="w-full border-2 border-gray-100 rounded-2xl px-5 py-4 focus:border-green-500 outline-none bg-gray-50">
+                                    <option value="代买餐饮">代买饭 / 代买饮料</option>
+                                    <option value="代取快递">代取快递</option>
+                                    <option value="代打印">代打印资料</option>
+                                    <option value="其他跑腿">其他跑腿</option>
                                 </select>
                             </div>
                             
                             <div>
-                                <label class="block text-sm font-bold text-gray-700 mb-3">📍 取件地点 (点击选择)</label>
-                                <div id="pickup-buttons-container" class="flex flex-wrap gap-2 p-4 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 min-h-[120px]">
-                                    <!-- 动态按钮 -->
-                                </div>
-                                <p class="mt-2 text-sm">已选择: <span id="pickup-display" class="font-bold text-green-600 underline">请点击上方按钮</span></p>
+                                <label class="block text-sm font-bold text-gray-700 mb-3">取件地点 (点击选择)</label>
+                                <div id="pickup-buttons-container" class="flex flex-wrap gap-2 p-4 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 min-h-[120px]"></div>
+                                <p class="mt-2 text-sm text-gray-500">当前选择: <span id="pickup-display" class="font-bold text-green-600">请选择</span></p>
                             </div>
 
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block text-sm font-bold text-gray-700 mb-2">💰 报酬 (元)</label>
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">报酬 (元)</label>
                                     <input id="reward" type="number" value="2" class="w-full border-2 border-gray-100 rounded-2xl px-5 py-4 focus:border-green-500 outline-none">
                                 </div>
                                 <div id="express-field" class="conditional">
-                                    <label class="block text-sm font-bold text-gray-700 mb-2">🔢 快递单号</label>
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">快递单号</label>
                                     <input id="express-no" type="text" class="w-full border-2 border-gray-100 rounded-2xl px-5 py-4" placeholder="取件码/单号">
                                 </div>
                                 <div id="meal-field" class="conditional">
-                                    <label class="block text-sm font-bold text-gray-700 mb-2">🎫 取餐号</label>
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">取餐号</label>
                                     <input id="meal-no" type="text" class="w-full border-2 border-gray-100 rounded-2xl px-5 py-4" placeholder="例如: A-66">
                                 </div>
                             </div>
 
                             <div class="space-y-4">
-                                <label class="block text-sm font-bold text-gray-700 mb-1">🏠 送达到校内具体位置</label>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">送到具体位置</label>
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    <select id="delivery-type" onchange="updateDeliverySubOptions()" class="border-2 border-gray-100 rounded-2xl px-4 py-4 focus:border-green-500 outline-none bg-gray-50">
+                                    <select id="delivery-type" onchange="updateDeliverySubOptions()" class="border-2 border-gray-100 rounded-2xl px-4 py-4 focus:border-green-500 outline-none bg-gray-50 text-sm">
                                         <option value="">1. 选择所属区域</option>
                                         <option value="teaching">教学楼 (存志/明德等)</option>
                                         <option value="south-dorm">南区宿舍 (1-12, 17号楼)</option>
                                         <option value="north-dorm">北区宿舍 (13-16, 18号楼)</option>
                                     </select>
                                     <div id="delivery-building-container">
-                                        <select id="building-select" class="w-full border-2 border-gray-100 rounded-2xl px-4 py-4 outline-none bg-gray-50">
+                                        <select id="building-select" class="w-full border-2 border-gray-100 rounded-2xl px-4 py-4 outline-none bg-gray-50 text-sm" disabled>
                                             <option value="">2. 请先选择区域</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="grid grid-cols-2 gap-4">
-                                    <select id="floor-select" class="border-2 border-gray-100 rounded-2xl px-4 py-4 outline-none bg-gray-50">
+                                    <select id="floor-select" class="border-2 border-gray-100 rounded-2xl px-4 py-4 outline-none bg-gray-50 text-sm">
                                         <option value="">3. 选择楼层</option>
                                         <option value="1">1层</option><option value="2">2层</option>
                                         <option value="3">3层</option><option value="4">4层</option>
                                         <option value="5">5层</option>
                                     </select>
-                                    <input id="room-no" type="number" placeholder="4. 门牌号 (如: 03)" class="border-2 border-gray-100 rounded-2xl px-4 py-4 focus:border-green-500 outline-none">
+                                    <input id="room-no" type="number" placeholder="4. 门牌号 (如: 03)" class="border-2 border-gray-100 rounded-2xl px-4 py-4 focus:border-green-500 outline-none text-sm">
                                 </div>
                             </div>
 
                             <div>
-                                <label class="block text-sm font-bold text-gray-700 mb-2">📝 任务备注</label>
-                                <textarea id="task-desc" rows="2" class="w-full border-2 border-gray-100 rounded-2xl px-5 py-4 outline-none focus:border-green-500" placeholder="有什么需要叮嘱骑手的？"></textarea>
+                                <label class="block text-sm font-bold text-gray-700 mb-2">任务备注</label>
+                                <textarea id="task-desc" rows="2" class="w-full border-2 border-gray-100 rounded-2xl px-5 py-4 outline-none focus:border-green-500" placeholder="有什么需要叮嘱的？"></textarea>
                             </div>
                         </div>
 
                         <div>
                             <div id="map" class="map-container"></div>
-                            <div class="mt-6 p-6 bg-green-50 rounded-3xl border border-green-100">
-                                <h4 class="font-bold text-green-800 mb-2">💡 配送小贴士</h4>
-                                <ul class="text-xs text-green-700 space-y-2">
-                                    <li>• 教学楼教室格式：303 代表 3楼第3间教室。</li>
-                                    <li>• 宿舍房间格式：502 代表 5楼第2间宿舍。</li>
-                                    <li>• 请确保取件点信息准确，方便骑手快速找到。</li>
+                            <div class="mt-6 p-6 bg-gray-100 rounded-3xl">
+                                <h4 class="font-bold text-gray-800 mb-2">配送说明</h4>
+                                <ul class="text-xs text-gray-500 space-y-2">
+                                    <li>- 教学楼格式：楼层 + 教室号 (如 303)。</li>
+                                    <li>- 宿舍格式：楼层 + 房间号 (如 502)。</li>
+                                    <li>- 请确保填写的联系方式或单号准确无误。</li>
                                 </ul>
                             </div>
                         </div>
                     </div>
-                    <button type="submit" class="mt-12 w-full bg-gray-900 text-white font-bold py-5 rounded-2xl text-xl shadow-2xl hover:bg-green-600 transition-all">确认发布任务</button>
+                    <button type="submit" class="mt-12 w-full bg-gray-900 text-white font-bold py-5 rounded-2xl text-xl shadow-2xl hover:bg-green-600 transition-all">发布任务</button>
                 </form>
             </div>
         </div>
@@ -195,18 +201,20 @@
                 <h2 class="text-4xl font-extrabold text-green-800">骑手工作台</h2>
                 <button onclick="generateFakeOrder()" class="bg-orange-500 text-white px-6 py-2 rounded-full font-bold shadow-lg">模拟订单</button>
             </div>
+            
             <div class="mb-12">
-                <h3 class="text-2xl font-bold mb-6 flex items-center gap-2"><span class="w-2 h-6 bg-green-500 rounded"></span> 进行中的订单</h3>
+                <h3 class="text-2xl font-bold mb-6 flex items-center gap-2">进行中的订单</h3>
                 <div id="current-rider-orders" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
             </div>
+
             <div>
-                <h3 class="text-2xl font-bold mb-6 text-gray-400 flex items-center gap-2"><span class="w-2 h-6 bg-gray-300 rounded"></span> 已完成的历史</h3>
+                <h3 class="text-2xl font-bold mb-6 text-gray-400 flex items-center gap-2">已完成的历史</h3>
                 <div id="history-rider-orders" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
             </div>
         </div>
     </section>
 
-    <!-- 我的订单 -->
+    <!-- 我的记录 -->
     <section id="orders" class="section py-16 bg-white hidden">
         <div class="max-w-7xl mx-auto px-6">
             <h2 class="text-4xl font-bold mb-8">我的发布记录</h2>
@@ -232,31 +240,32 @@
         let currentRole = 'student';
         let selectedPickup = "未选择";
 
-        // 核心：实时同步
+        // 实时同步
         function startSync() {
             if(!currentUser) return;
+
+            // 1. 待接单
             tasksRef.where('status', '==', 'available').orderBy('createdAt', 'desc')
                 .onSnapshot(snap => renderList(snap, 'task-list', 'available'));
+
+            // 2. 骑手进行中 (修复点：确保 riderId 匹配)
             tasksRef.where('riderId', '==', currentUser.uid).where('status', '==', 'taken').orderBy('createdAt', 'desc')
-                .onSnapshot(snap => renderList(snap, 'current-rider-orders', 'taken'));
+                .onSnapshot(snap => renderList(snap, 'current-rider-orders', 'taken'), err => {
+                    console.error("进行中订单查询失败，请检查索引:", err);
+                });
+
+            // 3. 骑手历史
             tasksRef.where('riderId', '==', currentUser.uid).where('status', '==', 'completed').orderBy('createdAt', 'desc')
                 .onSnapshot(snap => renderList(snap, 'history-rider-orders', 'completed'));
         }
 
-        // 核心：动态配送子选项 (关键修改点)
+        // 地址级联
         window.updateDeliverySubOptions = function() {
             const type = document.getElementById('delivery-type').value;
             const buildingContainer = document.getElementById('delivery-building-container');
-            
             let buildings = [];
             if(type === 'teaching') {
-                buildings = [
-                    '存志楼（1号教学楼）', 
-                    '明德楼（2号教学楼）', 
-                    '广才楼（3号教学楼）', 
-                    '弘毅楼（4号教学楼）', 
-                    '知行楼（5号教学楼）'
-                ];
+                buildings = ['存志楼（1号教学楼）','明德楼（2号教学楼）','广才楼（3号教学楼）','弘毅楼（4号教学楼）','知行楼（5号教学楼）'];
             } else if(type === 'south-dorm') {
                 buildings = ['1号楼','2号楼','3号楼','4号楼','5号楼','6号楼','7号楼','8号楼','9号楼','10号楼','11号楼','12号楼','17号楼'];
             } else if(type === 'north-dorm') {
@@ -264,40 +273,31 @@
             }
 
             if(buildings.length > 0) {
-                let html = `<select id="building-select" class="w-full border-2 border-gray-100 rounded-2xl px-4 py-4 outline-none bg-white">`;
+                let html = `<select id="building-select" class="w-full border-2 border-gray-100 rounded-2xl px-4 py-4 outline-none bg-white text-sm">`;
                 buildings.forEach(b => html += `<option value="${b}">${b}</option>`);
                 html += `</select>`;
                 buildingContainer.innerHTML = html;
             } else {
-                buildingContainer.innerHTML = `<select id="building-select" class="w-full border-2 border-gray-100 rounded-2xl px-4 py-4 outline-none bg-gray-50" disabled><option value="">2. 请先选择区域</option></select>`;
+                buildingContainer.innerHTML = `<select id="building-select" disabled class="w-full border-2 border-gray-100 rounded-2xl px-4 py-4 outline-none bg-gray-50 text-sm"><option value="">请先选择区域</option></select>`;
             }
         };
 
-        // 核心：生成地址字符串 (关键修改点)
         function getDeliveryAddress() {
             const area = document.getElementById('delivery-type').value;
-            const building = document.getElementById('building-select').value;
-            const floor = document.getElementById('floor-select').value;
-            let room = document.getElementById('room-no').value;
-
-            if(!area || !building || !floor || !room) return null;
-
-            // 格式化门牌号：如果是 3，变成 03
-            if(room.length === 1) room = '0' + room;
-            
-            // 拼接教室号/宿舍号，例如 3 + 03 = 303
-            const roomCode = floor + room;
-
-            const areaNames = { 'teaching': '', 'south-dorm': '南区 ', 'north-dorm': '北区 ' };
-            return `${areaNames[area]}${building} ${roomCode}`;
+            const b = document.getElementById('building-select').value;
+            const f = document.getElementById('floor-select').value;
+            let r = document.getElementById('room-no').value;
+            if(!area || !b || !f || !r) return null;
+            if(r.length === 1) r = '0' + r;
+            const areaPrefix = { 'teaching': '', 'south-dorm': '南区 ', 'north-dorm': '北区 ' };
+            return `${areaPrefix[area]}${b} ${f}${r}`;
         }
 
-        // 动态取件点按钮
+        // 取件按钮生成
         window.updateConditionalFields = function() {
             const type = document.getElementById('task-type').value;
             const container = document.getElementById('pickup-buttons-container');
             container.innerHTML = '';
-            
             let locations = [];
             if(type === '代买餐饮') {
                 locations = ['瑞幸', '蜜雪冰城', '衢州鸭脖', '正新鸡排', '0090汉堡工厂', '经贸一食堂', '经贸二食堂', '经贸三食堂', '经贸四食堂', '经贸小食堂'];
@@ -306,65 +306,33 @@
             } else if(type === '代打印') {
                 locations = ['南区超市', '北区超市'];
             } else {
-                locations = ['综合楼', '图书馆', '其他点(请备注)'];
+                locations = ['综合楼', '图书馆', '其他点'];
             }
 
             locations.forEach(loc => {
                 const btn = document.createElement('button');
                 btn.type = 'button';
-                btn.className = "px-4 py-2 bg-white border border-gray-200 rounded-xl text-xs font-bold hover:border-green-500 shadow-sm transition-all";
+                btn.className = "px-4 py-2 bg-white border border-gray-200 rounded-xl text-xs font-bold transition-all shadow-sm";
                 btn.textContent = loc;
                 btn.onclick = () => {
                     selectedPickup = loc;
                     document.getElementById('pickup-display').textContent = loc;
-                    container.querySelectorAll('button').forEach(b => b.classList.remove('bg-green-500', 'text-white'));
-                    btn.classList.add('bg-green-500', 'text-white');
+                    // 修复：选中状态改为高对比度深色文字
+                    container.querySelectorAll('button').forEach(b => b.classList.remove('pickup-btn-active'));
+                    btn.classList.add('pickup-btn-active');
                 };
                 container.appendChild(btn);
             });
-
             document.getElementById('express-field').style.display = type === '代取快递' ? 'block' : 'none';
             document.getElementById('meal-field').style.display = type === '代买餐饮' ? 'block' : 'none';
         };
 
-        // 发布逻辑
-        window.handlePublish = async function(e) {
-            e.preventDefault();
-            if(!currentUser) return alert('请先登录');
-            if(selectedPickup === '未选择') return alert('请选择取件点');
-            
-            const delivery = getDeliveryAddress();
-            if(!delivery) return alert('请完整选择配送楼栋、楼层和门牌号');
-
-            const data = {
-                type: document.getElementById('task-type').value,
-                pickup: selectedPickup,
-                delivery: delivery,
-                reward: document.getElementById('reward').value,
-                desc: document.getElementById('task-desc').value,
-                status: 'available',
-                publisherId: currentUser.uid,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                expressNo: document.getElementById('express-no').value || '',
-                mealNo: document.getElementById('meal-no').value || ''
-            };
-
-            try {
-                await tasksRef.add(data);
-                alert('✅ 发布成功！已同步至云端大厅');
-                document.getElementById('publish-form').reset();
-                selectedPickup = '未选择';
-                document.getElementById('pickup-display').textContent = '请点击按钮选择';
-                navigateToSection('hall');
-            } catch(e) { alert('失败：' + e.message); }
-        };
-
-        // 列表渲染器
+        // 核心渲染
         function renderList(snapshot, containerId, mode) {
             const container = document.getElementById(containerId);
             if(!container) return;
             if(snapshot.empty) {
-                container.innerHTML = `<div class="col-span-full py-10 text-center text-gray-400 bg-gray-100/50 rounded-3xl border-2 border-dashed">暂无相关订单</div>`;
+                container.innerHTML = `<div class="col-span-full py-10 text-center text-gray-400 bg-gray-100 rounded-3xl border-2 border-dashed">暂无相关订单</div>`;
                 return;
             }
             let html = '';
@@ -377,34 +345,56 @@
                         <span class="px-3 py-1 bg-green-50 text-green-700 rounded-full text-xs font-bold">${t.type}</span>
                         <p class="text-2xl font-black text-green-600">￥${t.reward}</p>
                     </div>
-                    <div class="space-y-3 mb-6">
-                        <p class="text-sm font-bold text-gray-800"><i class="fa-solid fa-location-dot text-orange-500 mr-2"></i>${t.pickup}</p>
-                        <p class="text-sm font-bold text-gray-800"><i class="fa-solid fa-house-user text-blue-500 mr-2"></i>${t.delivery}</p>
+                    <div class="space-y-2 mb-4 text-sm font-bold">
+                        <p><i class="fa-solid fa-location-dot text-orange-500 mr-2"></i>${t.pickup}</p>
+                        <p><i class="fa-solid fa-house-user text-blue-500 mr-2"></i>${t.delivery}</p>
                     </div>
                     <div class="bg-gray-50 p-4 rounded-xl text-xs text-gray-500 mb-6">
                         备注：${t.desc || '无'}<br>
-                        ${t.mealNo ? `取餐号：<span class="text-orange-600 font-bold">${t.mealNo}</span>` : ''}
-                        ${t.expressNo ? `单号：<span class="text-blue-600 font-bold">${t.expressNo}</span>` : ''}
+                        ${t.mealNo ? `取餐号：${t.mealNo}` : ''}
+                        ${t.expressNo ? `单号：${t.expressNo}` : ''}
                     </div>
-                    ${mode==='available'?`<button onclick="takeOrder('${id}')" class="w-full bg-gray-900 text-white py-4 rounded-2xl font-bold hover:bg-green-600 transition-all">${currentRole==='rider'?'🏍️ 立即接单':'等待接单'}</button>`:
-                      mode==='taken'?`<button onclick="completeOrder('${id}')" class="w-full bg-green-500 text-white py-4 rounded-2xl font-bold">✅ 确认送达</button>`:
+                    ${mode==='available'?`<button onclick="takeOrder('${id}')" class="w-full bg-gray-900 text-white py-4 rounded-2xl font-bold hover:bg-green-600 transition-all">${currentRole==='rider'?'接单':'等待中'}</button>`:
+                      mode==='taken'?`<button onclick="completeOrder('${id}')" class="w-full bg-green-500 text-white py-4 rounded-2xl font-bold">确认送达</button>`:
                       `<button disabled class="w-full bg-gray-100 text-gray-400 py-4 rounded-2xl font-bold">已完成</button>`}
                 </div>`;
             });
             container.innerHTML = html;
         }
 
+        window.handlePublish = async function(e) {
+            e.preventDefault();
+            if(!currentUser) return alert('请登录');
+            const delivery = getDeliveryAddress();
+            if(!delivery || selectedPickup === '未选择') return alert('请完善取件和配送信息');
+            await tasksRef.add({
+                type: document.getElementById('task-type').value,
+                pickup: selectedPickup,
+                delivery: delivery,
+                reward: document.getElementById('reward').value,
+                desc: document.getElementById('task-desc').value,
+                status: 'available',
+                publisherId: currentUser.uid,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                expressNo: document.getElementById('express-no').value || '',
+                mealNo: document.getElementById('meal-no').value || ''
+            });
+            alert('发布成功');
+            document.getElementById('publish-form').reset();
+            navigateToSection('hall');
+        };
+
         window.takeOrder = async function(id) {
-            if(currentRole !== 'rider') return alert('请先切换为骑手模式');
+            if(currentRole !== 'rider') return alert('请切换为骑手模式');
             await tasksRef.doc(id).update({ status: 'taken', riderId: currentUser.uid });
-            alert('📦 接单成功！');
+            alert('接单成功');
             navigateToSection('rider');
         };
 
         window.completeOrder = async function(id) {
-            if(!confirm('确认已送达？')) return;
+            if(!confirm('确认送达？')) return;
             await tasksRef.doc(id).update({ status: 'completed' });
-            alert('🏆 任务已完成！');
+            alert('已完成');
         };
 
         window.handleLogin = async function() {
@@ -419,16 +409,15 @@
             try {
                 const res = await auth.createUserWithEmailAndPassword(`${u}@campus-run.com`, p);
                 await db.collection('users').doc(res.user.uid).set({ username: u, roles:['student','rider'] });
-                alert('注册并开通全权限成功！');
+                alert('注册成功');
                 location.reload();
             } catch(e) { alert(e.message); }
         };
 
         window.generateFakeOrder = () => {
             tasksRef.add({
-                type: '代买餐饮', pickup: '瑞幸', delivery: '存志楼（1号教学楼） 305',
-                reward: '2', desc: '生椰拿铁', status: 'available',
-                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                type: '代买餐饮', pickup: '瑞幸', delivery: '存志楼 305',
+                reward: '2', status: 'available', createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                 publisherId: 'system', mealNo: 'A-22'
             });
         };
@@ -456,7 +445,7 @@
 
         function renderNav() {
             const nav = document.getElementById('nav-menu');
-            document.getElementById('current-role-badge').textContent = currentRole==='rider'?'🏍️ 骑手模式':'👤 学生模式';
+            document.getElementById('current-role-badge').textContent = currentRole==='rider'?'骑手模式':'学生模式';
             let html = `<a onclick="navigateToSection('home')" class="nav-link">首页</a>`;
             if(currentRole === 'student') html += `<a onclick="navigateToSection('publish')" class="nav-link">发布任务</a>`;
             html += `<a onclick="navigateToSection('hall')" class="nav-link">任务大厅</a>`;
