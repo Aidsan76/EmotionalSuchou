@@ -118,7 +118,6 @@
             <div class="bg-white rounded-3xl shadow-xl p-8">
                 <form id="publish-form" onsubmit="handlePublish(event)">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <!-- 左侧表单（保持你原来的所有字段） -->
                         <div class="space-y-6">
                             <div>
                                 <label class="block text-sm font-medium mb-2">任务类型</label>
@@ -166,7 +165,6 @@
                             <div>
                                 <label class="block text-sm font-medium mb-3">快速选择取件位置</label>
                                 <div class="flex flex-wrap gap-2">
-                                    <!-- 所有快速按钮保持不变 -->
                                     <button type="button" onclick="quickPickup('公交车首末站')" class="text-xs px-4 py-2 bg-gray-100 hover:bg-green-100 rounded-2xl">公交车首末站</button>
                                     <button type="button" onclick="quickPickup('顺丰')" class="text-xs px-4 py-2 bg-gray-100 hover:bg-green-100 rounded-2xl">顺丰</button>
                                     <button type="button" onclick="quickPickup('苏州经贸快递服务点')" class="text-xs px-4 py-2 bg-gray-100 hover:bg-green-100 rounded-2xl">苏州经贸快递服务点</button>
@@ -222,6 +220,9 @@
     <section id="rider" class="section py-16 bg-white hidden">
         <div class="max-w-7xl mx-auto px-6">
             <h2 class="text-4xl font-bold mb-8">骑手中心</h2>
+            <button onclick="generateFakeOrder()" class="mb-6 bg-orange-100 text-orange-700 px-5 py-2 rounded-3xl text-sm flex items-center gap-2">
+                <i class="fa-solid fa-plus"></i> 生成一条演示订单
+            </button>
             <div id="rider-task-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </div>
     </section>
@@ -260,7 +261,6 @@
         let currentUser = null;
         let currentRole = 'student';
 
-        // 密码强度
         window.checkPasswordStrength = function() {
             const pwd = document.getElementById('reg-password').value;
             const bar = document.getElementById('strength-bar');
@@ -286,7 +286,6 @@
             }
         };
 
-        // 注册（友好提示 email 已存在）
         window.handleRegister = async function() {
             const username = document.getElementById('reg-username').value.trim();
             const password = document.getElementById('reg-password').value;
@@ -304,19 +303,18 @@
                 });
                 currentUser = userCredential.user;
                 currentRole = selectedRoles[0];
-                hideAuthModal();
+                hideAuthModal();   // 注册成功后自动关闭窗口
                 renderAfterLogin();
                 alert(`✅ 注册成功！账号 ${username} 已拥有 ${selectedRoles.join(' 和 ')} 身份`);
             } catch (e) {
                 if (e.code === 'auth/email-already-in-use') {
-                    alert('❌ 用户名已被占用，请换一个用户名试试');
+                    alert('❌ 该用户名已被占用，请换一个用户名试试');
                 } else {
                     alert('注册失败：' + e.message);
                 }
             }
         };
 
-        // 登录
         window.handleLogin = async function() {
             const username = document.getElementById('login-username').value.trim();
             const password = document.getElementById('login-password').value;
@@ -429,6 +427,31 @@
             alert('✅ 任务发布成功！');
         };
 
+        // 条件字段（取快递去掉取餐号，食品类去掉快递单号）
+        window.updateConditionalFields = function() {
+            const type = document.getElementById('task-type').value;
+            const expressField = document.getElementById('express-field');
+            const mealField = document.getElementById('meal-field');
+            const sugText = document.getElementById('suggestion-text');
+
+            if (type === '代取快递') {
+                sugText.textContent = '小件 2元，大件建议面议';
+                expressField.style.display = 'block';
+                mealField.style.display = 'none';
+            } else if (type === '代买饮料' || type === '代买小吃' || type === '代取饭') {
+                sugText.textContent = '餐饮类统一 2元';
+                expressField.style.display = 'none';
+                mealField.style.display = 'block';
+            } else {
+                sugText.textContent = '餐饮类 2元，快递小件 2元，大件建议面议';
+                expressField.style.display = 'none';
+                mealField.style.display = 'none';
+            }
+
+            const rewardInput = document.getElementById('reward');
+            if (['代取快递','代买饮料','代买小吃','代取饭'].includes(type)) rewardInput.value = 2;
+        };
+
         function renderNav() {
             const menu = document.getElementById('nav-menu');
             let html = `<a onclick="navigateToSection('home')" class="nav-link cursor-pointer">首页</a>`;
@@ -448,21 +471,39 @@
             document.getElementById('hall').classList.toggle('hidden', !isRider);
             document.getElementById('rider').classList.toggle('hidden', !isRider);
             document.getElementById('orders').classList.remove('hidden');
-            // 切换到骑手时自动生成演示订单
-            if (isRider) seedDemoTasks();
+
+            if (isRider) seedDemoTasks();   // 切换到骑手时自动创建演示订单
         }
 
+        // 自动创建演示订单（修复骑手模式下空白）
         function seedDemoTasks() {
             tasksRef.get().then(snapshot => {
                 if (snapshot.empty) {
                     const demoTasks = [
-                        {type: '代取快递', pickup: '顺丰', delivery: '存志楼 第3层 303', reward: 2, desc: '一个中型包裹', deadline: '1小时', status: 'available', publisher: '李华', time: '刚刚'},
-                        {type: '代买饮料', pickup: '瑞幸', delivery: '南区 5号楼 第3层 305', reward: 2, desc: '拿铁中杯', deadline: '30分钟', status: 'available', publisher: '张薇', time: '3分钟前'},
-                        {type: '代买小吃', pickup: '衢州鸭脖', delivery: '北区 14号楼 第2层 208', reward: 2, desc: '鸭脖一份', deadline: '1.5小时', status: 'available', publisher: '王磊', time: '10分钟前'}
+                        {type: '代取快递', pickup: '顺丰', delivery: '存志楼 第3层 303', reward: 2, desc: '一个中型包裹', deadline: '1小时', status: 'available', publisher: '李华', time: '刚刚', expressNo: 'SF123456789', mealNo: ''},
+                        {type: '代买饮料', pickup: '瑞幸', delivery: '南区 5号楼 第3层 305', reward: 2, desc: '拿铁中杯', deadline: '30分钟', status: 'available', publisher: '张薇', time: '3分钟前', expressNo: '', mealNo: 'A-045'},
+                        {type: '代买小吃', pickup: '衢州鸭脖', delivery: '北区 14号楼 第2层 208', reward: 2, desc: '鸭脖一份', deadline: '1.5小时', status: 'available', publisher: '王磊', time: '10分钟前', expressNo: '', mealNo: 'B-112'}
                     ];
                     demoTasks.forEach(task => tasksRef.add(task));
                 }
             });
+        }
+
+        function generateFakeOrder() {
+            const demoTask = {
+                type: '代取快递',
+                pickup: '顺丰',
+                delivery: '存志楼 第3层 303',
+                reward: 2,
+                desc: '手动生成的演示订单',
+                deadline: '1小时',
+                status: 'available',
+                publisher: '随机学生',
+                time: '刚刚',
+                expressNo: 'SF' + Math.floor(Math.random()*100000000),
+                mealNo: ''
+            };
+            tasksRef.add(demoTask);
         }
 
         function navigateToSection(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
@@ -475,7 +516,7 @@
                     renderAfterLogin();
                 }
             });
-            console.log('%c✅ 最终版代码已加载，所有问题已修复', 'color:#22c55e;font-size:13px');
+            console.log('%c✅ 最终修复版已加载，注册窗口自动关闭 + 骑手模式自动生成演示订单', 'color:#22c55e;font-size:13px');
         }
         window.onload = main;
     </script>
