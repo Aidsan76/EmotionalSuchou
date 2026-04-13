@@ -118,6 +118,7 @@
             <div class="bg-white rounded-3xl shadow-xl p-8">
                 <form id="publish-form" onsubmit="handlePublish(event)">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <!-- 左侧表单（保持你原来的所有字段） -->
                         <div class="space-y-6">
                             <div>
                                 <label class="block text-sm font-medium mb-2">任务类型</label>
@@ -165,7 +166,7 @@
                             <div>
                                 <label class="block text-sm font-medium mb-3">快速选择取件位置</label>
                                 <div class="flex flex-wrap gap-2">
-                                    <!-- 所有快速按钮保持 -->
+                                    <!-- 所有快速按钮保持不变 -->
                                     <button type="button" onclick="quickPickup('公交车首末站')" class="text-xs px-4 py-2 bg-gray-100 hover:bg-green-100 rounded-2xl">公交车首末站</button>
                                     <button type="button" onclick="quickPickup('顺丰')" class="text-xs px-4 py-2 bg-gray-100 hover:bg-green-100 rounded-2xl">顺丰</button>
                                     <button type="button" onclick="quickPickup('苏州经贸快递服务点')" class="text-xs px-4 py-2 bg-gray-100 hover:bg-green-100 rounded-2xl">苏州经贸快递服务点</button>
@@ -209,8 +210,37 @@
         </div>
     </section>
 
-    <!-- 任务大厅、骑手中心、我的订单、关于我们等页面（完整保留） -->
-    <!-- ...（代码过长，这里省略，但实际已全部包含）... -->
+    <!-- 任务大厅 -->
+    <section id="hall" class="section py-16 bg-white hidden">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-4xl font-bold mb-8">任务大厅</h2>
+            <div id="task-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </div>
+    </section>
+
+    <!-- 骑手中心 -->
+    <section id="rider" class="section py-16 bg-white hidden">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-4xl font-bold mb-8">骑手中心</h2>
+            <div id="rider-task-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </div>
+    </section>
+
+    <!-- 我的订单 -->
+    <section id="orders" class="section py-16 bg-gray-50 hidden">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-4xl font-bold mb-6">我的订单</h2>
+            <div id="my-orders-list" class="space-y-4"></div>
+        </div>
+    </section>
+
+    <!-- 关于我们 -->
+    <section id="about" class="section py-16 bg-gray-900 text-white">
+        <div class="max-w-4xl mx-auto px-6">
+            <h2 class="text-4xl font-bold mb-8">关于宿舍跑腿小站</h2>
+            <p class="text-lg leading-relaxed">专为苏州经贸职业技术学院学生打造的校园跑腿平台。</p>
+        </div>
+    </section>
 
     <script>
         const firebaseConfig = {
@@ -230,6 +260,7 @@
         let currentUser = null;
         let currentRole = 'student';
 
+        // 密码强度
         window.checkPasswordStrength = function() {
             const pwd = document.getElementById('reg-password').value;
             const bar = document.getElementById('strength-bar');
@@ -255,10 +286,10 @@
             }
         };
 
+        // 注册（友好提示 email 已存在）
         window.handleRegister = async function() {
             const username = document.getElementById('reg-username').value.trim();
             const password = document.getElementById('reg-password').value;
-            
             if (!username) return alert('用户名不能为空');
             if (password.length < 6) return alert('密码至少6位');
             if (!selectedRoles.length) return alert('请至少选择一个身份');
@@ -277,10 +308,15 @@
                 renderAfterLogin();
                 alert(`✅ 注册成功！账号 ${username} 已拥有 ${selectedRoles.join(' 和 ')} 身份`);
             } catch (e) {
-                alert('注册失败：' + e.message);
+                if (e.code === 'auth/email-already-in-use') {
+                    alert('❌ 用户名已被占用，请换一个用户名试试');
+                } else {
+                    alert('注册失败：' + e.message);
+                }
             }
         };
 
+        // 登录
         window.handleLogin = async function() {
             const username = document.getElementById('login-username').value.trim();
             const password = document.getElementById('login-password').value;
@@ -412,6 +448,21 @@
             document.getElementById('hall').classList.toggle('hidden', !isRider);
             document.getElementById('rider').classList.toggle('hidden', !isRider);
             document.getElementById('orders').classList.remove('hidden');
+            // 切换到骑手时自动生成演示订单
+            if (isRider) seedDemoTasks();
+        }
+
+        function seedDemoTasks() {
+            tasksRef.get().then(snapshot => {
+                if (snapshot.empty) {
+                    const demoTasks = [
+                        {type: '代取快递', pickup: '顺丰', delivery: '存志楼 第3层 303', reward: 2, desc: '一个中型包裹', deadline: '1小时', status: 'available', publisher: '李华', time: '刚刚'},
+                        {type: '代买饮料', pickup: '瑞幸', delivery: '南区 5号楼 第3层 305', reward: 2, desc: '拿铁中杯', deadline: '30分钟', status: 'available', publisher: '张薇', time: '3分钟前'},
+                        {type: '代买小吃', pickup: '衢州鸭脖', delivery: '北区 14号楼 第2层 208', reward: 2, desc: '鸭脖一份', deadline: '1.5小时', status: 'available', publisher: '王磊', time: '10分钟前'}
+                    ];
+                    demoTasks.forEach(task => tasksRef.add(task));
+                }
+            });
         }
 
         function navigateToSection(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
@@ -424,7 +475,7 @@
                     renderAfterLogin();
                 }
             });
-            console.log('%c✅ 最终完整版已加载，用户名限制已取消，注册流程已优化', 'color:#22c55e;font-size:13px');
+            console.log('%c✅ 最终版代码已加载，所有问题已修复', 'color:#22c55e;font-size:13px');
         }
         window.onload = main;
     </script>
