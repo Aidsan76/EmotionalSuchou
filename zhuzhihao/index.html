@@ -77,21 +77,25 @@
                 </div>
             </div>
 
-            <div class="hidden md:flex items-center gap-8 text-sm font-medium">
-                <a onclick="navigateToSection('home')" class="nav-link cursor-pointer">首页</a>
-                <a onclick="navigateToSection('publish')" class="nav-link cursor-pointer">发布任务</a>
-                <a onclick="navigateToHall()" class="nav-link cursor-pointer" id="hall-nav">任务大厅</a>
-                <a onclick="navigateToSection('orders')" class="nav-link cursor-pointer">我的订单</a>
-                <a onclick="navigateToSection('rider')" class="nav-link cursor-pointer text-green-600 font-semibold">骑手中心</a>
-                <a onclick="navigateToSection('about')" class="nav-link cursor-pointer">关于我们</a>
+            <!-- 动态导航菜单 -->
+            <div id="nav-menu" class="hidden md:flex items-center gap-8 text-sm font-medium">
+                <!-- JS 动态生成 -->
             </div>
 
             <div class="flex items-center gap-4">
+                <!-- 模式切换 -->
                 <div onclick="toggleMode()" id="mode-switch"
                      class="flex items-center bg-gray-100 rounded-3xl p-1 cursor-pointer text-sm font-medium">
                     <div id="student-tab" class="px-5 py-1.5 rounded-3xl transition-all">学生模式</div>
                     <div id="rider-tab" class="px-5 py-1.5 rounded-3xl transition-all">骑手模式</div>
                 </div>
+                
+                <!-- 注册/登录按钮 -->
+                <button onclick="showRegisterModal()" 
+                        class="flex items-center gap-2 bg-green-100 text-green-700 px-5 py-2 rounded-3xl text-sm font-medium hover:bg-green-200">
+                    <i class="fa-solid fa-user-plus"></i>
+                    注册/登录
+                </button>
                 
                 <div class="flex items-center gap-2">
                     <div class="w-8 h-8 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center text-xl">👤</div>
@@ -223,7 +227,7 @@
                                 </div>
                             </div>
                             
-                            <!-- 配送至级联选择 -->
+                            <!-- 配送至（已去掉门牌号/教室号输入框） -->
                             <div>
                                 <label class="block text-sm font-medium mb-2">配送至</label>
                                 <select id="delivery-type" onchange="updateDeliverySubOptions()" 
@@ -234,17 +238,8 @@
                                     <option value="north-dorm">北区宿舍</option>
                                 </select>
                                 
-                                <!-- 子选项 -->
                                 <div id="delivery-sub" class="space-y-4">
-                                    <!-- JS 动态生成 -->
-                                </div>
-                                
-                                <!-- 门牌号 -->
-                                <div id="room-field" class="mt-4 space-y-2">
-                                    <label class="block text-sm font-medium">门牌号 / 教室号</label>
-                                    <input id="room-no" type="text" 
-                                           class="w-full border border-gray-300 rounded-2xl px-5 py-4 focus:outline-none focus:border-green-500"
-                                           placeholder="例如：303 或 305">
+                                    <!-- JS 动态生成：仅楼栋 + 楼层 -->
                                 </div>
                             </div>
                         </div>
@@ -255,7 +250,7 @@
                             <div id="map" class="map-container"></div>
                             <div class="mt-3 text-xs text-gray-500 flex items-center gap-2">
                                 <i class="fa-solid fa-info-circle"></i>
-                                点击地图可自定义取件位置（推荐使用本地服务器打开）
+                                点击地图可自定义取件位置（推荐使用 Live Server 打开）
                             </div>
                             
                             <div class="mt-4 bg-gray-50 p-4 rounded-2xl">
@@ -291,16 +286,18 @@
         </div>
     </section>
 
-    <!-- 我的订单 -->
-    <section id="orders" class="section py-16 bg-gray-50">
+    <!-- 我的订单（学生和骑手都可见） -->
+    <section id="orders" class="section py-16 bg-gray-50 hidden">
         <div class="max-w-7xl mx-auto px-6">
             <h2 class="text-4xl font-bold mb-6">我的订单</h2>
             
             <div class="flex gap-2 mb-8 border-b">
                 <button onclick="switchOrderTab(0)" id="tab-0"
-                        class="order-tab px-8 py-3 font-medium border-b-2 border-transparent hover:text-green-600 transition-colors">我发布的订单</button>
+                        class="order-tab px-8 py-3 font-medium border-b-2 border-transparent hover:text-green-600 transition-colors">我发布的</button>
                 <button onclick="switchOrderTab(1)" id="tab-1"
-                        class="order-tab px-8 py-3 font-medium border-b-2 border-transparent hover:text-green-600 transition-colors">我接的订单</button>
+                        class="order-tab px-8 py-3 font-medium border-b-2 border-transparent hover:text-green-600 transition-colors">我接的</button>
+                <button onclick="switchOrderTab(2)" id="tab-2"
+                        class="order-tab px-8 py-3 font-medium border-b-2 border-transparent hover:text-green-600 transition-colors">历史订单</button>
             </div>
             
             <div id="my-orders-list" class="space-y-4">
@@ -309,12 +306,16 @@
         </div>
     </section>
 
-    <!-- 骑手中心 -->
-    <section id="rider" class="section py-16 bg-white">
+    <!-- 骑手中心（仅骑手模式可见） -->
+    <section id="rider" class="section py-16 bg-white hidden">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex items-center gap-4 mb-8">
                 <h2 class="text-4xl font-bold">骑手中心</h2>
                 <span class="bg-green-100 text-green-700 text-sm px-4 py-1 rounded-3xl font-medium">可立即接单</span>
+                <button onclick="generateFakeOrder()" 
+                        class="ml-auto text-sm bg-orange-100 text-orange-700 px-4 py-2 rounded-3xl flex items-center gap-2">
+                    <i class="fa-solid fa-plus"></i> 手动生成假订单
+                </button>
             </div>
             <p class="text-gray-600 mb-8">与任务大厅完全联动，点击接单后任务进入「我接的订单」。</p>
             
@@ -359,26 +360,53 @@
         <p class="text-gray-500 mt-2">Made with Tailwind + 百度地图 + Vanilla JS</p>
     </footer>
 
+    <!-- 注册/登录模态框 -->
+    <div id="register-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[9999]">
+        <div class="bg-white rounded-3xl max-w-md w-full mx-4 p-8">
+            <h3 class="text-2xl font-bold mb-6">注册 / 登录</h3>
+            
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-sm mb-2">选择身份</label>
+                    <div class="flex gap-4">
+                        <button onclick="registerAs('student')" 
+                                class="flex-1 py-4 border-2 border-green-200 hover:border-green-500 rounded-3xl text-center">我是学生</button>
+                        <button onclick="registerAs('rider')" 
+                                class="flex-1 py-4 border-2 border-green-200 hover:border-green-500 rounded-3xl text-center">我要当骑手</button>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm mb-2">姓名 / 昵称</label>
+                    <input id="reg-name" type="text" value="小明" 
+                           class="w-full border border-gray-300 rounded-2xl px-5 py-4 focus:outline-none focus:border-green-500">
+                </div>
+                
+                <div class="flex gap-3">
+                    <button onclick="hideRegisterModal()" 
+                            class="flex-1 py-4 border border-gray-300 rounded-3xl">取消</button>
+                    <button onclick="confirmRegister()" 
+                            class="flex-1 py-4 bg-green-500 text-white rounded-3xl">确认注册</button>
+                </div>
+            </div>
+            
+            <p class="text-xs text-gray-500 mt-8 text-center">本演示使用 localStorage 模拟保存<br>真实项目需要后端数据库</p>
+        </div>
+    </div>
+
     <script>
         // ==================== 全局变量 ====================
         let currentMode = 'student'
         let mapInstance = null
         let currentPickupPoint = null
         let selectedPickupName = ''
-        let tasks = []
-        const currentUser = '小明'
+        let tasks = []           // 待接订单
+        let historyOrders = []   // 历史订单（已完成）
+        let currentUser = { name: '小明', role: 'student' }
         const CAMPUS_CENTER = new BMap.Point(120.572745, 31.258600)
         
-        // 教学楼数据
-        const teachingBuildings = [
-            { name: '存志楼', label: '1号教学楼' },
-            { name: '明德楼', label: '2号教学楼' },
-            { name: '广才楼', label: '3号教学楼' },
-            { name: '弘毅楼', label: '4号教学楼' },
-            { name: '知行楼', label: '5号教学楼' }
-        ]
-        
-        // 宿舍数据
+        // 教学楼 & 宿舍数据
+        const teachingBuildings = ['存志楼（1号教学楼）','明德楼（2号教学楼）','广才楼（3号教学楼）','弘毅楼（4号教学楼）','知行楼（5号教学楼）']
         const southDorms = ['1号楼','2号楼','3号楼','4号楼','5号楼','6号楼','7号楼','8号楼','9号楼','10号楼','11号楼','12号楼','17号楼']
         const northDorms = ['13号楼','14号楼','15号楼','16号楼','18号楼']
         
@@ -387,23 +415,17 @@
             tailwind.config = { content: [], theme: { extend: {} } }
         }
         
-        // ==================== 百度地图初始化（已优化显示问题） ====================
+        // ==================== 百度地图 ====================
         function initMap() {
             if (mapInstance) return
-            const mapDiv = document.getElementById('map')
-            if (!mapDiv) return
-            
             mapInstance = new BMap.Map('map')
             mapInstance.centerAndZoom(CAMPUS_CENTER, 17)
             mapInstance.enableScrollWheelZoom(true)
             
-            // 预置标记
             const markers = [
                 {point: new BMap.Point(120.5735, 31.2590), title: '公交车首末站'},
                 {point: new BMap.Point(120.5720, 31.2575), title: '顺丰'},
-                {point: new BMap.Point(120.5718, 31.2582), title: '苏州经贸快递服务点'},
-                {point: new BMap.Point(120.5740, 31.2595), title: '瑞幸'},
-                {point: new BMap.Point(120.5732, 31.2588), title: '蜜雪冰城'}
+                {point: new BMap.Point(120.5718, 31.2582), title: '苏州经贸快递服务点'}
             ]
             markers.forEach(m => {
                 const marker = new BMap.Marker(m.point)
@@ -411,7 +433,6 @@
                 mapInstance.addOverlay(marker)
             })
             
-            // 点击事件
             mapInstance.addEventListener('click', function(e) {
                 currentPickupPoint = e.point
                 selectedPickupName = `自定义位置 (${e.point.lng.toFixed(4)}, ${e.point.lat.toFixed(4)})`
@@ -420,8 +441,32 @@
                 mapInstance.clearOverlays()
                 mapInstance.addOverlay(marker)
             })
+        }
+        
+        // ==================== 动态导航（学生模式仅显示首页、发布任务、关于我们） ====================
+        function renderNav() {
+            const menu = document.getElementById('nav-menu')
+            let html = ''
             
-            console.log('百度地图已成功加载')
+            // 学生模式：只显示首页、发布任务、关于我们
+            if (currentMode === 'student') {
+                html = `
+                    <a onclick="navigateToSection('home')" class="nav-link cursor-pointer">首页</a>
+                    <a onclick="navigateToSection('publish')" class="nav-link cursor-pointer">发布任务</a>
+                    <a onclick="navigateToSection('about')" class="nav-link cursor-pointer">关于我们</a>
+                `
+            } else {
+                // 骑手模式：全部显示
+                html = `
+                    <a onclick="navigateToSection('home')" class="nav-link cursor-pointer">首页</a>
+                    <a onclick="navigateToSection('publish')" class="nav-link cursor-pointer">发布任务</a>
+                    <a onclick="navigateToHall()" class="nav-link cursor-pointer">任务大厅</a>
+                    <a onclick="navigateToSection('orders')" class="nav-link cursor-pointer">我的订单</a>
+                    <a onclick="navigateToSection('rider')" class="nav-link cursor-pointer text-green-600 font-semibold">骑手中心</a>
+                    <a onclick="navigateToSection('about')" class="nav-link cursor-pointer">关于我们</a>
+                `
+            }
+            menu.innerHTML = html
         }
         
         // ==================== 快速取件 ====================
@@ -465,36 +510,33 @@
             if (['代取快递','代买饮料','代买小吃','代取饭'].includes(type)) rewardInput.value = 2
         }
         
-        // ==================== 配送至级联选择 ====================
+        // ==================== 配送至（去掉门牌号/教室号） ====================
         window.updateDeliverySubOptions = function() {
             const type = document.getElementById('delivery-type').value
             const subContainer = document.getElementById('delivery-sub')
             subContainer.innerHTML = ''
             
             if (type === 'teaching') {
-                let html = `<select id="teaching-building" class="w-full border border-gray-300 rounded-2xl px-5 py-4 focus:outline-none focus:border-green-500 mb-3">`
-                teachingBuildings.forEach(b => {
-                    html += `<option value="${b.name}">${b.name}（${b.label}）</option>`
-                })
+                let html = `<select id="teaching-building" class="w-full border border-gray-300 rounded-2xl px-5 py-4 focus:outline-none focus:border-green-500">`
+                teachingBuildings.forEach(b => html += `<option value="${b}">${b}</option>`)
                 html += `</select>`
-                html += `<div class="flex gap-3"><select id="teaching-floor" class="flex-1 border border-gray-300 rounded-2xl px-5 py-4"><option value="">楼层</option>`
+                html += `<select id="teaching-floor" class="w-full mt-4 border border-gray-300 rounded-2xl px-5 py-4 focus:outline-none focus:border-green-500"><option value="">请选择楼层</option>`
                 for (let i = 1; i <= 5; i++) html += `<option value="${i}">第${i}层</option>`
-                html += `</select><input id="teaching-room" type="text" placeholder="教室号（如303）" class="flex-1 border border-gray-300 rounded-2xl px-5 py-4"></div>`
+                html += `</select>`
                 subContainer.innerHTML = html
             } 
             else if (type === 'south-dorm' || type === 'north-dorm') {
                 const dorms = type === 'south-dorm' ? southDorms : northDorms
-                let html = `<select id="dorm-building" class="w-full border border-gray-300 rounded-2xl px-5 py-4 focus:outline-none focus:border-green-500 mb-3">`
+                let html = `<select id="dorm-building" class="w-full border border-gray-300 rounded-2xl px-5 py-4 focus:outline-none focus:border-green-500">`
                 dorms.forEach(d => html += `<option value="${d}">${d}</option>`)
                 html += `</select>`
-                html += `<div class="flex gap-3"><select id="dorm-floor" class="flex-1 border border-gray-300 rounded-2xl px-5 py-4"><option value="">楼层</option>`
+                html += `<select id="dorm-floor" class="w-full mt-4 border border-gray-300 rounded-2xl px-5 py-4 focus:outline-none focus:border-green-500"><option value="">请选择楼层</option>`
                 for (let i = 1; i <= 5; i++) html += `<option value="${i}">第${i}层</option>`
-                html += `</select><input id="dorm-room" type="text" placeholder="门牌号（如305）" class="flex-1 border border-gray-300 rounded-2xl px-5 py-4"></div>`
+                html += `</select>`
                 subContainer.innerHTML = html
             }
         }
         
-        // ==================== 获取配送至完整地址 ====================
         function getDeliveryAddress() {
             const type = document.getElementById('delivery-type').value
             if (!type) return ''
@@ -502,14 +544,12 @@
             if (type === 'teaching') {
                 const building = document.getElementById('teaching-building') ? document.getElementById('teaching-building').value : ''
                 const floor = document.getElementById('teaching-floor') ? document.getElementById('teaching-floor').value : ''
-                const room = document.getElementById('teaching-room') ? document.getElementById('teaching-room').value : ''
-                return `${building} 第${floor}层 ${room}`
+                return `${building} 第${floor}层`
             } else {
                 const building = document.getElementById('dorm-building') ? document.getElementById('dorm-building').value : ''
                 const floor = document.getElementById('dorm-floor') ? document.getElementById('dorm-floor').value : ''
-                const room = document.getElementById('dorm-room') ? document.getElementById('dorm-room').value : ''
                 const area = type === 'south-dorm' ? '南区' : '北区'
-                return `${area} ${building} 第${floor}层 ${room}`
+                return `${area} ${building} 第${floor}层`
             }
         }
         
@@ -525,14 +565,8 @@
             const expressNo = document.getElementById('express-no') ? document.getElementById('express-no').value : ''
             const mealNo = document.getElementById('meal-no') ? document.getElementById('meal-no').value : ''
             
-            if (!selectedPickupName) {
-                alert('请选择取件位置！')
-                return
-            }
-            if (!deliveryTo) {
-                alert('请完整填写配送至信息！')
-                return
-            }
+            if (!selectedPickupName) return alert('请选择取件位置！')
+            if (!deliveryTo) return alert('请填写配送至信息！')
             
             const newTask = {
                 id: Date.now(),
@@ -543,7 +577,7 @@
                 desc: desc,
                 deadline: deadline,
                 status: 'available',
-                publisher: currentUser,
+                publisher: currentUser.name,
                 runner: null,
                 time: '刚刚',
                 expressNo: expressNo,
@@ -558,34 +592,39 @@
             document.getElementById('pickup-display').textContent = '点击地图或快速按钮选择...'
             document.getElementById('delivery-sub').innerHTML = ''
             
-            alert('✅ 任务发布成功！已同步到任务大厅')
+            alert('✅ 任务发布成功！')
             renderTaskHall()
             renderRiderCenter()
             navigateToHall()
         }
         
-        // ==================== localStorage & 假数据 ====================
+        // ==================== localStorage ====================
         function saveToLocalStorage() {
             localStorage.setItem('campusRunTasks2026', JSON.stringify(tasks))
+            localStorage.setItem('campusRunHistory2026', JSON.stringify(historyOrders))
+            localStorage.setItem('campusRunUser2026', JSON.stringify(currentUser))
         }
         
         function loadFromLocalStorage() {
-            const saved = localStorage.getItem('campusRunTasks2026')
-            if (saved) {
-                tasks = JSON.parse(saved)
-            } else {
+            const savedTasks = localStorage.getItem('campusRunTasks2026')
+            const savedHistory = localStorage.getItem('campusRunHistory2026')
+            const savedUser = localStorage.getItem('campusRunUser2026')
+            
+            if (savedTasks) tasks = JSON.parse(savedTasks)
+            else {
                 tasks = [
-                    {id:1740000000001, type:'代取快递', pickup:'顺丰', delivery:'存志楼 第3层 303', reward:2, desc:'一个中型包裹', deadline:'1小时', status:'available', publisher:'李华', runner:null, time:'刚刚', expressNo:'SF123456789', mealNo:''},
-                    {id:1740000000002, type:'代买饮料', pickup:'瑞幸', delivery:'南区 5号楼 第3层 305', reward:2, desc:'拿铁中杯', deadline:'30分钟', status:'available', publisher:'张薇', runner:null, time:'3分钟前', expressNo:'', mealNo:'A-045'},
-                    {id:1740000000003, type:'代买小吃', pickup:'衢州鸭脖', delivery:'北区 14号楼 第2层 208', reward:2, desc:'鸭脖一份', deadline:'1.5小时', status:'available', publisher:'王磊', runner:null, time:'10分钟前', expressNo:'', mealNo:'B-112'},
-                    {id:1740000000004, type:'代打印', pickup:'南区超市', delivery:'明德楼 第4层 402', reward:3, desc:'打印20页PPT', deadline:'2小时', status:'available', publisher:'陈静', runner:null, time:'20分钟前', expressNo:'', mealNo:''},
-                    {id:1740000000005, type:'代取饭', pickup:'经贸三食堂', delivery:'南区 8号楼 第1层 105', reward:2, desc:'盖浇饭一份', deadline:'1小时', status:'available', publisher:'刘明', runner:null, time:'刚刚', expressNo:'', mealNo:'C-089'}
+                    {id:1740000000001, type:'代取快递', pickup:'顺丰', delivery:'存志楼 第3层', reward:2, desc:'一个中型包裹', deadline:'1小时', status:'available', publisher:'李华', runner:null, time:'刚刚', expressNo:'SF123456789', mealNo:''},
+                    {id:1740000000002, type:'代买饮料', pickup:'瑞幸', delivery:'南区 5号楼 第3层', reward:2, desc:'拿铁中杯', deadline:'30分钟', status:'available', publisher:'张薇', runner:null, time:'3分钟前', expressNo:'', mealNo:'A-045'}
                 ]
-                saveToLocalStorage()
             }
+            
+            if (savedHistory) historyOrders = JSON.parse(savedHistory)
+            if (savedUser) currentUser = JSON.parse(savedUser)
+            
+            document.getElementById('current-user').textContent = currentUser.name
         }
         
-        // ==================== 渲染任务大厅 ====================
+        // ==================== 渲染任务大厅 & 骑手中心 ====================
         function renderTaskHall(filteredTasks = null) {
             const container = document.getElementById('task-list')
             const list = filteredTasks || tasks.filter(t => t.status === 'available')
@@ -597,8 +636,7 @@
             
             let html = ''
             list.forEach(task => {
-                let extra = ''
-                if (task.expressNo) extra += `<div class="text-xs text-gray-400">快递单号：${task.expressNo}</div>`
+                let extra = task.expressNo ? `<div class="text-xs text-gray-400">快递单号：${task.expressNo}</div>` : ''
                 if (task.mealNo) extra += `<div class="text-xs text-gray-400">取餐号：${task.mealNo}</div>`
                 
                 html += `
@@ -616,9 +654,7 @@
                     </div>
                     <div class="mt-6 flex items-center justify-between">
                         <div class="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-2xl">${task.deadline}</div>
-                        ${currentMode === 'rider' ? 
-                            `<button onclick="acceptTask(${task.id});" class="bg-green-600 hover:bg-green-700 text-white px-8 py-2 rounded-3xl text-sm font-medium">立即接单</button>` : 
-                            `<span class="text-gray-400 text-sm">仅骑手可见</span>`}
+                        <button onclick="acceptTask(${task.id});" class="bg-green-600 hover:bg-green-700 text-white px-8 py-2 rounded-3xl text-sm font-medium">立即接单</button>
                     </div>
                 </div>`
             })
@@ -628,18 +664,14 @@
         function renderRiderCenter() {
             const container = document.getElementById('rider-task-list')
             const available = tasks.filter(t => t.status === 'available')
-            
             if (available.length === 0) {
                 container.innerHTML = `<div class="col-span-full text-center py-12 text-gray-400">暂无待接任务</div>`
                 return
             }
-            
             let html = ''
             available.forEach(task => {
-                let extra = ''
-                if (task.expressNo) extra += `<div class="text-xs">快递单号：${task.expressNo}</div>`
+                let extra = task.expressNo ? `<div class="text-xs">快递单号：${task.expressNo}</div>` : ''
                 if (task.mealNo) extra += `<div class="text-xs">取餐号：${task.mealNo}</div>`
-                
                 html += `
                 <div class="task-card bg-white border border-gray-100 rounded-3xl p-6">
                     <div class="flex justify-between">
@@ -659,30 +691,34 @@
         }
         
         window.acceptTask = function(id) {
-            if (currentMode !== 'rider') return alert('请切换到骑手模式')
             const task = tasks.find(t => t.id === id)
             if (!task) return
             task.status = 'taken'
-            task.runner = currentUser
+            task.runner = currentUser.name
             saveToLocalStorage()
-            alert('接单成功！')
+            alert('✅ 接单成功！')
             renderTaskHall()
             renderRiderCenter()
-            renderMyOrders(0)
+            renderMyOrders(1)
         }
         
+        // ==================== 我的订单（含历史） ====================
         function renderMyOrders(tab = 0) {
             const container = document.getElementById('my-orders-list')
-            let filtered = tab === 0 ? tasks.filter(t => t.publisher === currentUser) : tasks.filter(t => t.runner === currentUser)
+            let list = []
             
-            if (filtered.length === 0) {
+            if (tab === 0) list = tasks.filter(t => t.publisher === currentUser.name)
+            else if (tab === 1) list = tasks.filter(t => t.runner === currentUser.name)
+            else if (tab === 2) list = historyOrders
+            
+            if (list.length === 0) {
                 container.innerHTML = `<div class="bg-white rounded-3xl p-12 text-center text-gray-400">暂无订单</div>`
                 return
             }
             
             let html = ''
-            filtered.forEach(task => {
-                const statusText = task.status === 'taken' ? '已接单' : '待接单'
+            list.forEach(task => {
+                const status = task.status === 'taken' ? '已接单' : (tab === 2 ? '已完成' : '待接单')
                 let extra = ''
                 if (task.expressNo) extra += `快递单号：${task.expressNo} `
                 if (task.mealNo) extra += `取餐号：${task.mealNo}`
@@ -697,7 +733,7 @@
                         <p class="text-sm text-gray-500">${task.desc}</p>
                         ${extra ? `<p class="text-xs text-gray-400">${extra}</p>` : ''}
                         <div class="text-xs mt-2 flex gap-3">
-                            <span class="bg-green-100 text-green-700 px-3 py-px rounded-2xl">${statusText}</span>
+                            <span class="bg-green-100 text-green-700 px-3 py-px rounded-2xl">${status}</span>
                             <span>截止：${task.deadline}</span>
                         </div>
                     </div>
@@ -714,7 +750,7 @@
             renderMyOrders(tab)
         }
         
-        // ==================== 模式切换 & 任务大厅仅骑手可见 ====================
+        // ==================== 模式切换（严格控制可见性） ====================
         window.toggleMode = function() {
             currentMode = currentMode === 'student' ? 'rider' : 'student'
             
@@ -725,20 +761,27 @@
                 studentTab.classList.add('bg-white', 'shadow-sm')
                 riderTab.classList.remove('bg-white', 'shadow-sm')
                 document.getElementById('mode-text').textContent = '学生'
+                // 隐藏任务大厅 & 骑手中心 & 我的订单
                 document.getElementById('hall').classList.add('hidden')
+                document.getElementById('rider').classList.add('hidden')
+                document.getElementById('orders').classList.add('hidden')
             } else {
                 riderTab.classList.add('bg-white', 'shadow-sm')
                 studentTab.classList.remove('bg-white', 'shadow-sm')
                 document.getElementById('mode-text').textContent = '骑手'
+                // 显示全部
                 document.getElementById('hall').classList.remove('hidden')
+                document.getElementById('rider').classList.remove('hidden')
+                document.getElementById('orders').classList.remove('hidden')
             }
             
+            renderNav()
             renderTaskHall()
             renderRiderCenter()
             renderMyOrders(0)
         }
         
-        // ==================== 导航（任务大厅仅骑手可见） ====================
+        // ==================== 导航 ====================
         window.navigateToSection = function(sectionId) {
             const section = document.getElementById(sectionId)
             if (section) section.scrollIntoView({ behavior: 'smooth' })
@@ -747,8 +790,7 @@
         
         window.navigateToHall = function() {
             if (currentMode !== 'rider') {
-                alert('任务大厅仅在骑手模式下可见\n请先切换到骑手模式')
-                navigateToSection('rider')
+                alert('任务大厅仅在骑手模式下可见')
                 return
             }
             document.getElementById('hall').classList.remove('hidden')
@@ -759,16 +801,81 @@
             const keyword = document.getElementById('search-input').value.toLowerCase().trim()
             if (!keyword) return renderTaskHall()
             const filtered = tasks.filter(t => 
-                t.type.toLowerCase().includes(keyword) || 
-                t.desc.toLowerCase().includes(keyword) || 
-                t.pickup.toLowerCase().includes(keyword)
+                t.type.toLowerCase().includes(keyword) || t.desc.toLowerCase().includes(keyword)
             )
             renderTaskHall(filtered)
         }
         
+        // ==================== 假订单生成器（定时 + 手动） ====================
+        function generateFakeOrder() {
+            const types = ['代取快递','代买饮料','代买小吃','代打印','代取饭']
+            const pickups = ['顺丰','瑞幸','蜜雪冰城','衢州鸭脖','经贸一食堂']
+            const deliveries = ['存志楼 第2层','南区 5号楼 第3层','明德楼 第4层','北区 14号楼 第1层']
+            
+            const fakeTask = {
+                id: Date.now(),
+                type: types[Math.floor(Math.random() * types.length)],
+                pickup: pickups[Math.floor(Math.random() * pickups.length)],
+                delivery: deliveries[Math.floor(Math.random() * deliveries.length)],
+                reward: Math.random() > 0.5 ? 2 : 3,
+                desc: '随机生成的演示订单',
+                deadline: '1小时',
+                status: 'available',
+                publisher: '随机学生',
+                runner: null,
+                time: '刚刚',
+                expressNo: '',
+                mealNo: ''
+            }
+            
+            tasks.unshift(fakeTask)
+            saveToLocalStorage()
+            renderTaskHall()
+            renderRiderCenter()
+            alert('🎲 已生成一条新的假订单！')
+        }
+        
+        // 定时自动生成（骑手模式下每60秒）
+        let fakeTimer
+        function startFakeOrderTimer() {
+            if (fakeTimer) clearInterval(fakeTimer)
+            fakeTimer = setInterval(() => {
+                if (currentMode === 'rider') generateFakeOrder()
+            }, 60000)
+        }
+        
+        // ==================== 注册模态框 ====================
+        window.showRegisterModal = function() {
+            document.getElementById('register-modal').classList.remove('hidden')
+            document.getElementById('register-modal').classList.add('flex')
+        }
+        
+        window.hideRegisterModal = function() {
+            const modal = document.getElementById('register-modal')
+            modal.classList.add('hidden')
+            modal.classList.remove('flex')
+        }
+        
+        window.registerAs = function(role) {
+            currentUser.role = role
+            // 演示用，不实际切换模式
+            alert(`✅ 已注册为${role === 'rider' ? '骑手' : '学生'}！\n（演示中已保存到 localStorage）`)
+            hideRegisterModal()
+        }
+        
+        window.confirmRegister = function() {
+            const name = document.getElementById('reg-name').value || '小明'
+            currentUser.name = name
+            document.getElementById('current-user').textContent = name
+            saveToLocalStorage()
+            hideRegisterModal()
+            alert('注册成功！')
+        }
+        
+        // ==================== 退出演示 ====================
         window.logoutDemo = function() {
-            if (confirm('确定重置演示数据吗？')) {
-                localStorage.removeItem('campusRunTasks2026')
+            if (confirm('确定重置所有演示数据吗？')) {
+                localStorage.clear()
                 location.reload()
             }
         }
@@ -777,15 +884,15 @@
         function main() {
             initTailwind()
             loadFromLocalStorage()
+            renderNav()
             renderTaskHall()
             renderRiderCenter()
             renderMyOrders(0)
             
-            // 地图提示
-            console.log('%c宿舍跑腿小站 已启动！\n百度地图需要在本地服务器（如VSCode Live Server）下打开才能正常显示', 'color:#22c55e;font-size:13px')
+            // 启动假订单定时器
+            startFakeOrderTimer()
             
-            // 初始隐藏任务大厅（学生模式）
-            document.getElementById('hall').classList.add('hidden')
+            console.log('%c✅ 宿舍跑腿小站 已启动！\n学生模式仅显示首页/发布任务/关于我们\n骑手模式可看到全部 + 自动假订单生成器', 'color:#22c55e;font-size:13px')
         }
         
         window.onload = main
