@@ -3,43 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MIMO AI 智能问诊平台</title>
+    <title>AI智能健康助理</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
     <style>
-        .chat-container { height: calc(100vh - 200px); }
-        .message-ai { background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 1rem 1rem 1rem 0; }
-        .message-user { background-color: #2563eb; color: white; border-radius: 1rem 1rem 0 1rem; }
-        .prose p { margin-bottom: 0.5rem; }
-        .prose ul { list-style-type: disc; margin-left: 1.25rem; }
+        .chat-container { height: calc(100vh - 180px); }
+        .message-ai { 
+            background-color: #ffffff; 
+            border: 1px solid #f1f5f9; 
+            border-radius: 0 1.25rem 1.25rem 1.25rem; 
+        }
+        .message-user { 
+            background-color: #2563eb; 
+            color: white; 
+            border-radius: 1.25rem 0 1.25rem 1.25rem; 
+        }
+        .prose p { margin-bottom: 0.5rem; line-height: 1.6; }
+        .prose ul { list-style-type: disc; margin-left: 1.25rem; margin-bottom: 0.5rem; }
+        .prose strong { color: #1e40af; }
+        /* 自定义滚动条 */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
-<body class="bg-slate-50 font-sans text-slate-900">
+<body class="bg-slate-50 font-sans text-slate-800 antialiased">
 
-    <nav class="bg-blue-600 shadow-lg p-4 sticky top-0 z-50">
+    <nav class="bg-gradient-to-r from-blue-700 to-blue-500 shadow-md p-4 sticky top-0 z-50">
         <div class="max-w-4xl mx-auto flex justify-between items-center text-white">
-            <h1 class="text-xl font-bold flex items-center">🏥 MIMO 智能健康助手</h1>
-            <span class="text-[10px] bg-blue-500 px-2 py-1 rounded">Model: mimo-v2-pro</span>
+            <h1 class="text-lg font-semibold tracking-wide">AI智能健康助理</h1>
+            <span class="text-xs bg-white/20 border border-white/30 px-3 py-1 rounded-full backdrop-blur-sm">Health-AI</span>
         </div>
     </nav>
 
     <main class="max-w-4xl mx-auto px-4 py-6">
-        <div id="chat-window" class="chat-container overflow-y-auto space-y-4 p-4 mb-20">
+        <div id="chat-window" class="chat-container overflow-y-auto space-y-6 p-2 mb-24 pb-8">
             <div class="flex justify-start">
                 <div class="max-w-[85%] p-4 shadow-sm message-ai">
-                    <p class="font-bold text-blue-600 mb-1">AI 助手：</p>
-                    您好！我是接入了小米 MIMO 大模型的 AI 医生。请描述您的症状。
+                    <p class="text-sm font-semibold text-blue-700 mb-2">AI 健康助手</p>
+                    <p class="text-slate-700">您好！我是您的专属 AI 智能健康助理。请详细描述您的症状或不适，我将为您进行初步的分析并提供就医建议。</p>
                 </div>
             </div>
         </div>
 
-        <div class="fixed bottom-0 left-0 right-0 bg-white border-t p-4 shadow-2xl">
-            <div class="max-w-4xl mx-auto flex gap-2">
+        <div class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-slate-200 p-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+            <div class="max-w-4xl mx-auto flex gap-3 items-center">
                 <input type="text" id="userInput" 
-                    class="flex-grow p-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="请输入症状描述...">
-                <button id="sendBtn" class="bg-blue-600 text-white px-8 py-3 rounded-xl hover:bg-blue-700 transition-all font-bold shadow-md">发送</button>
+                    class="flex-grow p-3.5 rounded-xl border border-slate-300 bg-slate-50 outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-slate-700 placeholder-slate-400 shadow-inner"
+                    placeholder="请输入您的症状描述...">
+                <button id="sendBtn" class="bg-blue-600 text-white px-8 py-3.5 rounded-xl hover:bg-blue-700 active:transform active:scale-95 transition-all font-medium shadow-md flex-shrink-0">
+                    发送
+                </button>
             </div>
         </div>
     </main>
@@ -48,7 +64,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
         import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
 
-        // 1. Firebase 配置
+        // 1. Firebase 配置 (保留您的原配置)
         const firebaseConfig = {
             apiKey: "AIzaSyC5UiP5tmofj6BJBNr-zHnqkOLl9lCxHOE",
             authDomain: "mimo-ai-clinic.firebaseapp.com",
@@ -69,8 +85,6 @@
         const userInput = document.getElementById('userInput');
         const sendBtn = document.getElementById('sendBtn');
 
-// ... 其他代码保持不变 ...
-
         async function handleSend() {
             const text = userInput.value.trim();
             if (!text) return;
@@ -86,19 +100,17 @@
                 const response = await fetch(PROXY_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                   // ... handleSend 函数内部 ...
-    body: JSON.stringify({
-        model: "deepseek-ai/DeepSeek-V3", // <--- 硅基流动的 V3 模型名
-        messages: [
-            { 
-                role: "system", 
-                content: "你是一位专业的在线医生。请根据用户的描述分析可能的健康问题，给出初步建议和挂号科室。声明：AI内容仅供参考。" 
-            },
-            { role: "user", content: text }
-        ],
-        stream: false
-    })
-// ...
+                    body: JSON.stringify({
+                        model: "deepseek-ai/DeepSeek-V3", 
+                        messages: [
+                            { 
+                                role: "system", 
+                                content: "你是一位专业的在线医生。请根据用户的描述分析可能的健康问题，给出初步建议和挂号科室。声明：AI内容仅供参考。" 
+                            },
+                            { role: "user", content: text }
+                        ],
+                        stream: false
+                    })
                 });
 
                 const data = await response.json();
@@ -122,20 +134,26 @@
             } catch (error) {
                 console.error("Error Detail:", error);
                 document.getElementById(loadingId)?.remove();
-                appendMessage('ai', `❌ **服务繁忙**：${error.message}`);
+                appendMessage('ai', `[服务繁忙] ${error.message}`);
             } finally {
                 setLoading(false);
             }
         }
 
-// ... 其他代码保持不变 ...
-
         function appendMessage(role, content) {
             const div = document.createElement('div');
             div.className = `flex ${role === 'user' ? 'justify-end' : 'justify-start'}`;
-            div.innerHTML = role === 'user' 
-                ? `<div class="max-w-[85%] p-4 shadow-md message-user">${content}</div>`
-                : `<div class="max-w-[85%] p-4 shadow-sm message-ai prose">${marked.parse(content)}</div>`;
+            
+            if (role === 'user') {
+                div.innerHTML = `<div class="max-w-[85%] p-4 shadow-md message-user leading-relaxed">${content}</div>`;
+            } else {
+                div.innerHTML = `
+                    <div class="max-w-[85%] p-4 shadow-sm message-ai prose text-slate-700">
+                        <div class="text-sm font-semibold text-blue-700 mb-2 border-b border-slate-100 pb-1">AI 健康助手</div>
+                        ${marked.parse(content)}
+                    </div>`;
+            }
+            
             chatWindow.appendChild(div);
             chatWindow.scrollTop = chatWindow.scrollHeight;
         }
@@ -144,7 +162,13 @@
             const div = document.createElement('div');
             div.id = id;
             div.className = 'flex justify-start';
-            div.innerHTML = `<div class="max-w-[85%] p-4 shadow-sm message-ai italic text-slate-400">正在接入 MIMO 分析中...</div>`;
+            div.innerHTML = `<div class="max-w-[85%] px-5 py-4 shadow-sm message-ai text-slate-400 text-sm flex items-center gap-2">
+                                <svg class="animate-spin h-4 w-4 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                正在分析症状，请稍候...
+                             </div>`;
             chatWindow.appendChild(div);
             chatWindow.scrollTop = chatWindow.scrollHeight;
         }
@@ -152,7 +176,13 @@
         function setLoading(isLoading) {
             userInput.disabled = isLoading;
             sendBtn.disabled = isLoading;
-            sendBtn.style.opacity = isLoading ? "0.5" : "1";
+            if (isLoading) {
+                sendBtn.classList.add('opacity-60', 'cursor-not-allowed');
+                sendBtn.classList.remove('hover:bg-blue-700', 'active:transform', 'active:scale-95');
+            } else {
+                sendBtn.classList.remove('opacity-60', 'cursor-not-allowed');
+                sendBtn.classList.add('hover:bg-blue-700', 'active:transform', 'active:scale-95');
+            }
         }
 
         sendBtn.addEventListener('click', handleSend);
