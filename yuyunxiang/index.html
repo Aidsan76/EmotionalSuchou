@@ -69,6 +69,8 @@
         const userInput = document.getElementById('userInput');
         const sendBtn = document.getElementById('sendBtn');
 
+// ... 其他代码保持不变 ...
+
         async function handleSend() {
             const text = userInput.value.trim();
             if (!text) return;
@@ -81,27 +83,30 @@
             appendLoading(loadingId);
 
             try {
-                // 调用 Cloudflare Worker
                 const response = await fetch(PROXY_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        model: "mimo-v2-pro", // 这里修改为最新的模型名
+                        model: "deepseek-chat", // 换成 DeepSeek 的模型名
                         messages: [
-                            { role: "system", content: "你是一位专业的在线医生。请根据用户的描述分析可能的健康问题，给出初步建议和挂号科室。结尾声明：AI内容仅供参考。" },
+                            { 
+                                role: "system", 
+                                content: "你是一位专业的在线医生。请根据用户的描述分析可能的健康问题，并给出初步建议。必须包含【建议就诊科室】。结尾声明：AI生成内容仅供参考，不作为最终医疗诊断。" 
+                            },
                             { role: "user", content: text }
-                        ]
+                        ],
+                        stream: false // 确保关闭流式传输以匹配当前代码逻辑
                     })
                 });
 
                 const data = await response.json();
 
-                // 错误处理：如果 Worker 返回了包含 error 的对象
-                if (data.error || !response.ok) {
-                    throw new Error(data.error || '小米 API 响应异常');
+                if (data.error) {
+                    throw new Error(data.error.message || "API 返回错误");
                 }
 
                 const aiResult = data.choices[0].message.content;
+
                 document.getElementById(loadingId).remove();
                 appendMessage('ai', aiResult);
 
@@ -120,6 +125,8 @@
                 setLoading(false);
             }
         }
+
+// ... 其他代码保持不变 ...
 
         function appendMessage(role, content) {
             const div = document.createElement('div');
