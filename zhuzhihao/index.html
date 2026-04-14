@@ -22,7 +22,6 @@
         .task-card:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); }
         .hero-bg { background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); }
         .conditional { display: none; }
-        /* 选中状态：深绿文字，浅绿背景，确保可读性 */
         .pickup-btn-active { 
             background-color: #dcfce7 !important; 
             color: #166534 !important; 
@@ -33,7 +32,6 @@
 </head>
 <body class="bg-gray-50 text-gray-900">
 
-    <!-- 导航栏 -->
     <nav class="bg-white shadow-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -58,7 +56,6 @@
         </div>
     </nav>
 
-    <!-- 角色切换 -->
     <div id="role-dropdown" onclick="if(event.target.id==='role-dropdown')hideRoleDropdown()" class="hidden fixed inset-0 bg-black/20 flex items-start justify-end pt-16 pr-6 z-[9999]">
         <div class="bg-white rounded-2xl shadow-2xl w-56 py-2 border border-gray-100">
             <div onclick="switchToRole('student')" class="px-6 py-4 hover:bg-green-50 flex items-center gap-3 cursor-pointer border-b border-gray-50 text-sm">学生模式</div>
@@ -66,7 +63,6 @@
         </div>
     </div>
 
-    <!-- 登录弹窗 -->
     <div id="auth-modal" onclick="if(event.target.id==='auth-modal')hideAuthModal()" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[9999] backdrop-blur-sm">
         <div onclick="event.stopImmediatePropagation()" class="bg-white rounded-3xl w-full max-w-md mx-4 p-8">
             <h2 id="modal-title" class="text-2xl font-bold mb-6 text-center">身份验证</h2>
@@ -85,7 +81,6 @@
         </div>
     </div>
 
-    <!-- 首页 -->
     <section id="home" class="section hero-bg text-white py-24">
         <div class="max-w-7xl mx-auto px-6 text-center">
             <h2 class="text-6xl font-extrabold mb-6 tracking-tight">经贸跑腿，准时必达</h2>
@@ -97,7 +92,6 @@
         </div>
     </section>
 
-    <!-- 发布页 -->
     <section id="publish" class="section py-16 bg-gray-50">
         <div class="max-w-5xl mx-auto px-6">
             <h2 class="text-4xl font-bold mb-8">填写配送需求</h2>
@@ -186,7 +180,6 @@
         </div>
     </section>
 
-    <!-- 任务大厅 -->
     <section id="hall" class="section py-16 bg-white">
         <div class="max-w-7xl mx-auto px-6">
             <h2 class="text-4xl font-extrabold mb-8">任务大厅</h2>
@@ -194,7 +187,6 @@
         </div>
     </section>
 
-    <!-- 骑手中心 -->
     <section id="rider" class="section py-16 bg-gray-50 hidden">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex items-center justify-between mb-8">
@@ -214,7 +206,6 @@
         </div>
     </section>
 
-    <!-- 我的记录 -->
     <section id="orders" class="section py-16 bg-white hidden">
         <div class="max-w-7xl mx-auto px-6">
             <h2 class="text-4xl font-bold mb-8">我的发布记录</h2>
@@ -240,26 +231,21 @@
         let currentRole = 'student';
         let selectedPickup = "未选择";
 
-        // 实时同步
         function startSync() {
             if(!currentUser) return;
 
-            // 1. 待接单
             tasksRef.where('status', '==', 'available').orderBy('createdAt', 'desc')
                 .onSnapshot(snap => renderList(snap, 'task-list', 'available'));
 
-            // 2. 骑手进行中 (修复点：确保 riderId 匹配)
             tasksRef.where('riderId', '==', currentUser.uid).where('status', '==', 'taken').orderBy('createdAt', 'desc')
                 .onSnapshot(snap => renderList(snap, 'current-rider-orders', 'taken'), err => {
                     console.error("进行中订单查询失败，请检查索引:", err);
                 });
 
-            // 3. 骑手历史
             tasksRef.where('riderId', '==', currentUser.uid).where('status', '==', 'completed').orderBy('createdAt', 'desc')
                 .onSnapshot(snap => renderList(snap, 'history-rider-orders', 'completed'));
         }
 
-        // 地址级联
         window.updateDeliverySubOptions = function() {
             const type = document.getElementById('delivery-type').value;
             const buildingContainer = document.getElementById('delivery-building-container');
@@ -293,7 +279,6 @@
             return `${areaPrefix[area]}${b} ${f}${r}`;
         }
 
-        // 取件按钮生成
         window.updateConditionalFields = function() {
             const type = document.getElementById('task-type').value;
             const container = document.getElementById('pickup-buttons-container');
@@ -317,7 +302,6 @@
                 btn.onclick = () => {
                     selectedPickup = loc;
                     document.getElementById('pickup-display').textContent = loc;
-                    // 修复：选中状态改为高对比度深色文字
                     container.querySelectorAll('button').forEach(b => b.classList.remove('pickup-btn-active'));
                     btn.classList.add('pickup-btn-active');
                 };
@@ -327,7 +311,6 @@
             document.getElementById('meal-field').style.display = type === '代买餐饮' ? 'block' : 'none';
         };
 
-        // 核心渲染
         function renderList(snapshot, containerId, mode) {
             const container = document.getElementById(containerId);
             if(!container) return;
