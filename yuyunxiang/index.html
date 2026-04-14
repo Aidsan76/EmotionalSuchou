@@ -22,7 +22,6 @@
         .prose p { margin-bottom: 0.5rem; line-height: 1.6; }
         .prose ul { list-style-type: disc; margin-left: 1.25rem; margin-bottom: 0.5rem; }
         .prose strong { color: #1e40af; }
-        /* 自定义滚动条 */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
@@ -76,15 +75,13 @@
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
         </div>
-        <div id="historyList" class="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50">
-            </div>
+        <div id="historyList" class="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50"></div>
     </div>
 
     <div id="historyOverlay" class="fixed inset-0 bg-slate-900/20 backdrop-blur-sm z-[50] hidden opacity-0 transition-opacity duration-300"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
-        // 增加引入 getDocs, query, orderBy
         import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -99,36 +96,31 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-
         const PROXY_URL = "https://yuyunxiang.aidsan.workers.dev/";
 
         const chatWindow = document.getElementById('chat-window');
         const userInput = document.getElementById('userInput');
         const sendBtn = document.getElementById('sendBtn');
-
-        // ==== 新增：历史记录相关 DOM 与逻辑 ====
         const historyBtn = document.getElementById('historyBtn');
         const closeHistoryBtn = document.getElementById('closeHistoryBtn');
         const historySidebar = document.getElementById('historySidebar');
         const historyOverlay = document.getElementById('historyOverlay');
         const historyList = document.getElementById('historyList');
 
-        // 控制侧边栏的开关
         function toggleHistory(show) {
             if (show) {
                 historyOverlay.classList.remove('hidden');
-                // 使用 setTimeout 让 display:block 生效后再执行透明度动画
                 setTimeout(() => {
                     historyOverlay.classList.remove('opacity-0');
                     historySidebar.classList.remove('translate-x-full');
                 }, 10);
-                loadHistory(); // 打开时实时拉取数据
+                loadHistory();
             } else {
                 historyOverlay.classList.add('opacity-0');
                 historySidebar.classList.add('translate-x-full');
                 setTimeout(() => {
                     historyOverlay.classList.add('hidden');
-                }, 300); // 等待动画结束
+                }, 300);
             }
         }
 
@@ -136,7 +128,6 @@
         closeHistoryBtn.addEventListener('click', () => toggleHistory(false));
         historyOverlay.addEventListener('click', () => toggleHistory(false));
 
-        // 从数据库拉取并渲染历史记录
         async function loadHistory() {
             historyList.innerHTML = `
                 <div class="flex justify-center items-center h-32">
@@ -147,7 +138,6 @@
                 </div>`;
 
             try {
-                // 构建查询：按照 timestamp 字段降序（最新的在最上面）
                 const q = query(collection(db, "consultations"), orderBy("timestamp", "desc"));
                 const querySnapshot = await getDocs(q);
 
@@ -159,16 +149,15 @@
                 let html = '';
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
-                    // 处理时间戳
                     let timeString = '刚刚';
                     if (data.timestamp) {
                         const date = data.timestamp.toDate();
                         timeString = `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
                     }
 
-                   // 增加容错处理：如果 answer 不存在，给一个默认提示
-const rawAnswer = data.answer || "暂无回答内容";
-const plainAnswer = rawAnswer.replace(/[#*`_]/g, '').substring(0, 80) + (rawAnswer.length > 80 ? '...' : '');
+                    const rawAnswer = data.answer || "暂无回答内容";
+                    const plainAnswer = rawAnswer.replace(/[#*`_]/g, '').substring(0, 80) + (rawAnswer.length > 80 ? '...' : '');
+                    
                     html += `
                         <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
                             <div class="text-xs text-slate-400 mb-2 flex items-center gap-1">
@@ -185,13 +174,11 @@ const plainAnswer = rawAnswer.replace(/[#*`_]/g, '').substring(0, 80) + (rawAnsw
                     `;
                 });
                 historyList.innerHTML = html;
-
             } catch (error) {
                 console.error("加载历史记录失败:", error);
                 historyList.innerHTML = '<div class="text-center text-red-400 text-sm mt-10">加载失败，请检查网络或数据库连接</div>';
             }
         }
-        // ==== 历史记录逻辑结束 ====
 
         async function handleSend() {
             const text = userInput.value.trim();
@@ -222,17 +209,12 @@ const plainAnswer = rawAnswer.replace(/[#*`_]/g, '').substring(0, 80) + (rawAnsw
                 });
 
                 const data = await response.json();
-
-                if (data.error) {
-                    throw new Error(data.error.message || "API 返回错误");
-                }
+                if (data.error) throw new Error(data.error.message || "API 返回错误");
 
                 const aiResult = data.choices[0].message.content;
-
                 document.getElementById(loadingId).remove();
                 appendMessage('ai', aiResult);
 
-                // 保存到 Firebase
                 await addDoc(collection(db, "consultations"), {
                     question: text,
                     answer: aiResult,
@@ -241,7 +223,7 @@ const plainAnswer = rawAnswer.replace(/[#*`_]/g, '').substring(0, 80) + (rawAnsw
 
             } catch (error) {
                 console.error("Error Detail:", error);
-                document.getElementById(loadingId)?.remove();
+                if (document.getElementById(loadingId)) document.getElementById(loadingId).remove();
                 appendMessage('ai', `[服务繁忙] ${error.message}`);
             } finally {
                 setLoading(false);
@@ -251,7 +233,6 @@ const plainAnswer = rawAnswer.replace(/[#*`_]/g, '').substring(0, 80) + (rawAnsw
         function appendMessage(role, content) {
             const div = document.createElement('div');
             div.className = `flex ${role === 'user' ? 'justify-end' : 'justify-start'}`;
-            
             if (role === 'user') {
                 div.innerHTML = `<div class="max-w-[85%] p-4 shadow-md message-user leading-relaxed">${content}</div>`;
             } else {
@@ -261,7 +242,6 @@ const plainAnswer = rawAnswer.replace(/[#*`_]/g, '').substring(0, 80) + (rawAnsw
                         ${marked.parse(content)}
                     </div>`;
             }
-            
             chatWindow.appendChild(div);
             chatWindow.scrollTop = chatWindow.scrollHeight;
         }
