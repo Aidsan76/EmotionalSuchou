@@ -166,9 +166,9 @@
                         timeString = `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
                     }
 
-                    // 截取回答内容以便预览 (去除 markdown 标签)
-                    const plainAnswer = data.answer.replace(/[#*`_]/g, '').substring(0, 80) + '...';
-
+                   // 增加容错处理：如果 answer 不存在，给一个默认提示
+const rawAnswer = data.answer || "暂无回答内容";
+const plainAnswer = rawAnswer.replace(/[#*`_]/g, '').substring(0, 80) + (rawAnswer.length > 80 ? '...' : '');
                     html += `
                         <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
                             <div class="text-xs text-slate-400 mb-2 flex items-center gap-1">
