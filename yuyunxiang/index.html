@@ -1,1 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIMO AI 智能问诊平台 - 演示版</title>
+    <!-- 引入 Tailwind CSS 用于快速布局 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Markdown 解析库，用于渲染 AI 返回的格式 -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        .chat-container { height: calc(100vh - 200px); }
+        .message-bubble { max-width: 80%; border-radius: 1rem; }
+        .bg-medical { background-color: #f0f7ff; }
+        /* 滚动条美化 */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
 
+    <!-- 顶部导航 -->
+    <nav class="bg-blue-600 text-white shadow-lg p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold flex items-center">
+                <span class="mr-2">🏥</span> MIMO AI 智能问诊
+            </h1>
+            <span class="text-xs bg-blue-500 px-2 py-1 rounded">课程作业演示版</span>
+        </div>
+    </nav>
+
+    <!-- 免责声明弹窗 (页面加载即显示) -->
+    <div id="disclaimer-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-lg p-6 max-w-md shadow-2xl">
+            <h2 class="text-red-600 font-bold text-lg mb-2">⚠️ 重要提示</h2>
+            <p class="text-gray-600 text-sm mb-4">
+                本平台接入小米 MIMO 大模型，所有回答均由 AI 生成，仅供学术演示参考。
+                <br><br>
+                <strong>AI 不具备行医执照，无法替代专业医生诊断。</strong> 如有身体不适，请立即前往正规医院就诊。
+            </p>
+            <button onclick="closeDisclaimer()" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
+                我已阅读并同意
+            </button>
+        </div>
+    </div>
+
+    <main class="container mx-auto mt-6 px-4">
+        <div class="flex flex-col md:flex-row gap-6">
+            
+            <!-- 左侧：问诊界面 -->
+            <div class="flex-grow bg-white rounded-xl shadow-md overflow-hidden flex flex-col chat-container">
+                <!-- 聊天消息区 -->
+                <div id="chat-window" class="flex-grow overflow-y-auto p-4 space-y-4 bg-medical">
+                    <!-- AI 欢迎语 -->
+                    <div class="flex justify-start">
+                        <div class="message-bubble bg-white p-4 shadow-sm border border-blue-100 text-gray-800">
+                            您好！我是您的 AI 医疗助手。请详细描述您的症状（如：哪里不舒服？持续多久了？有什么既往病史？），我会为您提供初步建议。
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 输入区 -->
+                <div class="p-4 border-t bg-white">
+                    <div class="flex gap-2">
+                        <input type="text" id="user-input" 
+                            class="flex-grow border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                            placeholder="描述您的症状，例如：我最近胸口闷，有点喘不上气..."
+                            onkeypress="if(event.keyCode===13) sendMessage()">
+                        <button onclick="sendMessage()" id="send-btn" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition flex items-center">
+                            发送
+                        </button>
+                    </div>
+                    <p class="text-[10px] text-gray-400 mt-2 text-center">AI 可能产生幻觉，请务必核实专业医学意见</p>
+                </div>
+            </div>
+
+            <!-- 右侧：辅助功能卡片 -->
+            <div class="w-full md:w-80 space-y-4">
+                <div class="bg-white p-4 rounded-xl shadow-md border-t-4 border-blue-500">
+                    <h3 class="font-bold text-gray-700 mb-2 underline decoration-blue-200">问诊建议</h3>
+                    <ul class="text-sm text-gray-600 space-y-2">
+                        <li>• 描述疼痛的准确位置</li>
+                        <li>• 描述症状持续的时间</li>
+                        <li>• 告知是否有药物过敏</li>
+                        <li>• 告知当前正在服用的药物</li>
+                    </ul>
+                </div>
+                
+                <button onclick="window.location.reload()" class="w-full py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-100 transition">
+                    清除对话历史
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const chatWindow = document.getElementById('chat-window');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+
+        // 关闭免责声明
+        function closeDisclaimer() {
+            document.getElementById('disclaimer-modal').classList.add('hidden');
+        }
+
+        // 添加消息到界面
+        function appendMessage(role, text) {
+            const div = document.createElement('div');
+            div.className = `flex ${role === 'user' ? 'justify-end' : 'justify-start'}`;
+            
+            const content = role === 'user' 
+                ? `<div class="message-bubble bg-blue-600 text-white p-4 shadow-sm">${text}</div>`
+                : `<div class="message-bubble bg-white p-4 shadow-sm border border-blue-100 text-gray-800 prose prose-sm">${marked.parse(text)}</div>`;
+            
+            div.innerHTML = content;
+            chatWindow.appendChild(div);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        // 模拟/实际发送逻辑
+        async function sendMessage() {
+            const text = userInput.value.trim();
+            if (!text) return;
+
+            // 1. 显示用户消息
+            appendMessage('user', text);
+            userInput.value = '';
+
+            // 2. 显示加载状态
+            const loadingId = 'loading-' + Date.now();
+            const loadingDiv = document.createElement('div');
+            loadingDiv.id = loadingId;
+            loadingDiv.className = 'flex justify-start';
+            loadingDiv.innerHTML = `<div class="message-bubble bg-gray-200 p-4 text-gray-500 italic">AI 医生正在思考中...</div>`;
+            chatWindow.appendChild(loadingDiv);
+
+            try {
+                // --- 这里是对接 Firebase Functions 的代码 ---
+                // const askMimo = firebase.functions().httpsCallable('askMimo');
+                // const result = await askMimo({ message: text, history: [] });
+                // const aiResponse = result.data.choices[0].message.content;
+
+                // --- 课程作业演示用：模拟 AI 响应 ---
+                setTimeout(() => {
+                    document.getElementById(loadingId).remove();
+                    const mockResponse = `### 初步建议分析
+根据您的描述，这可能与**心肺功能**或**近期压力**有关。
+
+**建议：**
+1. **就诊科室**：建议优先挂 **心内科** 或 **呼吸内科**。
+2. **注意事项**：休息时保持通风，避免剧烈运动。
+3. **紧急情况**：若出现大汗淋漓、持续性胸骨后剧烈疼痛，请立即拨打 **120**。
+
+*注：以上内容仅供参考，不作为诊断结论。*`;
+                    appendMessage('ai', mockResponse);
+                }, 1500);
+
+            } catch (error) {
+                document.getElementById(loadingId).remove();
+                appendMessage('ai', "抱歉，连接服务器失败，请稍后再试。");
+            }
+        }
+    </script>
+</body>
+</html>
