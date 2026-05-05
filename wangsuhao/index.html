@@ -1,234 +1,357 @@
-<html lang="zh-CN"><head>
+<!DOCTYPE html>
+<!-- 作用：声明文档类型为HTML5，让浏览器以标准模式解析页面 -->
+<html lang="zh-CN">
+<!-- 作用：定义网页的语言为简体中文，用于搜索引擎和浏览器语言识别 -->
+<head>
+    <!-- 作用：设置网页字符编码为UTF-8，确保中文、英文、符号正常显示，不出现乱码 -->
     <meta charset="UTF-8">
+    <!-- 作用：移动端适配核心标签，width=device-width 宽度等于设备屏幕宽度，initial-scale=1.0 初始缩放比例1:1 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 作用：网页标题，显示在浏览器标签页上 -->
     <title>汽车爱好者之家</title>
     <style>
+        /* ============ CSS全局变量定义（浅色主题） ============== */
+        /* 作用：定义全局可复用的颜色变量，方便统一修改和实现暗黑模式切换 */
         :root { 
-            --bg-color: #f7f8fa;
-            --text-color: #2c3e50;
-            --card-bg: #fff;
-            --border-color: #eee;
-            --shadow-color: rgba(0,0,0,0.08);
-            --country-color: #e74c3c;
-            --btn-bg: #fff;
-            --btn-active: #409eff;
+            --bg-color: #f7f8fa;            /* 页面整体背景颜色变量 */
+            --text-color: #2c3e50;          /* 页面默认文字颜色变量 */
+            --card-bg: #fff;                /* 汽车卡片模块背景色变量 */
+            --border-color: #eee;           /* 卡片底部边框颜色变量 */
+            --shadow-color: rgba(0,0,0,0.08);/* 卡片阴影效果颜色变量 */
+            --country-color: #e74c3c;       /* 品牌所属国家文字颜色变量 */
+            --btn-bg: #fff;                 /* 筛选按钮默认背景色变量 */
+            --btn-active: #409eff;          /* 筛选按钮选中状态背景色变量 */
+            --input-bg: #fff;                /* 搜索框背景 */
+            --input-border: #ddd;            /* 搜索框边框 */
         }
+
+        /* ============= 暗黑模式CSS变量 =============== */
+        /* 作用：当body标签拥有dark类时，自动覆盖上面的浅色变量，实现主题切换 */
         body.dark {
-            --bg-color: #121212;
-            --text-color: #e0e0e0;
-            --card-bg: #1e1e1e;
-            --border-color: #333;
-            --shadow-color: rgba(0,0,0,0.3);
-            --country-color: #ff5555;
-            --btn-bg: #2a2a2a;
+            --bg-color: #121212;            /* 暗黑模式页面背景 */
+            --text-color: #e0e0e0;          /* 暗黑模式文字颜色 */
+            --card-bg: #1e1e1e;             /* 暗黑模式卡片背景 */
+            --border-color: #333;           /* 暗黑模式边框颜色 */
+            --shadow-color: rgba(0,0,0,0.3);/* 暗黑模式阴影 */
+            --country-color: #ff5555;       /* 暗黑模式国家文字颜色 */
+            --btn-bg: #2a2a2a;              /* 暗黑模式按钮背景 */
             --btn-active: #409eff;
+            --input-bg: #2a2a2a;
+            --input-border: #444;
         }
+
+        /* =============== 全局样式初始化 ================= */
+        /* 作用：清除所有HTML标签默认的内外边距，统一盒模型，避免布局错乱 */
         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+            margin: 0;                      /* 清除所有标签默认外边距 */
+            padding: 0;                     /* 清除所有标签默认内边距 */
+            box-sizing: border-box;          /* 盒模型：宽高包含边框和内边距，布局更稳定 */
         }
+
+        /* ============= 页面整体样式 =============== */
         body {
+            /* 字体：优先苹方、微软雅黑，无则使用系统无衬线字体 */
             font-family: 'PingFang SC','Microsoft YaHei',sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            padding: 30px 20px;
-            transition: all 0.3s ease;
+            background-color: var(--bg-color);/* 应用背景色变量 */
+            color: var(--text-color);         /* 应用文字颜色变量 */
+            padding: 30px 20px;               /* 页面上下内边距30px，左右20px */
+            transition: all 0.3s ease;        /* 所有属性变化0.3秒平滑过渡，用于主题切换 */
         }
+
+        /* ============= 全屏遮罩层 =================== */
+        /* 作用：鼠标悬浮卡片时，页面背景半透明变暗，突出当前卡片 */
         #overlay {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.45);
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.4s ease;
-            z-index: 9998;
+            position: fixed;                 /* 固定定位，始终覆盖整个屏幕 */
+            top: 0;                          /* 距离顶部0px */
+            left: 0;                         /* 距离左侧0px */
+            width: 100vw;                    /* 宽度等于屏幕100%宽度 */
+            height: 100vh;                   /* 高度等于屏幕100%高度 */
+            background: rgba(0,0,0,0.45);    /* 背景：半透明黑色 */
+            opacity: 0;                      /* 透明度0，默认完全隐藏 */
+            pointer-events: none;            /* 不拦截鼠标事件，不影响点击 */
+            transition: opacity 0.4s ease;    /* 显示隐藏时0.4秒平滑过渡 */
+            z-index: 9998;                   /* 层级9998，低于卡片 */
         }
+
+        /* 作用：遮罩层显示状态 */
         #overlay.show {
-            opacity: 1;
+            opacity: 1;                       /* 透明度1，完全显示 */
         }
+
+        /* ================ 页面头部 ===================== */
         header {
-            text-align: center;
-            margin-bottom: 20px;
-            position: relative;
-            z-index: 9997;
+            text-align: center;              /* 内容水平居中 */
+            margin-bottom: 20px;             /* 底部外边距20px */
+            position: relative;              /* 相对定位，用于层级控制 */
+            z-index: 9997;                   /* 层级9997，低于遮罩层 */
         }
+
+        /* 主标题样式 */
         header h1 {
-            color: var(--text-color);
-            font-size: 26px;
-            margin-bottom: 12px;
+            color: var(--text-color);        /* 文字颜色使用变量 */
+            font-size: 26px;                 /* 字体大小26px */
+            margin-bottom: 12px;             /* 底部外边距12px */
         }
-        .tool-bar {
+
+        /* 搜索框容器 */
+        .search-box {
             max-width: 700px;
             margin: 0 auto 20px;
             display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-            align-items: center;
+            gap: 8px;
         }
-        #themeToggle, #showCollection {
+        #searchInput {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid var(--input-border);
+            border-radius: 20px;
+            background: var(--input-bg);
+            color: var(--text-color);
+            outline: none;
+            font-size: 14px;
+        }
+        #randomBtn {
             padding: 8px 14px;
             border: none;
             border-radius: 20px;
-            background: var(--card-bg);
-            color: var(--text-color);
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px var(--shadow-color);
-        }
-        #themeToggle:hover, #showCollection:hover {
-            transform: scale(1.05);
-        }
-        .filter-bar {
-            max-width: 700px;
-            margin: 0 auto 25px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            justify-content: center;
-        }
-        .filter-btn {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 15px;
-            background: var(--btn-bg);
-            color: var(--text-color);
-            cursor: pointer;
-            font-size: 13px;
-            transition: all 0.2s ease;
-            box-shadow: 0 1px 4px var(--shadow-color);
-        }
-        .filter-btn.active {
             background: var(--btn-active);
             color: #fff;
-        }
-        .car-list {
-            max-width: 700px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 9999;
-        }
-        .car-item {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 22px 0;
-            border-bottom: 1px solid var(--border-color);
-            position: relative;
-            transition: all 0.3s ease;
-            width: 100%;
-            min-height: 80px;
-            z-index: 1;
-        }
-        .car-list:hover .car-item {
-            filter: grayscale(100%) opacity(0.6);
-            transition: filter 0.3s ease;
-        }
-        .car-list .car-item.hovered {
-            filter: grayscale(0%) opacity(1) !important;
-            background: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: 0 6px 20px var(--shadow-color);
-            z-index: 10;
-        }
-        .car-icon-container {
-            display: flex;
-            align-items: center;
-            gap: 18px;
             cursor: pointer;
-            transition: transform 0.4s ease;
-            width: 200px;
-            justify-content: center;
-            flex-direction: row;
-        }
-        .car-item.hovered .car-icon-container {
-            transform: translateX(-260px);
-            flex-direction: column;
-            gap: 8px;
-        }
-        .car-icon {
-            width: 58px;
-            height: 58px;
-            object-fit: contain;
-            transition: transform 0.3s ease;
-            flex-shrink: 0;
-        }
-        .car-item.hovered .car-icon {
-            transform: scale(1.08);
-        }
-        .car-name {
-            font-size: 20px;
-            font-weight: bold;
-            color: var(--text-color);
             white-space: nowrap;
         }
+
+        /* 顶部工具栏：包含主题切换、收藏夹按钮 */
+        .tool-bar {
+            max-width: 700px;                /* 最大宽度700px，避免大屏过宽 */
+            margin: 0 auto 20px;             /* 上下0，左右自动居中，底部20px */
+            display: flex;                   /* 弹性布局，按钮横向排列 */
+            flex-wrap: wrap;                 /* 空间不足自动换行 */
+            gap: 10px;                       /* 按钮之间间距10px */
+            justify-content: center;         /* 水平居中 */
+            align-items: center;             /* 垂直居中 */
+        }
+
+        /* 主题切换按钮 + 收藏夹按钮 公共样式 */
+        #themeToggle, #showCollection {
+            padding: 8px 14px;               /* 内边距上下8px，左右14px */
+            border: none;                    /* 清除默认边框 */
+            border-radius: 20px;             /* 圆角20px，胶囊形状 */
+            background: var(--card-bg);      /* 背景色变量 */
+            color: var(--text-color);        /* 文字颜色变量 */
+            cursor: pointer;                 /* 鼠标悬浮变成小手 */
+            font-size: 14px;                 /* 字体大小14px */
+            transition: all 0.3s ease;        /* 0.3秒平滑过渡 */
+            box-shadow: 0 2px 8px var(--shadow-color);/* 阴影效果 */
+        }
+
+        /* 按钮鼠标悬浮效果 */
+        #themeToggle:hover, #showCollection:hover {
+            transform: scale(1.05);           /* 放大1.05倍 */
+        }
+
+        /* ============== 国家筛选栏 ============= */
+        .filter-bar {
+            max-width: 700px;                /* 最大宽度700px */
+            margin: 0 auto 25px;             /* 居中，底部间距25px */
+            display: flex;                   /* 弹性布局 */
+            flex-wrap: wrap;                 /* 自动换行 */
+            gap: 8px;                        /* 按钮间距8px */
+            justify-content: center;         /* 水平居中 */
+        }
+
+        /* 筛选按钮样式 */
+        .filter-btn {
+            padding: 6px 12px;               /* 内边距 */
+            border: none;                    /* 无边框 */
+            border-radius: 15px;             /* 圆角 */
+            background: var(--btn-bg);        /* 背景变量 */
+            color: var(--text-color);        /* 文字变量 */
+            cursor: pointer;                 /* 小手 */
+            font-size: 13px;                 /* 字体 */
+            transition: all 0.2s ease;        /* 过渡 */
+            box-shadow: 0 1px 4px var(--shadow-color);/* 阴影 */
+        }
+
+        /* 筛选按钮选中状态 */
+        .filter-btn.active {
+            background: var(--btn-active);    /* 激活背景色 */
+            color: #fff;                      /* 白色文字 */
+        }
+
+        /* =========== 汽车列表容器 ================= */
+        .car-list {
+            max-width: 700px;                /* 最大宽度 */
+            margin: 0 auto;                  /* 水平居中 */
+            position: relative;              /* 相对定位 */
+            z-index: 9999;                   /* 最高层级，显示在最上层 */
+        }
+
+        /* ============ 单个汽车卡片 ================ */
+        .car-item {
+            display: flex;                   /* 弹性布局 */
+            align-items: center;             /* 垂直居中 */
+            justify-content: center;         /* 水平居中 */
+            padding: 22px 0;                 /* 上下内边距22px */
+            border-bottom: 1px solid var(--border-color);/* 底部边框 */
+            position: relative;              /* 相对定位 */
+            transition: all 0.3s ease;        /* 过渡效果 */
+            width: 100%;                     /* 宽度100% */
+            min-height: 80px;                /* 最小高度80px */
+            z-index: 1;                      /* 默认层级1 */
+        }
+
+        /* 鼠标进入列表时，所有卡片变灰 */
+        .car-list:hover .car-item {
+            filter: grayscale(100%) opacity(0.6);/* 灰度100% + 透明度0.6 */
+            transition: filter 0.3s ease;        /* 过渡 */
+        }
+
+        /* 当前悬浮卡片高亮 */
+        .car-list .car-item.hovered {
+            filter: grayscale(0%) opacity(1) !important;/* 取消灰度，完全显示 */
+            background: var(--card-bg);      /* 卡片背景 */
+            border-radius: 12px;             /* 圆角 */
+            box-shadow: 0 6px 20px var(--shadow-color);/* 阴影 */
+            z-index: 10;                     /* 层级提高 */
+        }
+
+        /* 品牌图标+名称容器 */
+        .car-icon-container {
+            display: flex;                   /* 弹性布局 */
+            align-items: center;             /* 垂直居中 */
+            gap: 18px;                       /* 间距18px */
+            cursor: pointer;                 /* 小手 */
+            transition: transform 0.4s ease;  /* 过渡 */
+            width: 200px;                    /* 固定宽度200px */
+            justify-content: center;         /* 居中 */
+            flex-direction: row;             /* 横向排列 */
+        }
+
+        /* 悬浮时图标容器左移 */
+        .car-item.hovered .car-icon-container {
+            transform: translateX(-260px);   /* 向左移动260px */
+            flex-direction: column;          /* 改为垂直排列 */
+            gap: 8px;                        /* 间距8px */
+        }
+
+        /* 品牌LOGO图片 */
+        .car-icon {
+            width: 58px;                     /* 宽度58px */
+            height: 58px;                    /* 高度58px */
+            object-fit: contain;              /* 保持图片比例，不变形 */
+            transition: transform 0.3s ease;  /* 过渡 */
+            flex-shrink: 0;                   /* 不压缩 */
+        }
+
+        /* 悬浮时LOGO放大 */
+        .car-item.hovered .car-icon {
+            transform: scale(1.08);           /* 放大1.08倍 */
+        }
+
+        /* 品牌名称 */
+        .car-name {
+            font-size: 20px;                 /* 字体20px */
+            font-weight: bold;                /* 加粗 */
+            color: var(--text-color);        /* 颜色变量 */
+            white-space: nowrap;              /* 不换行 */
+        }
+
+        /* =============== 收藏按钮 ===================== */
         .collect-btn {
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: transparent;
-            border: none;
-            font-size: 22px;
-            cursor: pointer;
-            color: #ccc;
-            z-index: 20;
+            position: absolute;               /* 绝对定位 */
+            right: 20px;                     /* 距离右侧20px */
+            top: 50%;                        /* 距离顶部50% */
+            transform: translateY(-50%);      /* 垂直居中 */
+            background: transparent;          /* 背景透明 */
+            border: none;                    /* 无边框 */
+            font-size: 22px;                 /* 字号22px */
+            cursor: pointer;                 /* 小手 */
+            color: #ccc;                      /* 灰色星星 */
+            z-index: 20;                     /* 层级最高 */
         }
+
+        /* 已收藏状态：黄色星星 */
         .collect-btn.active {
-            color: #ffda44;
+            color: #ffda44;                   /* 金黄色 */
         }
+
+        /* =============== 品牌信息卡片 ===================== */
         .car-info {
-            position: absolute;
-            left: 220px;
-            top: 50%;
-            transform: translateY(-50%) translateX(-30px);
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.4s ease 0.05s;
-            min-width: 320px;
+            position: absolute;               /* 绝对定位 */
+            left: 220px;                     /* 距离左侧220px */
+            top: 50%;                        /* 垂直居中 */
+            transform: translateY(-50%) translateX(-30px);/* 居中+左移30px */
+            opacity: 0;                      /* 默认隐藏 */
+            pointer-events: none;            /* 不响应鼠标 */
+            transition: all 0.4s ease 0.05s;  /* 延迟0.05秒过渡 */
+            min-width: 320px;                /* 最小宽度320px */
         }
+
+        /* 悬浮时显示信息卡片 */
         .car-item.hovered .car-info {
-            opacity: 1;
-            transform: translateY(-50%) translateX(0);
-            pointer-events: auto;
+            opacity: 1;                       /* 显示 */
+            transform: translateY(-50%) translateX(0);/* 回到原位 */
+            pointer-events: auto;             /* 响应鼠标 */
         }
+
+        /* 国家文字 */
         .car-country {
-            display: inline-block;
-            font-size: 14px;
-            color: var(--country-color);
-            font-weight: bold;
-            margin-bottom: 6px;
+            display: inline-block;            /* 行内块 */
+            font-size: 14px;                 /* 字号14px */
+            color: var(--country-color);     /* 国家颜色变量 */
+            font-weight: bold;                /* 加粗 */
+            margin-bottom: 6px;              /* 底部间距6px */
         }
+
+        /* 品牌描述 */
         .car-description {
-            font-size: 15px;
-            color: var(--text-color);
-            line-height: 1.5;
-            font-weight: 500;
+            font-size: 15px;                 /* 字号15px */
+            color: var(--text-color);        /* 颜色变量 */
+            line-height: 1.5;                 /* 行高1.5倍 */
+            font-weight: 500;                 /* 中等加粗 */
         }
+
+        /* 无数据提示 */
         .empty-tip {
-            text-align: center;
-            padding: 40px 0;
-            color: #999;
-            font-size: 16px;
+            text-align: center;              /* 居中 */
+            padding: 40px 0;                 /* 上下内边距40px */
+            color: #999;                      /* 灰色文字 */
+            font-size: 16px;                 /* 字号16px */
         }
     </style>
 </head>
-<body>
+<!-- 页面主体内容 -->
+<body class="dark">
+    <!-- 全屏遮罩层 -->
     <div id="overlay"></div>
+
+    <!-- 页面头部 -->
     <header>
         <h1>汽车爱好者之家</h1>
+
+        <!-- 搜索 + 随机推荐 -->
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="搜索汽车品牌...">
+            <button id="randomBtn">随机推荐</button>
+        </div>
+
+        <!-- 工具栏 -->
         <div class="tool-bar">
-            <button id="themeToggle">切换暗黑模式</button>
+            <button id="themeToggle">切换白天模式</button>
             <button id="showCollection">返回全部</button>
         </div>
     </header>
-    <div class="filter-bar" id="filterBar"><button class="filter-btn active">全部</button><button class="filter-btn ">中国</button><button class="filter-btn ">韩国</button><button class="filter-btn ">法国</button><button class="filter-btn ">美国</button><button class="filter-btn ">德国</button><button class="filter-btn ">日本</button></div>
-    <main class="car-list" id="car-container"><div class="empty-tip">暂无数据</div></main>
+
+    <!-- 国家筛选按钮容器 -->
+    <div class="filter-bar" id="filterBar"></div>
+
+    <!-- 汽车列表渲染容器 -->
+    <main class="car-list" id="car-container"></main>
 
     <script>
+        // ==============================================
+        // 【1】汽车品牌数据数组
+        // ==============================================
         const carData = [
             {name:"小米",img:"https://g.autoimg.cn/@img/car2/cardfs/series/g31/M06/F6/30/300x_autohomecar__ChxoHWWovsiALvUfAAA_yvHOuLo703.png?format=webp",url:"https://www.xiaomiev.com/",country:"中国",desc:"中国科技巨头跨界打造的智能化新能源汽车品牌。"},
             {name:"小鹏",img:"https://g.autoimg.cn/@img/car2/cardfs/series/g27/M05/82/77/200x_autohomecar__ChxkmWTIoSiAZ3opAABdaZ_O9N8413.png?format=webp",url:"https://www.xiaopeng.com/",country:"中国",desc:"主打前沿智能驾驶技术的领先新能源汽车制造商。"},
@@ -249,7 +372,9 @@
             {name:"零跑",img:"https://g.autoimg.cn/@img/car3/cardfs/series/g28/M01/DF/3B/200x_autohomecar__CjIFVGTCBWqAPSYzAABJ8HYHW6o681.png?format=webp",url:"https://www.leapmotor.com/",country:"中国",desc:"坚持全域自研的科技型智能电动汽车企业。"}
         ];
 
-        // 主题切换
+        // ==============================================
+        // 【2】主题切换功能模块
+        // ==============================================
         const themeToggle = document.getElementById('themeToggle');
         function initTheme(){
             const isDark = localStorage.getItem('theme') === 'dark';
@@ -266,7 +391,9 @@
         });
         initTheme();
 
-        // 收藏核心
+        // ==============================================
+        // 【3】收藏功能模块
+        // ==============================================
         function getCollection(){
             return JSON.parse(localStorage.getItem('collection')||'[]');
         }
@@ -282,15 +409,43 @@
             renderList();
         }
 
+        // ==============================================
+        // 【4】全局状态变量
+        // ==============================================
         let currentCountry = '全部';
         let showCollectionMode = false;
+        let searchKeyword = '';
         const countries = ['全部',...new Set(carData.map(item=>item.country))];
+
         const container = document.getElementById('car-container');
         const overlay = document.getElementById('overlay');
         const filterBar = document.getElementById('filterBar');
         const showCollectionBtn = document.getElementById('showCollection');
+        const searchInput = document.getElementById('searchInput');
+        const randomBtn = document.getElementById('randomBtn');
 
-        // 渲染筛选按钮
+        // ==============================================
+        // 【5】搜索功能（实时监听）
+        // ==============================================
+        searchInput.addEventListener('input', function(){
+            searchKeyword = this.value.trim();
+            renderList();
+        });
+
+        // ==============================================
+        // 【6】随机推荐功能
+        // ==============================================
+        randomBtn.addEventListener('click', function(){
+            const randomIndex = Math.floor(Math.random() * carData.length);
+            const randomCar = carData[randomIndex];
+            searchInput.value = randomCar.name;
+            searchKeyword = randomCar.name;
+            renderList();
+        });
+
+        // ==============================================
+        // 【7】渲染筛选按钮
+        // ==============================================
         function renderFilter(){
             filterBar.innerHTML = '';
             countries.forEach(c=>{
@@ -308,26 +463,38 @@
             });
         }
 
-        // 查看收藏夹
+        // ==============================================
+        // 【8】收藏夹切换
+        // ==============================================
         showCollectionBtn.addEventListener('click',()=>{
             showCollectionMode = !showCollectionMode;
             showCollectionBtn.textContent = showCollectionMode ? '返回全部':'查看收藏夹';
             currentCountry = '全部';
+            searchInput.value = '';
+            searchKeyword = '';
             renderFilter();
             renderList();
         });
 
-        // 渲染列表
+        // ==============================================
+        // 【9】渲染汽车列表
+        // ==============================================
         function renderList(){
             container.innerHTML = '';
             let data = [...carData];
             const collectedList = getCollection();
 
+            // 收藏模式
             if(showCollectionMode){
                 data = data.filter(item=>collectedList.includes(item.name));
             }else{
+                // 国家筛选
                 if(currentCountry !== '全部'){
                     data = data.filter(item=>item.country === currentCountry);
+                }
+                // 搜索过滤
+                if(searchKeyword){
+                    data = data.filter(item=>item.name.includes(searchKeyword));
                 }
             }
 
@@ -369,18 +536,19 @@
                     window.open(car.url,'_blank');
                 });
 
-                // 收藏点击（修复事件冒泡+实时刷新）
                 const collectBtn = item.querySelector('.collect-btn');
                 collectBtn.addEventListener('click',(e)=>{
                     e.stopPropagation();
                     toggleCollect(car.name);
                 });
+
                 container.appendChild(item);
             });
         }
 
+        // 初始化
         renderFilter();
         renderList();
     </script>
-
-</body></html>
+</body>
+</html>
